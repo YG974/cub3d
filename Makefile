@@ -14,9 +14,9 @@ NAME		= Cub3D
 
 SRC_MMS	= ./minilibx_mms_20200219/.
 
-SRC_GL	= ./minilibx_opengl_20191021/.
+SRC_GL	= ./minilibx_opengl_20191021
 
-SRC 		= main.c /
+SRC 		= cub.c 
 		
 CC			= gcc
 
@@ -24,15 +24,11 @@ LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
 
 FLAGS		= -Wall -Wextra -Werror
 
-OBJ        = $(addprefix $(SRC), $(SRC:.c=.o))
+OBJ        = $(SRC:.c=.o)
 
-$(SRC)%.o:    $(SRC)%.c
-	$(CC) $(FLAGS) -o $@ -c -L $(SRC_GL) 
-
-$(NAME):         $(OBJ)
-	ar rc $(NAME) $(OBJ)
-
-all:	$(NAME)
+all:		$(NAME)
+$(NAME):	$(OBJ)
+	$(CC) -o $(NAME) -L $(SRC_GL) $(LIB_FLAGS) $(OBJ)
 
 clean:
 	rm -f $(OBJ)
@@ -43,6 +39,5 @@ fclean:         clean
 re:             fclean all
 
 test:	${NAME}
-	gcc ${NAME} main.c
-	./a.out
+
 .PHONY:            all clean fclean re

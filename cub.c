@@ -13,10 +13,10 @@
 #include "cub.h"
 int		manage_key(int key, void *param)
 {
-	if (key == ESC)
-		ft_escape(win_ptr);
-	else if (key == A)
-		ft_a(win
+	//if (key == ESC)
+		//ft_escape(win_ptr);
+	//else if (key == A)
+	write(1, "escape", 6);
 	return (1);
 }
 

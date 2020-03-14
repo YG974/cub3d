@@ -36,5 +36,5 @@ typedef struct s_struct
 	int		y;
 }				t_struct;
 
-void manage_key(int key, void *param);
+int manage_key(int key, void *param);
 int ft_escape(t_struct structure, void *win_ptr);
