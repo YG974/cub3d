@@ -47,20 +47,6 @@
 # define HEIGHT 680 
 # define WIN_NAME "Cub3D" 
 
-typedef struct s_struct
-{
-	t_tex	tex;
-	t_color	sky;
-	t_color	floor;
-	t_map	map;
-	void	*mlx;
-	void	*win;
-	int		win_x;
-	int		win_y;
-	int		x;
-	int		y;
-}
-
 typedef struct s_map
 {
 	char	**tab;
@@ -75,15 +61,6 @@ typedef struct s_color
 	int		B;
 }				t_color;
 
-typedef struct s_tex
-{
-	t_img	N;
-	t_img	S;
-	t_img	E;
-	t_img	W;
-	t_img	sprite;
-}				t_tex;
-
 typedef struct s_img
 {
 	char	*path;
@@ -95,12 +72,40 @@ typedef struct s_img
 	int		sl;
 }				t_img;
 
+typedef struct s_tex
+{
+	t_img	N;
+	t_img	S;
+	t_img	E;
+	t_img	W;
+	t_img	sprite;
+}				t_tex;
 
-int 	manage_key(int key, void *param);
+typedef struct s_struct
+{
+	t_tex	tex;
+	t_color	sky;
+	t_color	floor;
+	t_map	map;
+	char	*cub;
+	void	*mlx;
+	void	*win;
+	int		win_x;
+	int		win_y;
+	int		x;
+	int		y;
+}				t_struct;
+
+
+int		ft_suffix(char *file_name, char *suffix);
+int		key_press(int key, t_struct *s);
 void	ft_init_mlx(t_struct *s);
-void	get_size_win(t_struct *s);
-void	ft_img_adr(t_struct *s);
-int		ft_draw(int key, t_struct *s);
-void	ft_init_struct(void);
+void	ft_init_struct(char	*av);
 int		ft_escape(t_struct *s);
 int		ft_exit(t_struct *s);
+int		ft_suffix(char *file_name, char *suffix);
+void	ft_parse(t_struct	*s);
+void	ft_img_adr(t_struct *s);
+void	ft_init_tex(t_struct *s);
+void	ft_init_color(t_struct *s);
+void	ft_init_map(t_struct *s);

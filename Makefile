@@ -12,32 +12,34 @@
 
 NAME		= Cub3D
 
-SRC_MMS	= ./minilibx_mms_20200219/.
+SRC_MLX	= ./minilibx
+SRC_MLX1	= ./mlx_mms
+SRC_MLX2	= ./mlx_opengl
 
-SRC_GL	= ./minilibx_opengl_20191021
+SRC 		= cub 
 
-SRC 		= cub.c 
-		
-CC			= gcc
+FILES = $(addsuffix .c, $(SRC))
+
+OBJ = $(FILES:.c=.o)
+
+CC			= clang 
 
 LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
 
 FLAGS		= -Wall -Wextra -Werror
 
-OBJ        = $(SRC:.c=.o)
+all: $(NAME)
 
-all:		$(NAME)
-$(NAME):	$(OBJ)
-	$(CC) -o $(NAME) -L $(SRC_GL) $(LIB_FLAGS) $(OBJ)
+$(NAME): $(OBJ)
+	$(CC) -o $(NAME) -L $(SRC_MLX) $(LIB_FLAGS) $(OBJ)
 
 clean:
 	rm -f $(OBJ)
 
-fclean:         clean
+fclean: clean
 	rm -f $(NAME)
 
-re:             fclean all
-
-test:	${NAME}
+test: $(NAME)
+	./$(NAME) "map.cub"
 
 .PHONY:            all clean fclean re
