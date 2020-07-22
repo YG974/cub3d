@@ -11,30 +11,72 @@
 /* ************************************************************************** */
 
 #include "cub.h"
-int		manage_key(int key, void *param)
+
+int main (int ac, char **av)
 {
-	//if (key == ESC)
-		//ft_escape(win_ptr);
-	//else if (key == A)
-	write(1, "escape", 6);
-	return (1);
+		if (ac == 2)
+			ft_start(av[1]);
+		else
+				return (0);
+		return (0);
 }
 
-int main ()
+int		key_press(int key, t_struct *s)
 {
-	void *mlx_ptr;
-	void *win_ptr;
-
-	mlx_ptr = mlx_init();
-	win_ptr = mlx_new_window(mlx_ptr, 500, 500, "42");
-	mlx_pixel_put(mlx_ptr, win_ptr, 50, 50, 0xFFFFFF);
-	mlx_key_hook(win_ptr, manage_key, (void *)0);
-	mlx_loop(mlx_ptr);
-	return (0);
+		if (key == ESC)
+				ft_exit(s);
+		else if (key == KEY_A)
+				write(1, "A", 1);
+		else if (key == KEY_S)
+				write(1, "S", 1);
+		else if (key == KEY_D)
+				write(1, "D", 1);
+		else if (key == KEY_W)
+				write(1, "W", 1);
+		return (1);
 }
 
-int		ft_escape(t_struct s, void *win_ptr)
+
+void	ft_init_struct(void)
 {
-	write(1, "escape", 6);
-	return (0);
+		t_struct	s;
+
+		s.mlx_ptr = 0;
+		s.win_ptr = 0;
+		s.win_x = 0;
+		s.win_y = 0;
+		s.x = 0;
+		s.y = 0;
+		ft_init_mlx(&s);
+}
+
+void	ft_init_mlx(t_struct *s)
+{
+		s->mlx_ptr = mlx_init();
+		s->win_x = WIDTH;
+		s->win_y = HEIGHT;
+		s->win_ptr = mlx_new_window(s->mlx_ptr, s->win_x, s->win_y, "42");
+		mlx_hook(s->win_ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
+		ft_img_adr(s);
+		mlx_loop(s->mlx_ptr);
+		return ;	
+}
+
+void	ft_img_adr(t_struct *s)
+{
+		int		bpp;
+		int		sl;
+		int		end;
+		char	*file;
+
+		file = strdup(PATH_WOOD);
+	//	printf("%s\n", file);
+	s->img_ptr = mlx_xpm_file_to_image(s->mlx_ptr, file, &s->img_x, &s->img_y);
+   mlx_put_image_to_window(s->mlx_ptr, s->win_ptr, s->img_ptr, 0, 0);
+}
+
+int		ft_exit(t_struct *s)
+{
+		exit(0);
+		return(1);
 }
