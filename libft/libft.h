@@ -15,11 +15,33 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+# define ENDL '\n'
+# define END '\0'
+# define NB_FD 256
+# define BUFFER_SIZE 256
+# include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <stdio.h>
+# define MALLCHECK(x) if (!x) return (-1);
+
 typedef struct	s_list
 {
-	void			*content;
-	struct s_list	*next;
+		void			*content;
+		struct s_list	*next;
 }				t_list;
+
+typedef struct	s_gnl
+{
+		int				ret;
+		int				i;
+		int				j;
+}				t_gnl;
+
+int				get_next_line(int fd, char **line);
+char			*ft_strjoin_endl(char *s1, const char *s2);
+char			*ft_strjoin_gnl(char *s1, const char *s2);
+int				ft_next_line(int i, int fd, char gnl[NB_FD][BUFFER_SIZE + 1]);
 
 void			*ft_memset(void *ptr, int c, size_t n);
 void			ft_bzero(void *s, size_t n);
