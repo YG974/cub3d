@@ -14,8 +14,6 @@ NAME		= Cub3D
 
 SRC_MLX	= ./minilibx
 SRC_LIBFT	= ./libft
-SRC_MLX1	= ./mlx_mms
-SRC_MLX2	= ./mlx_opengl
 
 SRC 		= cub 
 
@@ -35,6 +33,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	make -C $(SRC_LIBFT) && make clean -C $(SRC_LIBFT)
+	#make -C $(SRC_MLX)
 	$(CC) -o $(NAME) $(LIBFT) -L $(SRC_MLX) $(LIB_FLAGS) $(OBJ)
 
 

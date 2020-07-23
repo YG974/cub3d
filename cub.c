@@ -74,7 +74,9 @@ void	ft_resolution(t_struct *s)
 void	ft_error(int i)
 {
 		write(1, "error\n", 6);
+		write(1, "error\n", 6);
 }
+
 int		is_space(char c)
 {
 	if (c == '\t' || c == '\n' || c == '\r' ||
@@ -83,6 +85,7 @@ int		is_space(char c)
 	else
 		return (0);
 }
+
 int		ft_suffix(char *file_name, char *suffix)
 {
 	int		i;

@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "mlx.h"
+#include "libft/libft.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -88,12 +89,14 @@ typedef struct s_struct
 	t_color	floor;
 	t_map	map;
 	char	*cub;
+	char	*buf;
 	void	*mlx;
 	void	*win;
 	int		win_x;
 	int		win_y;
 	int		x;
 	int		y;
+	int		i;
 }				t_struct;
 
 
@@ -109,3 +112,7 @@ void	ft_img_adr(t_struct *s);
 void	ft_init_tex(t_struct *s);
 void	ft_init_color(t_struct *s);
 void	ft_init_map(t_struct *s);
+void	ft_read_line(t_struct *s);
+void	ft_resolution(t_struct *s);
+void	ft_error(int i);
+int		is_space(char c);
