@@ -18,21 +18,27 @@ int main (int ac, char **av)
 			ft_init_struct(av[1]);
 		else
 				return (0);
-		return (0);
+		return (1);
 }
 
 void	ft_parse(t_struct	*s)
 {
+	char	**line;
+	char	*str;
 	int		fd;
-	char	*file;
+	int		ret;
 	
+	line = &str;
+	fd = open(s->cub, O_RDONLY);
+	ret = get_next_line(fd, line);
+	printf("fd : %d ->%d%s\n", fd, get_next_line(fd, &str), str);
 }
 
 int		ft_suffix(char *file_name, char *suffix)
 {
 	int		i;
 
-	i = strlen(file_name);
+	i = ft_strlen(file_name);
 	if (file_name[i - 1] == suffix[3] && file_name[i - 2] == suffix[2] && 
 	file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
 		return (1);
@@ -61,7 +67,7 @@ void	ft_init_struct(char	*av)
 {
 		t_struct	s;
 		
-		s.cub = strdup(av);
+		s.cub = (char *)ft_strdup(av);
 		ft_init_tex(&s);
 		ft_init_color(&s);
 		ft_init_map(&s);
@@ -71,7 +77,7 @@ void	ft_init_struct(char	*av)
 		s.win_y = 0;
 		s.x = 0;
 		s.y	= 0;
-	//	ft_parse(&s);
+		ft_parse(&s);
 		ft_init_mlx(&s);
 }
 

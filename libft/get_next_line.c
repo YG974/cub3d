@@ -22,7 +22,7 @@ int	get_next_line(int fd, char **line)
 				return (-1);
 		MALLCHECK((*line = (char *)malloc(sizeof(char) * 1)));
 		*line[0] = END;
-		if ((s.i = ft_strchr(gnl[fd], ENDL)) > -1)
+		if ((s.i = strchrgnl(gnl[fd], ENDL)) > -1)
 		{
 				MALLCHECK((*line = ft_strjoin_endl(*line, gnl[fd])));
 				while (s.i + s.j < BUFFER_SIZE)
@@ -33,7 +33,7 @@ int	get_next_line(int fd, char **line)
 		{
 				gnl[fd][s.ret] = END;
 				MALLCHECK((*line = ft_strjoin_endl(*line, gnl[fd])));
-				if ((s.i = ft_strchr(gnl[fd], ENDL)) > -1)
+				if ((s.i = strchrgnl(gnl[fd], ENDL)) > -1)
 						return (ft_next_line(s.i, fd, &*gnl));
 		}
 		gnl[fd][0] = '\0';
@@ -61,7 +61,7 @@ char		*ft_strjoin_endl(char *s1, const char *s2)
 		char	*str;
 
 		len1 = (s1 == NULL ? 0 : ft_strlen(s1));
-		len2 = (ft_strchr(s2, ENDL) == -1 ? ft_strlen(s2) : ft_strchr(s2, ENDL));
+		len2 = (strchrgnl(s2, ENDL) == -1 ? ft_strlen(s2) : strchrgnl(s2, ENDL));
 		i = 0;
 		if (!(str = malloc(sizeof(char) * (len1 + len2 + 1))))
 				return (NULL);
@@ -105,4 +105,21 @@ char		*ft_strjoin_gnl(char *s1, const char *s2)
 		str[len1 + len2] = '\0';
 		free(s1);
 		return (str);
+}
+
+int			strchrgnl(const char *s, int c)
+{
+		int i;
+
+		i = 0;
+		c = (char)c;
+		while (s[i])
+		{
+				if (s[i] == c)
+						return (i);
+				i++;
+		}
+		if (s[i] == c)
+				return (i);
+		return (-1);
 }
