@@ -34,7 +34,7 @@ int		ft_suffix(char *file_name, char *suffix)
 
 	i = strlen(file_name);
 	if (file_name[i - 1] == suffix[3] && file_name[i - 2] == suffix[2] && 
-			file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
+	file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
 		return (1);
 	else
 		write(1, "wrong argument", 14);
@@ -126,7 +126,7 @@ void	ft_img_adr(t_struct *s)
 		char	*file;
 
 		file = strdup("./images/wood.xpm");
-	//	printf("%s\n", file);
+	//	printf("%d\n", s->tex.N.x);
 	s->tex.N.adr = mlx_xpm_file_to_image(s->mlx, file, &s->tex.N.x, &s->tex.N.y);
    mlx_put_image_to_window(s->mlx, s->win, s->tex.N.adr, 0, 0);
 }
