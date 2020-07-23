@@ -24,16 +24,65 @@ int main (int ac, char **av)
 void	ft_parse(t_struct	*s)
 {
 	char	**line;
-	char	*str;
 	int		fd;
 	int		ret;
 	
-	line = &str;
+	line = &s->buf;
 	fd = open(s->cub, O_RDONLY);
-	ret = get_next_line(fd, line);
-	printf("fd : %d ->%d%s\n", fd, get_next_line(fd, &str), str);
+	ret = 1;
+	while (ret == get_next_line(fd, line))		
+	{
+		ft_read_line(s);
+		printf("fd : %d ->%d%s\n", fd, get_next_line(fd, &s->buf), s->buf);
+	}
 }
 
+void	ft_read_line(t_struct *s)
+{
+		s->i = 0;
+		while (is_space(s->buf[s->i]))
+				s->i++;
+		if (s->buf[s->i] == 'R')
+			ft_resolution(s);
+		printf("RESOLUTION %d %d \n", s->win_x, s->win_y);
+}
+
+void	ft_resolution(t_struct *s)
+{
+		int res;
+
+		res = 0;
+		s->i++;
+		while (is_space(s->buf[s->i]))
+				s->i++;
+		if (ft_isdigit(s->buf[s->i]))
+				s->win_x = ft_atoi((const char *)&s->buf[s->i]);
+		else
+				ft_error(1);
+		while (ft_isdigit(s->buf[s->i]))
+				s->i++;
+		while (is_space(s->buf[s->i]))
+			s->i++;
+		if (ft_isdigit(s->buf[s->i]))
+				s->win_y = ft_atoi((const char *)&s->buf[s->i]);
+		else
+				ft_error(1);
+		s->win_x = (s->win_x > WIDTH ? WIDTH : s->win_x);
+		s->win_y = (s->win_y > HEIGHT ? HEIGHT : s->win_y);
+}
+
+void	ft_error(int i)
+{
+		write(1, "error\n", 6);
+}
+int		is_space(char c)
+{
+	if (c == '\t' || c == '\n' || c == '\r' ||
+		c == '\v' || c == '\f' || c == ' ')
+		return (1);
+	else
+		return (0);
+}
 int		ft_suffix(char *file_name, char *suffix)
 {
 	int		i;
@@ -115,8 +164,6 @@ void	ft_init_tex(t_struct *s)
 void	ft_init_mlx(t_struct *s)
 {
 		s->mlx = mlx_init();
-		s->win_x = WIDTH;
-		s->win_y = HEIGHT;
 		s->win = mlx_new_window(s->mlx, s->win_x, s->win_y, "42");
 		mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
 		ft_img_adr(s);
