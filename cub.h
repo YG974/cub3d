@@ -11,10 +11,11 @@
 /* ************************************************************************** */
 
 /* liraries */
+#include "./minilibx/mlx.h"
+#include "./libft/libft.h"
+
 #include <stdlib.h>
 #include <math.h>
-#include "mlx.h"
-#include "libft/libft.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -31,6 +32,7 @@
 # define KEY_LEFT 123
 # define KEY_RIGHT 124
 
+/* keys pre-setted values mapping LibX Functions  */
 # define KEY_PRESS 2
 # define KEY_RELEASE 3
 # define KEY_PRESS_MASK (1L<<0)
@@ -99,20 +101,31 @@ typedef struct s_struct
 	int		i;
 }				t_struct;
 
-
-int		ft_suffix(char *file_name, char *suffix);
+/* keyboard management functions */
 int		key_press(int key, t_struct *s);
-void	ft_init_mlx(t_struct *s);
+
+/* initialization functions */
 void	ft_init_struct(char	*av);
-int		ft_escape(t_struct *s);
-int		ft_exit(t_struct *s);
-int		ft_suffix(char *file_name, char *suffix);
-void	ft_parse(t_struct	*s);
-void	ft_img_adr(t_struct *s);
 void	ft_init_tex(t_struct *s);
 void	ft_init_color(t_struct *s);
 void	ft_init_map(t_struct *s);
+void	ft_init_mlx(t_struct *s);
+
+/* parsing and reading functions*/
+void	ft_parse(t_struct	*s);
 void	ft_read_line(t_struct *s);
+int		read_number(t_struct *s);
+void	skip_space(t_struct *s);
 void	ft_resolution(t_struct *s);
-void	ft_error(int i);
+
+/* displaying functions */
+void	ft_img_adr(t_struct *s);
+
+/* checking functions */
 int		is_space(char c);
+int		ft_suffix(char *file_name, char *suffix);
+
+/* errors functions */
+int		ft_escape(t_struct *s);
+int		ft_exit(t_struct *s);
+void	ft_error(int i);

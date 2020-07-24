@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   cub.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ygeslin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -40,8 +40,7 @@ void	ft_parse(t_struct	*s)
 void	ft_read_line(t_struct *s)
 {
 		s->i = 0;
-		while (is_space(s->buf[s->i]))
-				s->i++;
+		skip_space(s);
 		if (s->buf[s->i] == 'R')
 			ft_resolution(s);
 		printf("RESOLUTION %d %d \n", s->win_x, s->win_y);
@@ -49,24 +48,11 @@ void	ft_read_line(t_struct *s)
 
 void	ft_resolution(t_struct *s)
 {
-		int res;
-
-		res = 0;
 		s->i++;
-		while (is_space(s->buf[s->i]))
-				s->i++;
-		if (ft_isdigit(s->buf[s->i]))
-				s->win_x = ft_atoi((const char *)&s->buf[s->i]);
-		else
-				ft_error(1);
-		while (ft_isdigit(s->buf[s->i]))
-				s->i++;
-		while (is_space(s->buf[s->i]))
-			s->i++;
-		if (ft_isdigit(s->buf[s->i]))
-				s->win_y = ft_atoi((const char *)&s->buf[s->i]);
-		else
-				ft_error(1);
+		skip_space(s);
+		s->win_x = read_number(s);
+		skip_space(s);
+		s->win_y = read_number(s);
 		s->win_x = (s->win_x > WIDTH ? WIDTH : s->win_x);
 		s->win_y = (s->win_y > HEIGHT ? HEIGHT : s->win_y);
 }
@@ -76,6 +62,28 @@ void	ft_error(int i)
 		write(1, "error\n", 6);
 		write(1, "error\n", 6);
 }
+
+int		read_number(t_struct *s)
+{
+		int i;
+
+		i = 0;
+		if (ft_isdigit(s->buf[s->i]))
+				i = ft_atoi((const char *)&s->buf[s->i]);
+		else
+				ft_error(1);
+		while (ft_isdigit(s->buf[s->i]))
+				s->i++;
+		return (i);
+}
+
+void	skip_space(t_struct *s)
+{
+		while (is_space(s->buf[s->i]))
+				s->i++;
+}
+
+
 
 int		is_space(char c)
 {
