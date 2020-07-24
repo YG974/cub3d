@@ -35,6 +35,7 @@ void	ft_parse(t_struct	*s)
 		ft_read_line(s);
 		printf("fd : %d ->%d%s\n", fd, get_next_line(fd, &s->buf), s->buf);
 	}
+	close(fd);
 }
 
 void	ft_read_line(t_struct *s)
@@ -43,7 +44,6 @@ void	ft_read_line(t_struct *s)
 		skip_space(s);
 		if (s->buf[s->i] == 'R')
 			ft_resolution(s);
-		printf("RESOLUTION %d %d \n", s->win_x, s->win_y);
 }
 
 void	ft_resolution(t_struct *s)
@@ -55,6 +55,7 @@ void	ft_resolution(t_struct *s)
 		s->win_y = read_number(s);
 		s->win_x = (s->win_x > WIDTH ? WIDTH : s->win_x);
 		s->win_y = (s->win_y > HEIGHT ? HEIGHT : s->win_y);
+		printf("RESOLUTION %d %d \n", s->win_x, s->win_y);
 }
 
 void	ft_error(int i)
