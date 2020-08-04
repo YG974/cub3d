@@ -42,8 +42,27 @@ void	ft_read_line(t_struct *s)
 {
 		s->i = 0;
 		skip_space(s);
-		if (s->buf[s->i] == 'R')
+		if (s->buf[s->i] == 'R' && s->buf[s->i + 1] == ' ')
 			ft_resolution(s);
+		if (s->buf[s->i] == 'N' && s->buf[s->i + 1] == 'O' && 
+			s->buf[s->i + 2] == ' ')
+			read_texture(s->tex->N);
+		/*
+		if (s->buf[s->i] == 'S' && s->buf[s->i + 1] == 'O' && 
+			s->buf[s->i + 2] == ' ')
+			read_texture(s);
+		if (s->buf[s->i] == 'W' && s->buf[s->i + 1] == 'E' && 
+			s->buf[s->i + 2] == ' ')
+			read_texture(s);
+		if (s->buf[s->i] == 'S' && s->buf[s->i + 1] == ' ')
+			read_texture(s);
+		if (s->buf[s->i] == 'F' && s->buf[s->i + 1] == ' ')
+			ft_resolution(s);
+		if (s->buf[s->i] == 'C' && s->buf[s->i + 1] == ' ')
+			ft_read_tex(s);
+		else
+			ft_read_map(s);
+		*/	
 }
 
 void	ft_resolution(t_struct *s)
@@ -53,14 +72,15 @@ void	ft_resolution(t_struct *s)
 		s->win_x = read_number(s);
 		skip_space(s);
 		s->win_y = read_number(s);
+		s->win_x = (s->win_x <= 0  ? WIDTH : s->win_x);
 		s->win_x = (s->win_x > WIDTH ? WIDTH : s->win_x);
+		s->win_y = (s->win_y <= 0 ? HEIGHT : s->win_y);
 		s->win_y = (s->win_y > HEIGHT ? HEIGHT : s->win_y);
 		printf("RESOLUTION %d %d \n", s->win_x, s->win_y);
 }
 
 void	ft_error(int i)
 {
-		write(1, "error\n", 6);
 		write(1, "error\n", 6);
 }
 
@@ -69,13 +89,40 @@ int		read_number(t_struct *s)
 		int i;
 
 		i = 0;
+		//return erreur s'il y a autre char que numb ou sign
 		if (ft_isdigit(s->buf[s->i]))
 				i = ft_atoi((const char *)&s->buf[s->i]);
-		else
-				ft_error(1);
 		while (ft_isdigit(s->buf[s->i]))
 				s->i++;
 		return (i);
+}
+
+void		read_word(t_struct *s)
+{
+		int i;
+
+		i = 0;
+		//return erreur s'il y a autre char que numb ou sign
+		if (ft_isdigit(s->buf[s->i]))
+				i = ft_atoi((const char *)&s->buf[s->i]);
+		while (ft_isdigit(s->buf[s->i]))
+				s->i++;
+		return (i);
+}
+/*
+int		read_floor_ceiling(t_struct *s)
+{
+
+}
+*/
+
+void	read_texture(t_img *t)
+{
+	s->i++;
+	skip_space(s);
+	read_word(
+	t->path;
+	t->adr = mlx_xpm_file_to_image(s->mlx, t->path, t->x, t->y);
 }
 
 void	skip_space(t_struct *s)
