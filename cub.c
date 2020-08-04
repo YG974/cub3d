@@ -30,24 +30,50 @@ void	ft_parse(t_struct	*s)
 	line = &s->buf;
 	fd = open(s->cub, O_RDONLY);
 	ret = 1;
+	s->i = 0;
 	while (ret == get_next_line(fd, line))		
 	{
-		ft_read_line(s);
-		printf("fd : %d ->%d%s\n", fd, get_next_line(fd, &s->buf), s->buf);
+	s->i = 0;
+	s->tmp = ft_split(s->buf, ' ');
+	ft_read_line(s);
+	s->i++;
 	}
 	close(fd);
 }
-
 void	ft_read_line(t_struct *s)
-{
-		s->i = 0;
-		skip_space(s);
-		if (s->buf[s->i] == 'R' && s->buf[s->i + 1] == ' ')
+{		
+		int i = 0;
+		while (s->tmp[i])
+		{
+	//	printf("s->tmp%d :%s|\n", i, s->tmp[i]);
+	//	printf("s->tmpc0 %c\n", s->tmp[0][0]);
+	//	printf("s->tmpc1 %c\n", s->tmp[0][1]);
+		if (ft_strncmp(s->tmp[0], "R", 1) == 0 && s->tmp[0] != '\0')
 			ft_resolution(s);
+		if (ft_strncmp(s->tmp[0], "NO", 2) == 0 && s->tmp[0] != '\0')
+			read_texture(s, &s->tex.N);
+		if (ft_strncmp(s->tmp[0], "SO", 2) == 0 && s->tmp[0] != '\0')
+			read_texture(s, &s->tex.S);
+		if (ft_strncmp(s->tmp[0], "WE", 2) == 0 && s->tmp[0] != '\0')
+			read_texture(s, &s->tex.W);
+		if (ft_strncmp(s->tmp[0], "EA", 2) == 0 && s->tmp[0] != '\0')
+			read_texture(s, &s->tex.E);
+		if (ft_strncmp(s->tmp[0], "S", 1) == 0 && s->tmp[0] != '\0')
+			read_texture(s, &s->tex.sprite);
+		if (ft_strncmp(s->tmp[0], "F", 1) == 0 && s->tmp[0] != '\0')
+			printf("ARG -- >%s|\n", s->tmp[0]);
+		if (ft_strncmp(s->tmp[0], "C", 1) == 0 && s->tmp[0] != '\0')
+			printf("ARG -- >%s|\n", s->tmp[0]);
+		printf("TEX:%s|\n", s->tex.N.path);
+		printf("TEX:%s|\n", s->tex.S.path);
+		printf("TEX:%s|\n", s->tex.E.path);
+		printf("TEX:%s|\n", s->tex.W.path);
+		i++;
+		}
+			
+/*
 		if (s->buf[s->i] == 'N' && s->buf[s->i + 1] == 'O' && 
 			s->buf[s->i + 2] == ' ')
-			read_texture(s->tex->N);
-		/*
 		if (s->buf[s->i] == 'S' && s->buf[s->i + 1] == 'O' && 
 			s->buf[s->i + 2] == ' ')
 			read_texture(s);
@@ -62,16 +88,13 @@ void	ft_read_line(t_struct *s)
 			ft_read_tex(s);
 		else
 			ft_read_map(s);
-		*/	
+*/	
 }
 
 void	ft_resolution(t_struct *s)
 {
-		s->i++;
-		skip_space(s);
-		s->win_x = read_number(s);
-		skip_space(s);
-		s->win_y = read_number(s);
+		s->win_x = ft_atoi((const char *)s->tmp[1]);
+		s->win_y = ft_atoi((const char *)s->tmp[2]);
 		s->win_x = (s->win_x <= 0  ? WIDTH : s->win_x);
 		s->win_x = (s->win_x > WIDTH ? WIDTH : s->win_x);
 		s->win_y = (s->win_y <= 0 ? HEIGHT : s->win_y);
@@ -84,6 +107,7 @@ void	ft_error(int i)
 		write(1, "error\n", 6);
 }
 
+/*
 int		read_number(t_struct *s)
 {
 		int i;
@@ -96,7 +120,6 @@ int		read_number(t_struct *s)
 				s->i++;
 		return (i);
 }
-
 void		read_word(t_struct *s)
 {
 		int i;
@@ -107,22 +130,22 @@ void		read_word(t_struct *s)
 				i = ft_atoi((const char *)&s->buf[s->i]);
 		while (ft_isdigit(s->buf[s->i]))
 				s->i++;
-		return (i);
+		return;
 }
-/*
 int		read_floor_ceiling(t_struct *s)
 {
 
 }
 */
 
-void	read_texture(t_img *t)
+void	read_texture(t_struct *s, t_img *t)
 {
-	s->i++;
-	skip_space(s);
-	read_word(
-	t->path;
-	t->adr = mlx_xpm_file_to_image(s->mlx, t->path, t->x, t->y);
+	t->path = ft_strdup(s->tmp[1]);
+	t->adr = mlx_xpm_file_to_image(s->mlx, t->path, &t->x, &t->y);
+	printf("TEXTURE\n");
+	printf("path :%s|\n", t->path);
+	printf("adr :%s|\n", t->adr);
+	printf("|x=%d | y =%d| \n", t->x, t->y);
 }
 
 void	skip_space(t_struct *s)

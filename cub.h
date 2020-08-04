@@ -79,8 +79,8 @@ typedef struct s_tex
 {
 	t_img	N;
 	t_img	S;
-	t_img	E;
 	t_img	W;
+	t_img	E;
 	t_img	sprite;
 }				t_tex;
 
@@ -90,8 +90,9 @@ typedef struct s_struct
 	t_color	sky;
 	t_color	floor;
 	t_map	map;
-	char	*cub;
+	char	**tmp;
 	char	*buf;
+	char	*cub;
 	void	*mlx;
 	void	*win;
 	int		win_x;
@@ -117,6 +118,7 @@ void	ft_read_line(t_struct *s);
 int		read_number(t_struct *s);
 void	skip_space(t_struct *s);
 void	ft_resolution(t_struct *s);
+void	read_texture(t_struct *s,t_img *t);
 
 /* displaying functions */
 void	ft_img_adr(t_struct *s);
