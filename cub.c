@@ -45,32 +45,37 @@ void	ft_read_line(t_struct *s)
 		int i = 0;
 		while (s->tmp[i])
 		{
-	//	printf("s->tmp%d :%s|\n", i, s->tmp[i]);
-	//	printf("s->tmpc0 %c\n", s->tmp[0][0]);
-	//	printf("s->tmpc1 %c\n", s->tmp[0][1]);
 		if (ft_strncmp(s->tmp[0], "R", 1) == 0 && s->tmp[0] != '\0')
 			ft_resolution(s);
 		if (ft_strncmp(s->tmp[0], "NO", 2) == 0 && s->tmp[0] != '\0')
-			read_texture(s, &s->tex.N);
+			s->tex.N.path = ft_strdup(s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "SO", 2) == 0 && s->tmp[0] != '\0')
-			read_texture(s, &s->tex.S);
+			s->tex.S.path = ft_strdup(s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "WE", 2) == 0 && s->tmp[0] != '\0')
-			read_texture(s, &s->tex.W);
+			s->tex.W.path = ft_strdup(s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "EA", 2) == 0 && s->tmp[0] != '\0')
-			read_texture(s, &s->tex.E);
+			s->tex.E.path = ft_strdup(s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "S", 1) == 0 && s->tmp[0] != '\0')
-			read_texture(s, &s->tex.sprite);
+			s->tex.sprite.path = ft_strdup(s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "F", 1) == 0 && s->tmp[0] != '\0')
-			printf("ARG -- >%s|\n", s->tmp[0]);
+			s->floor = ft_color(s);;
 		if (ft_strncmp(s->tmp[0], "C", 1) == 0 && s->tmp[0] != '\0')
-			printf("ARG -- >%s|\n", s->tmp[0]);
-		printf("TEX:%s|\n", s->tex.N.path);
-		printf("TEX:%s|\n", s->tex.S.path);
-		printf("TEX:%s|\n", s->tex.E.path);
-		printf("TEX:%s|\n", s->tex.W.path);
+			s->sky = ft_color(s);;
 		i++;
 		}
+}
 			
+t_color	ft_color(t_struct	*s)
+{
+	t_color color;
+	char	**tab;
+
+	tab = ft_split(s->tmp[1], ',');
+	color.R = ft_atoi((const char *)tab[0]);
+	color.G = ft_atoi((const char *)tab[1]);
+	color.B = ft_atoi((const char *)tab[2]);
+	return (color);
+}
 /*
 		if (s->buf[s->i] == 'N' && s->buf[s->i + 1] == 'O' && 
 			s->buf[s->i + 2] == ' ')
@@ -89,7 +94,6 @@ void	ft_read_line(t_struct *s)
 		else
 			ft_read_map(s);
 */	
-}
 
 void	ft_resolution(t_struct *s)
 {
@@ -99,7 +103,6 @@ void	ft_resolution(t_struct *s)
 		s->win_x = (s->win_x > WIDTH ? WIDTH : s->win_x);
 		s->win_y = (s->win_y <= 0 ? HEIGHT : s->win_y);
 		s->win_y = (s->win_y > HEIGHT ? HEIGHT : s->win_y);
-		printf("RESOLUTION %d %d \n", s->win_x, s->win_y);
 }
 
 void	ft_error(int i)
@@ -137,16 +140,6 @@ int		read_floor_ceiling(t_struct *s)
 
 }
 */
-
-void	read_texture(t_struct *s, t_img *t)
-{
-	t->path = ft_strdup(s->tmp[1]);
-	t->adr = mlx_xpm_file_to_image(s->mlx, t->path, &t->x, &t->y);
-	printf("TEXTURE\n");
-	printf("path :%s|\n", t->path);
-	printf("adr :%s|\n", t->adr);
-	printf("|x=%d | y =%d| \n", t->x, t->y);
-}
 
 void	skip_space(t_struct *s)
 {
@@ -247,24 +240,41 @@ void	ft_init_mlx(t_struct *s)
 {
 		s->mlx = mlx_init();
 		s->win = mlx_new_window(s->mlx, s->win_x, s->win_y, "42");
+		ft_print_arg(s);
+		s->tex.N.adr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, &s->tex.N.x, &s->tex.N.y);
 		mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
-		ft_img_adr(s);
 		mlx_loop(s->mlx);
 		return;	
 }
 
+void	ft_print_arg(t_struct *s)
+{
+	printf("RESOLUTION : %d x %d\n", s->win_x, s->win_y);
+	printf("NO_PATH : \"%s\"\n", s->tex.N.path);
+	printf("SO_PATH : \"%s\"\n", s->tex.S.path);
+	printf("WE_PATH : \"%s\"\n", s->tex.W.path);
+	printf("EA_PATH : \"%s\"\n", s->tex.E.path);
+	printf("SPRITE_PATH : \"%s\"\n", s->tex.sprite.path);
+	printf("FLOOR : %d,%d,%d\n", s->floor.R, s->floor.G, s->floor.B);
+	printf("SKY : %d,%d,%d\n", s->sky.R, s->sky.G, s->sky.B);
+
+}
+
+/*
 void	ft_img_adr(t_struct *s)
 {
 		int		bpp;
 		int		sl;
 		int		end;
-		char	*file;
 
-		file = strdup("./images/wood.xpm");
-	//	printf("%d\n", s->tex.N.x);
+		printf("%d\n", s->tex.N.x);
 	s->tex.N.adr = mlx_xpm_file_to_image(s->mlx, file, &s->tex.N.x, &s->tex.N.y);
+	s->tex.N.adr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, &s->tex.N.x, &s->tex.N.y);
    mlx_put_image_to_window(s->mlx, s->win, s->tex.N.adr, 0, 0);
+	s->tex.S.adr = mlx_xpm_file_to_image(s->mlx, s->tex.S.path, &s->tex.S.x, &s->tex.S.y);
+   mlx_put_image_to_window(s->mlx, s->win, s->tex.S.adr, 100, 100);
 }
+*/
 
 int		ft_exit(t_struct *s)
 {

@@ -1,10 +1,11 @@
 R    1920    1080
-NO ./path_to_the_north_texture
-SO ./path_to_the_south_texture
-WE ./path_to_the_west_texture
-EA ./path_to_the_east_texture
 
-S ./path_to_the_sprite_texture 
+NO ./images/brick.xpm
+SO ./images/barrel.xpm
+WE ./images/banner.xpm
+EA ./images/blue.xpm
+S ./images/hitler.xpm
+
 F 220,100,0
 C 225,30,0
 

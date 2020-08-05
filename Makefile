@@ -27,7 +27,7 @@ CC			= clang
 
 LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
 
-FLAGS		= -Wall -Wextra -Werror
+FLAGS		= -Wall -Wextra -Werror -g
 
 all: $(NAME)
 
