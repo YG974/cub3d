@@ -120,7 +120,7 @@ void	skip_space(t_struct *s);
 void	ft_resolution(t_struct *s);
 t_color		ft_color(t_struct *s);
 void	ft_map(t_struct *s);
-static char	**new_tab(char **tab, char *str);
+char	**new_tab(char **tab, char *str);
 
 /* displaying functions */
 void	ft_img_adr(t_struct *s);

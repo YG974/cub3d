@@ -31,6 +31,8 @@ void	ft_parse(t_struct	*s)
 		fd = open(s->cub, O_RDONLY);
 		ret = 1;
 		s->i = 0;
+		if (!(s->map.tab = calloc(sizeof(char **), 1)))
+			return ;
 		while (ret == get_next_line(fd, line))		
 		{
 				s->tmp = ft_split(s->buf, ' ');
@@ -38,8 +40,7 @@ void	ft_parse(t_struct	*s)
 				if (s->tmp[0] && s->tmp[0][0] && s->tmp[0][0] == '1')
 				{
 						ft_check_parsing(s);
-				//		s->map.tab = new_tab(s->map.tab, s->buf);
-						printf("%s\n", s->buf);
+						s->map.tab = new_tab(s->map.tab, s->buf);
 				}
 		}
 		close(fd);
@@ -197,7 +198,7 @@ int		ft_suffix(char *file_name, char *suffix)
 		return (0);
 }
 
-static char	**new_tab(char **tab, char *str)
+char	**new_tab(char **tab, char *str)
 {
 		char	**new_tab;
 		int		n;
@@ -305,7 +306,7 @@ void	ft_print_arg(t_struct *s)
 		printf("SPRITE_PATH : \"%s\"\n", s->tex.sprite.path);
 		printf("FLOOR : %d,%d,%d\n", s->floor.R, s->floor.G, s->floor.B);
 		printf("SKY : %d,%d,%d\n", s->sky.R, s->sky.G, s->sky.B);
-		//print_map(s);
+		print_map(s);
 }
 
 void	print_map(t_struct *s)
