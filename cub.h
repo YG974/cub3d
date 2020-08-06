@@ -120,6 +120,7 @@ void	skip_space(t_struct *s);
 void	ft_resolution(t_struct *s);
 t_color		ft_color(t_struct *s);
 void	ft_map(t_struct *s);
+static char	**new_tab(char **tab, char *str);
 
 /* displaying functions */
 void	ft_img_adr(t_struct *s);
@@ -129,6 +130,7 @@ int		is_space(char c);
 int		ft_suffix(char *file_name, char *suffix);
 void	ft_print_arg(t_struct *s);
 void	ft_check_parsing(t_struct *s);
+void	print_map(t_struct *s);
 
 /* errors functions */
 int		ft_escape(t_struct *s);

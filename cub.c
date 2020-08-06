@@ -33,12 +33,15 @@ void	ft_parse(t_struct	*s)
 		s->i = 0;
 		while (ret == get_next_line(fd, line))		
 		{
-				s->i = 0;
 				s->tmp = ft_split(s->buf, ' ');
 				ft_read_line(s);
-				s->i++;
+				if (s->tmp[0] && s->tmp[0][0] && s->tmp[0][0] == '1')
+				{
+						ft_check_parsing(s);
+				//		s->map.tab = new_tab(s->map.tab, s->buf);
+						printf("%s\n", s->buf);
+				}
 		}
-		ft_check_parsing(s);
 		close(fd);
 }
 void	ft_read_line(t_struct *s)
@@ -68,30 +71,35 @@ void	ft_read_line(t_struct *s)
 
 void	ft_check_parsing(t_struct *s)
 {
-	if ((s->win_x == 0 || s->win_y == 0 || s->tex.N.path == NULL ||
-		s->tex.S.path == NULL || s->tex.W.path == NULL || 
-		s->tex.E.path == NULL || s->tex.sprite.path == NULL || 
-		s->floor.R == -1 || s->floor.G == -1 || s->floor.B == -1 || 
-		s->sky.R == -1 || s->sky.G == -1 || s->sky.B == -1))
-			ft_error(1);
+		if ((s->win_x == 0 || s->win_y == 0 || s->tex.N.path == NULL ||
+								s->tex.S.path == NULL || s->tex.W.path == NULL || 
+								s->tex.E.path == NULL || s->tex.sprite.path == NULL || 
+								s->floor.R == -1 || s->floor.G == -1 || s->floor.B == -1 || 
+								s->sky.R == -1 || s->sky.G == -1 || s->sky.B == -1))
+				ft_error(1);
 }
 
-void	ft_map(t_struct *s)
-{
-	
-}
 
 
 t_color	ft_color(t_struct	*s)
 {
 		t_color color;
 		char	**tab;
+		int		i;
 
+		i = 0;
 		tab = ft_split(s->tmp[1], ',');
+		while (tab[i])
+				i++;
+		if (i > 3 || i < 3)
+				ft_error(1);
 		color.R = ft_atoi((const char *)tab[0]);
 		color.G = ft_atoi((const char *)tab[1]);
 		color.B = ft_atoi((const char *)tab[2]);
-		//check si les valeurs sont mauvaises ou trop grandes
+		if (color.R > 255 || color.R < 0 || 
+						color.G > 255 || color.G < 0 ||
+						color.B > 255 || color.B < 0)
+				ft_error(1);
 		return (color);
 }
 /*
@@ -189,6 +197,28 @@ int		ft_suffix(char *file_name, char *suffix)
 		return (0);
 }
 
+static char	**new_tab(char **tab, char *str)
+{
+		char	**new_tab;
+		int		n;
+
+		n = 0;
+		while (tab[n])
+				n++;
+		if (!(new_tab = calloc(sizeof(char **), n + 2)))
+				return (NULL);
+		n = 0;
+		while (tab[n])
+		{
+				new_tab[n] = tab[n];
+				n++;
+		}
+		free(tab);
+		new_tab[n] = str;
+		new_tab[n + 1] = NULL;
+		return (new_tab);
+}
+
 int		key_press(int key, t_struct *s)
 {
 		if (key == ESC)
@@ -275,6 +305,19 @@ void	ft_print_arg(t_struct *s)
 		printf("SPRITE_PATH : \"%s\"\n", s->tex.sprite.path);
 		printf("FLOOR : %d,%d,%d\n", s->floor.R, s->floor.G, s->floor.B);
 		printf("SKY : %d,%d,%d\n", s->sky.R, s->sky.G, s->sky.B);
+		//print_map(s);
+}
+
+void	print_map(t_struct *s)
+{
+		int i;
+
+		i = 0;
+		while (s->map.tab[i])
+		{
+				printf("%s\n", s->map.tab[i]);
+				i++;
+		}
 }
 
 /*
