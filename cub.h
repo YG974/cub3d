@@ -67,7 +67,8 @@ typedef struct s_color
 typedef struct s_img
 {
 	char	*path;
-	void	*adr;
+	void	*img;
+	unsigned int	*adr;
 	int		x;
 	int		y;
 	int		endian;
@@ -95,6 +96,8 @@ typedef struct s_struct
 	char	*cub;
 	void	*mlx;
 	void	*win;
+	unsigned int	*img;
+	void	*adr;
 	int		win_x;
 	int		win_y;
 	int		x;
@@ -121,6 +124,7 @@ void	ft_resolution(t_struct *s);
 t_color		ft_color(t_struct *s);
 void	ft_map(t_struct *s);
 char	**new_tab(char **tab, char *str);
+void	ft_load_tex(t_struct *s);
 
 /* displaying functions */
 void	ft_img_adr(t_struct *s);

@@ -287,15 +287,38 @@ void	ft_init_tex(t_struct *s)
 
 void	ft_init_mlx(t_struct *s)
 {
+		int i;
+		int j;
+
+		i = 0;
+		j = 0;
 		s->mlx = mlx_init();
 		s->win = mlx_new_window(s->mlx, s->win_x, s->win_y, "42");
+		ft_load_tex(s);
 		ft_print_arg(s);
-		s->tex.N.adr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, &s->tex.N.x, &s->tex.N.y);
+		s->adr = mlx_new_image(s->mlx, s->win_x, s->win_y);
+   		mlx_put_image_to_window(s->mlx, s->win, s->img, 0, 0);
+   		mlx_put_image_to_window(s->mlx, s->win, s->tex.N.adr, 0, 0);
 		mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
 		mlx_loop(s->mlx);
 		return;	
 }
 
+void	ft_load_tex(t_struct *s)
+{
+		s->tex.N.img = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, &s->tex.N.x, &s->tex.N.y);
+		s->tex.S.img = mlx_xpm_file_to_image(s->mlx, s->tex.S.path, &s->tex.S.x, &s->tex.S.y);
+		s->tex.W.img = mlx_xpm_file_to_image(s->mlx, s->tex.W.path, &s->tex.W.x, &s->tex.W.y);
+		s->tex.E.img = mlx_xpm_file_to_image(s->mlx, s->tex.E.path, &s->tex.E.x, &s->tex.E.y);
+		s->tex.sprite.img = mlx_xpm_file_to_image(s->mlx, s->tex.sprite.path, &s->tex.sprite.x, &s->tex.sprite.y);
+		s->tex.N.adr = (unsigned int*)mlx_get_data_addr(s->tex.N.img, &s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
+		s->tex.S.adr = (unsigned int*)mlx_get_data_addr(s->tex.S.img, &s->tex.S.bpp, &s->tex.S.sl, &s->tex.S.endian);
+		s->tex.W.adr = (unsigned int*)mlx_get_data_addr(s->tex.W.img, &s->tex.W.bpp, &s->tex.W.sl, &s->tex.W.endian);
+		s->tex.E.adr = (unsigned int*)mlx_get_data_addr(s->tex.E.img, &s->tex.E.bpp, &s->tex.E.sl, &s->tex.E.endian);
+		s->tex.sprite.adr = (unsigned int*)mlx_get_data_addr(s->tex.sprite.img, &s->tex.sprite.bpp, &s->tex.sprite.sl, &s->tex.sprite.endian);
+
+
+}
 void	ft_print_arg(t_struct *s)
 {
 		printf("RESOLUTION : %d x %d\n", s->win_x, s->win_y);
@@ -307,6 +330,11 @@ void	ft_print_arg(t_struct *s)
 		printf("FLOOR : %d,%d,%d\n", s->floor.R, s->floor.G, s->floor.B);
 		printf("SKY : %d,%d,%d\n", s->sky.R, s->sky.G, s->sky.B);
 		print_map(s);
+		printf("TEXTURE N\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.N.x, s->tex.N.y, s->tex.N.adr, s->tex.N.endian, s->tex.N.bpp, s->tex.N.sl);
+		printf("TEXTURE S\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.S.x, s->tex.S.y, s->tex.S.adr, s->tex.S.endian, s->tex.S.bpp, s->tex.S.sl);
+		printf("TEXTURE W\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.W.x, s->tex.W.y, s->tex.W.adr, s->tex.W.endian, s->tex.W.bpp, s->tex.W.sl);
+		printf("TEXTURE E\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.E.x, s->tex.E.y, s->tex.E.adr, s->tex.E.endian, s->tex.E.bpp, s->tex.E.sl);
+		printf("TEXTURE sprite\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.sprite.x, s->tex.sprite.y, s->tex.sprite.adr, s->tex.sprite.endian, s->tex.sprite.bpp, s->tex.sprite.sl);
 }
 
 void	print_map(t_struct *s)
