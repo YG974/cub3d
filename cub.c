@@ -296,9 +296,21 @@ void	ft_init_mlx(t_struct *s)
 		s->win = mlx_new_window(s->mlx, s->win_x, s->win_y, "42");
 		ft_load_tex(s);
 		ft_print_arg(s);
-		s->adr = mlx_new_image(s->mlx, s->win_x, s->win_y);
-   		mlx_put_image_to_window(s->mlx, s->win, s->img, 0, 0);
-   		mlx_put_image_to_window(s->mlx, s->win, s->tex.N.adr, 0, 0);
+		s->ptr = mlx_new_image(s->mlx, s->win_x, s->win_y);
+		s->img = (unsigned int*)mlx_get_data_addr(s->ptr, &s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
+		while (j < 64)
+		{
+			while (i < 128)
+			{
+				s->img[i +  j * s->win_x] = s->tex.N.adr[i + 64 * j];
+		s->img = (unsigned int*)mlx_get_data_addr(s->ptr, &s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
+				s->img[i + 1 + j * s->win_x] = s->tex.N.adr[i + 64 * j];
+				i++;
+			}
+			j++;
+			i = 0;
+		}
+   		mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
 		mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
 		mlx_loop(s->mlx);
 		return;	
@@ -306,16 +318,16 @@ void	ft_init_mlx(t_struct *s)
 
 void	ft_load_tex(t_struct *s)
 {
-		s->tex.N.img = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, &s->tex.N.x, &s->tex.N.y);
-		s->tex.S.img = mlx_xpm_file_to_image(s->mlx, s->tex.S.path, &s->tex.S.x, &s->tex.S.y);
-		s->tex.W.img = mlx_xpm_file_to_image(s->mlx, s->tex.W.path, &s->tex.W.x, &s->tex.W.y);
-		s->tex.E.img = mlx_xpm_file_to_image(s->mlx, s->tex.E.path, &s->tex.E.x, &s->tex.E.y);
-		s->tex.sprite.img = mlx_xpm_file_to_image(s->mlx, s->tex.sprite.path, &s->tex.sprite.x, &s->tex.sprite.y);
-		s->tex.N.adr = (unsigned int*)mlx_get_data_addr(s->tex.N.img, &s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
-		s->tex.S.adr = (unsigned int*)mlx_get_data_addr(s->tex.S.img, &s->tex.S.bpp, &s->tex.S.sl, &s->tex.S.endian);
-		s->tex.W.adr = (unsigned int*)mlx_get_data_addr(s->tex.W.img, &s->tex.W.bpp, &s->tex.W.sl, &s->tex.W.endian);
-		s->tex.E.adr = (unsigned int*)mlx_get_data_addr(s->tex.E.img, &s->tex.E.bpp, &s->tex.E.sl, &s->tex.E.endian);
-		s->tex.sprite.adr = (unsigned int*)mlx_get_data_addr(s->tex.sprite.img, &s->tex.sprite.bpp, &s->tex.sprite.sl, &s->tex.sprite.endian);
+		s->tex.N.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, &s->tex.N.x, &s->tex.N.y);
+		s->tex.S.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.S.path, &s->tex.S.x, &s->tex.S.y);
+		s->tex.W.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.W.path, &s->tex.W.x, &s->tex.W.y);
+		s->tex.E.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.E.path, &s->tex.E.x, &s->tex.E.y);
+		s->tex.sprite.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.sprite.path, &s->tex.sprite.x, &s->tex.sprite.y);
+		s->tex.N.adr = (unsigned int*)mlx_get_data_addr(s->tex.N.ptr, &s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
+		s->tex.S.adr = (unsigned int*)mlx_get_data_addr(s->tex.S.ptr, &s->tex.S.bpp, &s->tex.S.sl, &s->tex.S.endian);
+		s->tex.W.adr = (unsigned int*)mlx_get_data_addr(s->tex.W.ptr, &s->tex.W.bpp, &s->tex.W.sl, &s->tex.W.endian);
+		s->tex.E.adr = (unsigned int*)mlx_get_data_addr(s->tex.E.ptr, &s->tex.E.bpp, &s->tex.E.sl, &s->tex.E.endian);
+		s->tex.sprite.adr = (unsigned int*)mlx_get_data_addr(s->tex.sprite.ptr, &s->tex.sprite.bpp, &s->tex.sprite.sl, &s->tex.sprite.endian);
 
 
 }

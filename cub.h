@@ -67,7 +67,7 @@ typedef struct s_color
 typedef struct s_img
 {
 	char	*path;
-	void	*img;
+	void	*ptr;
 	unsigned int	*adr;
 	int		x;
 	int		y;
@@ -97,7 +97,7 @@ typedef struct s_struct
 	void	*mlx;
 	void	*win;
 	unsigned int	*img;
-	void	*adr;
+	void	*ptr;
 	int		win_x;
 	int		win_y;
 	int		x;
