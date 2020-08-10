@@ -85,24 +85,30 @@ typedef struct s_tex
 	t_img	sprite;
 }				t_tex;
 
+typedef struct s_pos
+{
+	double	x;
+	double	y;
+}				t_pos;
+
 typedef struct s_struct
 {
 	t_tex	tex;
 	t_color	sky;
 	t_color	floor;
 	t_map	map;
-	char	**tmp;
-	char	*buf;
-	char	*cub;
-	void	*mlx;
-	void	*win;
-	unsigned int	*img;
-	void	*ptr;
-	int		win_x;
-	int		win_y;
-	int		x;
-	int		y;
-	int		i;
+	t_pos	pos;	
+	t_pos	dir;	
+	t_pos	plane;	
+	void	*mlx;//mlx pointer
+	void	*win;//window pointer
+	int		win_x;//width size
+	int		win_y;//height size
+	void	*ptr;//image ptr of the full screen
+	char	**tmp;//buffer to parse the map file with ft_split
+	char	*buf;//buffer to parse data line by line with ft_split
+	char	*cub;//map file name
+	int		i;//counter
 }				t_struct;
 
 /* keyboard management functions */
@@ -114,6 +120,7 @@ void	ft_init_tex(t_struct *s);
 void	ft_init_color(t_struct *s);
 void	ft_init_map(t_struct *s);
 void	ft_init_mlx(t_struct *s);
+void	ft_init_pos(t_struct *s);
 
 /* parsing and reading functions*/
 void	ft_parse(t_struct	*s);
@@ -125,6 +132,7 @@ t_color		ft_color(t_struct *s);
 void	ft_map(t_struct *s);
 char	**new_tab(char **tab, char *str);
 void	ft_load_tex(t_struct *s);
+void	ft_get_pos(t_struct *s);
 
 /* displaying functions */
 void	ft_img_adr(t_struct *s);

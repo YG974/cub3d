@@ -28,11 +28,12 @@ void	ft_parse(t_struct	*s)
 		int		ret;
 
 		line = &s->buf;
-		fd = open(s->cub, O_RDONLY);
+		if (!(fd = open(s->cub, O_RDONLY)))
+				return ;	
 		ret = 1;
 		s->i = 0;
 		if (!(s->map.tab = calloc(sizeof(char **), 1)))
-			return ;
+				return ;
 		while (ret == get_next_line(fd, line))		
 		{
 				s->tmp = ft_split(s->buf, ' ');
@@ -43,8 +44,45 @@ void	ft_parse(t_struct	*s)
 						s->map.tab = new_tab(s->map.tab, s->buf);
 				}
 		}
+		ft_get_pos(s);
 		close(fd);
 }
+
+void	ft_get_pos(t_struct *s)
+{
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (s->map.tab[s->map.y])
+			s->map.y++;
+	while (j < s->map.y - 1)
+	{
+			while (s->map.tab[j][i])
+			{
+					if (s->map.tab[j][i] == 'N')
+							s->dir.y = 1;
+					if (s->map.tab[j][i] == 'S')
+							s->dir.y = -1;
+					if (s->map.tab[j][i] == 'E')
+							s->dir.x = 1;
+					if (s->map.tab[j][i] == 'W')
+							s->dir.x = -1;
+					if (s->dir.x != 0 || s->dir.y != 0)
+					{
+							s->pos.x = (double)i;
+							s->pos.y = (double)j;
+					}
+					s->map.x = (s->map.x > i ? s->map.x : i);
+					i++;
+			}
+			i = 0;
+			j++;
+	}
+	return ;
+}
+
 void	ft_read_line(t_struct *s)
 {		
 		int i = 0;
@@ -103,24 +141,6 @@ t_color	ft_color(t_struct	*s)
 				ft_error(1);
 		return (color);
 }
-/*
-   if (s->buf[s->i] == 'N' && s->buf[s->i + 1] == 'O' && 
-   s->buf[s->i + 2] == ' ')
-   if (s->buf[s->i] == 'S' && s->buf[s->i + 1] == 'O' && 
-   s->buf[s->i + 2] == ' ')
-   read_texture(s);
-   if (s->buf[s->i] == 'W' && s->buf[s->i + 1] == 'E' && 
-   s->buf[s->i + 2] == ' ')
-   read_texture(s);
-   if (s->buf[s->i] == 'S' && s->buf[s->i + 1] == ' ')
-   read_texture(s);
-   if (s->buf[s->i] == 'F' && s->buf[s->i + 1] == ' ')
-   ft_resolution(s);
-   if (s->buf[s->i] == 'C' && s->buf[s->i + 1] == ' ')
-   ft_read_tex(s);
-   else
-   ft_read_map(s);
- */	
 
 void	ft_resolution(t_struct *s)
 {
@@ -136,37 +156,6 @@ void	ft_error(int i)
 {
 		write(1, "error\n", 6);
 }
-
-/*
-   int		read_number(t_struct *s)
-   {
-   int i;
-
-   i = 0;
-//return erreur s'il y a autre char que numb ou sign
-if (ft_isdigit(s->buf[s->i]))
-i = ft_atoi((const char *)&s->buf[s->i]);
-while (ft_isdigit(s->buf[s->i]))
-s->i++;
-return (i);
-}
-void		read_word(t_struct *s)
-{
-int i;
-
-i = 0;
-//return erreur s'il y a autre char que numb ou sign
-if (ft_isdigit(s->buf[s->i]))
-i = ft_atoi((const char *)&s->buf[s->i]);
-while (ft_isdigit(s->buf[s->i]))
-s->i++;
-return;
-}
-int		read_floor_ceiling(t_struct *s)
-{
-
-}
- */
 
 void	skip_space(t_struct *s)
 {
@@ -244,14 +233,23 @@ void	ft_init_struct(char	*av)
 		ft_init_tex(&s);
 		ft_init_color(&s);
 		ft_init_map(&s);
+		ft_init_pos(&s);
 		s.mlx = NULL;
 		s.win = NULL;
 		s.win_x = 0;
 		s.win_y = 0;
-		s.x = 0;
-		s.y	= 0;
 		ft_parse(&s);
 		ft_init_mlx(&s);
+}
+
+void	ft_init_pos(t_struct *s)
+{
+		s->pos.x = 0;
+		s->pos.y = 0;
+		s->dir.x = 0;
+		s->dir.y = 0;
+		s->plane.x = 0;
+		s->plane.y = 0;
 }
 
 void	ft_init_map(t_struct *s)
@@ -297,20 +295,7 @@ void	ft_init_mlx(t_struct *s)
 		ft_load_tex(s);
 		ft_print_arg(s);
 		s->ptr = mlx_new_image(s->mlx, s->win_x, s->win_y);
-		s->img = (unsigned int*)mlx_get_data_addr(s->ptr, &s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
-		while (j < 64)
-		{
-			while (i < 128)
-			{
-				s->img[i +  j * s->win_x] = s->tex.N.adr[i + 64 * j];
-		s->img = (unsigned int*)mlx_get_data_addr(s->ptr, &s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
-				s->img[i + 1 + j * s->win_x] = s->tex.N.adr[i + 64 * j];
-				i++;
-			}
-			j++;
-			i = 0;
-		}
-   		mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
+		mlx_put_image_to_window(s->mlx, s->win, s->tex.S.ptr, 0, 0);
 		mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
 		mlx_loop(s->mlx);
 		return;	
@@ -318,18 +303,27 @@ void	ft_init_mlx(t_struct *s)
 
 void	ft_load_tex(t_struct *s)
 {
-		s->tex.N.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, &s->tex.N.x, &s->tex.N.y);
-		s->tex.S.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.S.path, &s->tex.S.x, &s->tex.S.y);
-		s->tex.W.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.W.path, &s->tex.W.x, &s->tex.W.y);
-		s->tex.E.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.E.path, &s->tex.E.x, &s->tex.E.y);
-		s->tex.sprite.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.sprite.path, &s->tex.sprite.x, &s->tex.sprite.y);
-		s->tex.N.adr = (unsigned int*)mlx_get_data_addr(s->tex.N.ptr, &s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
-		s->tex.S.adr = (unsigned int*)mlx_get_data_addr(s->tex.S.ptr, &s->tex.S.bpp, &s->tex.S.sl, &s->tex.S.endian);
-		s->tex.W.adr = (unsigned int*)mlx_get_data_addr(s->tex.W.ptr, &s->tex.W.bpp, &s->tex.W.sl, &s->tex.W.endian);
-		s->tex.E.adr = (unsigned int*)mlx_get_data_addr(s->tex.E.ptr, &s->tex.E.bpp, &s->tex.E.sl, &s->tex.E.endian);
-		s->tex.sprite.adr = (unsigned int*)mlx_get_data_addr(s->tex.sprite.ptr, &s->tex.sprite.bpp, &s->tex.sprite.sl, &s->tex.sprite.endian);
-
-
+		s->tex.N.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, 
+						&s->tex.N.x, &s->tex.N.y);
+		s->tex.S.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.S.path, 
+						&s->tex.S.x, &s->tex.S.y);
+		s->tex.W.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.W.path, 
+						&s->tex.W.x, &s->tex.W.y);
+		s->tex.E.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.E.path, 
+						&s->tex.E.x, &s->tex.E.y);
+		s->tex.sprite.ptr = mlx_xpm_file_to_image(s->mlx, 
+						s->tex.sprite.path, &s->tex.sprite.x, &s->tex.sprite.y);
+		s->tex.N.adr = (unsigned int*)mlx_get_data_addr(s->tex.N.ptr, 
+						&s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
+		s->tex.S.adr = (unsigned int*)mlx_get_data_addr(s->tex.S.ptr, 
+						&s->tex.S.bpp, &s->tex.S.sl, &s->tex.S.endian);
+		s->tex.W.adr = (unsigned int*)mlx_get_data_addr(s->tex.W.ptr, 
+						&s->tex.W.bpp, &s->tex.W.sl, &s->tex.W.endian);
+		s->tex.E.adr = (unsigned int*)mlx_get_data_addr(s->tex.E.ptr, 
+						&s->tex.E.bpp, &s->tex.E.sl, &s->tex.E.endian);
+		s->tex.sprite.adr = (unsigned int*)mlx_get_data_addr(s->tex.sprite.ptr,
+						&s->tex.sprite.bpp, &s->tex.sprite.sl, &s->tex.sprite.endian);
+		return ;
 }
 void	ft_print_arg(t_struct *s)
 {
@@ -347,6 +341,8 @@ void	ft_print_arg(t_struct *s)
 		printf("TEXTURE W\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.W.x, s->tex.W.y, s->tex.W.adr, s->tex.W.endian, s->tex.W.bpp, s->tex.W.sl);
 		printf("TEXTURE E\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.E.x, s->tex.E.y, s->tex.E.adr, s->tex.E.endian, s->tex.E.bpp, s->tex.E.sl);
 		printf("TEXTURE sprite\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.sprite.x, s->tex.sprite.y, s->tex.sprite.adr, s->tex.sprite.endian, s->tex.sprite.bpp, s->tex.sprite.sl);
+		printf("POS : %f,%f\n", s->pos.x, s->pos.y);
+		printf("DIR : %f,%f\n", s->dir.x, s->dir.y);
 }
 
 void	print_map(t_struct *s)
@@ -360,22 +356,6 @@ void	print_map(t_struct *s)
 				i++;
 		}
 }
-
-/*
-   void	ft_img_adr(t_struct *s)
-   {
-   int		bpp;
-   int		sl;
-   int		end;
-
-   printf("%d\n", s->tex.N.x);
-   s->tex.N.adr = mlx_xpm_file_to_image(s->mlx, file, &s->tex.N.x, &s->tex.N.y);
-   s->tex.N.adr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, &s->tex.N.x, &s->tex.N.y);
-   mlx_put_image_to_window(s->mlx, s->win, s->tex.N.adr, 0, 0);
-   s->tex.S.adr = mlx_xpm_file_to_image(s->mlx, s->tex.S.path, &s->tex.S.x, &s->tex.S.y);
-   mlx_put_image_to_window(s->mlx, s->win, s->tex.S.adr, 100, 100);
-   }
- */
 
 int		ft_exit(t_struct *s)
 {
