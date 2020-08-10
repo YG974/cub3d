@@ -57,7 +57,7 @@ void	ft_get_pos(t_struct *s)
 	j = 0;
 	while (s->map.tab[s->map.y])
 			s->map.y++;
-	while (j < s->map.y - 1)
+	while (j < s->map.y)
 	{
 			while (s->map.tab[j][i])
 			{
@@ -69,13 +69,13 @@ void	ft_get_pos(t_struct *s)
 							s->dir.x = 1;
 					if (s->map.tab[j][i] == 'W')
 							s->dir.x = -1;
-					if (s->dir.x != 0 || s->dir.y != 0)
+					if ((s->dir.x != 0 || s->dir.y != 0) && (s->pos.x == 0))
 					{
 							s->pos.x = (double)i;
 							s->pos.y = (double)j;
 					}
-					s->map.x = (s->map.x > i ? s->map.x : i);
 					i++;
+					s->map.x = (s->map.x > i ? s->map.x : i);
 			}
 			i = 0;
 			j++;
@@ -341,8 +341,9 @@ void	ft_print_arg(t_struct *s)
 		printf("TEXTURE W\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.W.x, s->tex.W.y, s->tex.W.adr, s->tex.W.endian, s->tex.W.bpp, s->tex.W.sl);
 		printf("TEXTURE E\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.E.x, s->tex.E.y, s->tex.E.adr, s->tex.E.endian, s->tex.E.bpp, s->tex.E.sl);
 		printf("TEXTURE sprite\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.sprite.x, s->tex.sprite.y, s->tex.sprite.adr, s->tex.sprite.endian, s->tex.sprite.bpp, s->tex.sprite.sl);
-		printf("POS : %f,%f\n", s->pos.x, s->pos.y);
-		printf("DIR : %f,%f\n", s->dir.x, s->dir.y);
+		printf("MAP : %dx%d\n", s->map.x, s->map.y);
+		printf("POS : [%.f,%.f]\n", s->pos.x, s->pos.y);
+		printf("DIR : %.f, %.f\n", s->dir.x, s->dir.y);
 }
 
 void	print_map(t_struct *s)
