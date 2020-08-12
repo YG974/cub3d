@@ -249,15 +249,19 @@ void	ft_init_pos(t_struct *s)
 	s->dir.x = 0;
 	s->dir.y = 0;
 	s->plane.x = 0;
-	s->plane.y = 0;
+	s->plane.y = 0.66;
 	s->cam.x = 0;
 	s->cam.y = 0;
 	s->ray.x = 0;
 	s->ray.y = 0;
+	s->side_dist = s->plane;
+	s->delta_dist = s->plane;
 	s->step.x = 0;
 	s->step.y = 0;
-	s->side = s->step;
-	s->hit = s->step;
+	s->side = 0;
+	s->hit = 0;
+	s->map_pos = s->step;
+	s->perp_wall_dist = 0;
 }
 
 void	ft_init_map(t_struct *s)
@@ -298,25 +302,90 @@ void	ft_init_mlx(t_struct *s)
 	ft_load_tex(s);
 	ft_print_arg(s);
 	s->ptr = mlx_new_image(s->mlx, s->win_x, s->win_y);
-	ft_ray(s);
+	ft_draw_wall(s);
 	mlx_put_image_to_window(s->mlx, s->win, s->tex.S.ptr, 0, 0);
 	mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
 	mlx_loop(s->mlx);
 	return;	
 }
 
-void	ft_ray(t_struct *s)
+void	ft_draw_wall(t_struct *s)
 {
 	int x;
 
 	x = 0;
+	s->cam.x = 2 * x / (double)(s->win_x) - 1;
 	while (x < s->win_x)
 	{
-	s->cam.x = 2 * x / (double)(s->win_x) - 1;
+		ft_ray_init(s);
+		ft_ray_init(s);
+		ft_ray_direction(s);
+		ft_ray_hit(s);
+	}
+	
+}
+
+void	ft_ray_init(t_struct *s)
+{
 	s->ray.x = s->dir.x + s->plane.x * s->cam.x;
 	s->ray.y = s->dir.y + s->plane.y * s->cam.x;
+	s->delta_dist.x = sqrt(1 + pow(s->ray.x, 2) / pow(s->ray.y, 2));
+	s->delta_dist.y = sqrt(1 + pow(s->ray.y, 2) / pow(s->ray.y, 2));
+	s->map_pos.x = (int)s->pos.x;
+	s->map_pos.y = (int)s->pos.y;
+}
+
+void	ft_ray_direction(t_struct *s)
+{
+	if (s->ray.x < 0)
+	{
+		s->step.x = -1;
+		s->side_dist.x = (s->pos.x - s->map_pos.x) * s->delta_dist.x;
+	}
+	else
+	{
+		s->step.x = 1;
+		s->side_dist.x = (s->map_pos.x + 1 - s->pos.x ) * s->delta_dist.x;
+	}
+	if (s->ray.y < 0)
+	{
+		s->step.y = -1;
+		s->side_dist.y = (s->pos.y - s->map_pos.y) * s->delta_dist.y;
+	}
+	else
+	{
+		s->step.y = 1;
+		s->side_dist.y = (s->map_pos.y + 1 - s->pos.y ) * s->delta_dist.y;
 	}
 }
+
+void	ft_ray_hit(t_struct *s)
+{
+	while (s->hit == 0)
+	{
+		if (s->side_dist.x < s->side_dist.y)
+		{
+			s->side_dist.x += s->delta_dist.x;
+			s->map_pos.x += s->step.x;
+			s->side = 0;
+		}
+		else
+		{
+			s->side_dist.y += s->delta_dist.y;
+			s->map_pos.y += s->step.y;
+			s->side = 1;
+		}
+		if (s->map.tab[s->map_pos.x][s->map_pos.y] == 1)
+			s->hit = 1;
+	}
+	if (s->side == 0)
+		s->perp_wall_dist = (s->map_pos.x - s->pos.x + (1 - s->step.x)
+				/ 2) / s->ray.x;
+	else
+		s->perp_wall_dist = (s->map_pos.y - s->pos.y + (1 - s->step.y)
+				/ 2) / s->ray.y;
+}
+
 void	ft_load_tex(t_struct *s)
 {
 	s->tex.N.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, 

@@ -111,8 +111,10 @@ typedef struct s_struct
 	t_pos	side_dist;	
 	t_pos	delta_dist;	
 	t_int_xy	step;
-	t_int_xy	side;
-	t_int_xy	hit;
+	t_int_xy	map_pos;
+	double		perp_wall_dist;
+	int		side;
+	int		hit;
 	void	*mlx;//mlx pointer
 	void	*win;//window pointer
 	int	win_x;//width size
@@ -148,7 +150,10 @@ void	ft_load_tex(t_struct *s);
 void	ft_get_pos(t_struct *s);
 
 /* displaying functions */
-void	ft_ray(t_struct *s);
+void	ft_draw_wall(t_struct *s);
+void	ft_ray_init(t_struct *s);
+void	ft_ray_direction(t_struct *s);
+void	ft_ray_hit(t_struct *s);
 
 /* checking functions */
 int		is_space(char c);
