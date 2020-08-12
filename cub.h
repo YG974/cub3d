@@ -91,6 +91,12 @@ typedef struct s_pos
 	double	y;
 }				t_pos;
 
+typedef struct s_xy
+{
+	int	x;
+	int	y;
+}				t_int_xy;
+
 typedef struct s_struct
 {
 	t_tex	tex;
@@ -100,10 +106,17 @@ typedef struct s_struct
 	t_pos	pos;	
 	t_pos	dir;	
 	t_pos	plane;	
+	t_pos	cam;	
+	t_pos	ray;	
+	t_pos	side_dist;	
+	t_pos	delta_dist;	
+	t_int_xy	step;
+	t_int_xy	side;
+	t_int_xy	hit;
 	void	*mlx;//mlx pointer
 	void	*win;//window pointer
-	int		win_x;//width size
-	int		win_y;//height size
+	int	win_x;//width size
+	int	win_y;//height size
 	void	*ptr;//image ptr of the full screen
 	char	**tmp;//buffer to parse the map file with ft_split
 	char	*buf;//buffer to parse data line by line with ft_split
@@ -135,7 +148,7 @@ void	ft_load_tex(t_struct *s);
 void	ft_get_pos(t_struct *s);
 
 /* displaying functions */
-void	ft_img_adr(t_struct *s);
+void	ft_ray(t_struct *s);
 
 /* checking functions */
 int		is_space(char c);
