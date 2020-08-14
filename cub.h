@@ -44,6 +44,7 @@
 # define RED 0x00FF0000
 # define BLUE 0x000000FF
 # define YELLOW 0x00FFFF00
+# define PINK 0x00FFC0CB
 
 /* windows */
 # define WIDTH 1280 
@@ -154,6 +155,8 @@ void	ft_draw_wall(t_struct *s);
 void	ft_ray_init(t_struct *s);
 void	ft_ray_direction(t_struct *s);
 void	ft_ray_hit(t_struct *s);
+void	ft_put_wall(t_struct *s, int x);
+int	ft_pixel(t_struct *s);
 
 /* checking functions */
 int		is_space(char c);
