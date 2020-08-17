@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/* liraries */
+/*
+** libraries **
+*/
 #include "./minilibx/mlx.h"
 #include "./libft/libft.h"
 
@@ -21,51 +23,54 @@
 #include <fcntl.h>
 #include <string.h>
 
-/* keys */
-# define ESC 53
-# define KEY_W 13
-# define KEY_A 0
-# define KEY_S 1
-# define KEY_D 2
-# define KEY_UP 126
-# define KEY_DOWN 125
-# define KEY_LEFT 123
-# define KEY_RIGHT 124
+/*
+** keys **
+*/
+#define ESC 53
+#define KEY_W 13
+#define KEY_A 0
+#define KEY_S 1
+#define KEY_D 2
+#define KEY_UP 126
+#define KEY_DOWN 125
+#define KEY_LEFT 123
+#define KEY_RIGHT 124
 
 /* keys pre-setted values mapping LibX Functions  */
-# define KEY_PRESS 2
-# define KEY_RELEASE 3
-# define KEY_PRESS_MASK (1L<<0)
-# define KEY_RELEASE_MASK (1L<<1)
+#define KEY_PRESS 2
+#define KEY_RELEASE 3
+#define KEY_PRESS_MASK (1L<<0)
+#define KEY_RELEASE_MASK (1L<<1)
 
 /* colors */
-# define WHITE 0x00FFFFFF
-# define BLACK 0x00000000
-# define RED 0x00FF0000
-# define BLUE 0x000000FF
-# define YELLOW 0x00FFFF00
-# define PINK 0x00FFC0CB
+#define WHITE 0x00FFFFFF
+#define BLACK 0x00000000
+#define RED 0x00FF0000
+#define BLUE 0x000000FF
+#define YELLOW 0x00FFFF00
+#define PINK 0x00FFC0CB
 
 /* windows */
-# define WIDTH 1280 
-# define HEIGHT 680 
-# define WIN_NAME "Cub3D" 
+#define WIDTH 1280
+#define HEIGHT 680
+#define WIN_NAME "Cub3D"
 
-typedef struct s_map
+typedef struct	s_map
 {
 	char	**tab;
 	int		x;
 	int		y;
+	
 }				t_map;
 
-typedef struct s_color
+typedef struct	s_color
 {
-	int		R;
-	int		G;
-	int		B;
+	int		r;
+	int		g;
+	int		b;
 }				t_color;
 
-typedef struct s_img
+typedef struct	s_img
 {
 	char	*path;
 	void	*ptr;
@@ -79,45 +84,45 @@ typedef struct s_img
 
 typedef struct s_tex
 {
-	t_img	N;
-	t_img	S;
-	t_img	W;
-	t_img	E;
+	t_img	n;
+	t_img	s;
+	t_img	w;
+	t_img	e;
 	t_img	sprite;
 }				t_tex;
 
-typedef struct s_double_xy
+typedef struct	s_double_xy
 {
 	double	x;
 	double	y;
 }				t_double_xy;
 
-typedef struct s_xy
+typedef struct	s_xy
 {
 	int	x;
 	int	y;
 }				t_int_xy;
 
-typedef struct s_ray
+typedef struct	s_ray
 {
-  t_double_xy dir; /*ray direction*/ 
-  t_double_xy len; /* ray lenght from player to wall */
-  t_int_xy    pos; /* ray position from player to wall, in order to check at each iteration if the ray hit a wall or a sprite */
+	t_double_xy dir; /*ray direction*/ 
+	t_double_xy len; /* ray lenght from player to wall */
+	t_int_xy    pos; /* ray position from player to wall, in order to check at each iteration if the ray hit a wall or a sprite */
 }       t_ray;
 
-typedef struct s_struct
+typedef struct	s_struct
 {
 	t_tex	tex;
 	t_color	sky;
 	t_color	floor;
 	t_map	map;
-	t_double_xy	pos;	
-	t_double_xy	dir;	
+	t_double_xy	pos;
+	t_double_xy	dir;
 	t_double_xy	plane;	/* camera plane, which is always perpendicular to player dir */
-	t_double_xy	cam;	
-	t_double_xy	ray;	
-	t_double_xy	side_dist;	
-	t_double_xy	delta_dist;	
+	t_double_xy	cam;
+	t_double_xy	ray;
+	t_double_xy	side_dist;
+	t_double_xy	delta_dist;
 	t_int_xy	step; /* variable to iterate every square of the map, step is negative if ray_dir < 0, so also tells us if the wall hit is NSEW combined with the side value */
 	t_int_xy	map_pos;
 	double		perp_wall_dist;
@@ -132,6 +137,8 @@ typedef struct s_struct
 	char	*buf;//buffer to parse data, line by line with ft_split
 	char	*cub;//map file name
 	int		i;//counter
+	int		x;
+	int		y;
 }				t_struct;
 
 /* keyboard management functions */
