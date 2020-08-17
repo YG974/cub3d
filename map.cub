@@ -6,8 +6,8 @@ WE ./images/banner.xpm
 EA ./images/blue.xpm
 S ./images/hitler.xpm
 
-F 220,100,0
-C 225,30,5
+F 117,60,10
+C 5,225,225
 
         1111111111111111111111111
         1000000000110000000000001

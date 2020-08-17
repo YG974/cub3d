@@ -156,7 +156,7 @@ int		ft_suffix(char *file_name, char *suffix)
 
 	i = ft_strlen(file_name);
 	if (file_name[i - 1] == suffix[3] && file_name[i - 2] == suffix[2] &&
-		file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
+			file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
 		return (1);
 	else
 		write(1, "wrong argument", 14);
@@ -234,7 +234,6 @@ void	ft_init_pos(t_struct *s)
 	s->side = 0;
 	s->hit = 0;
 	s->ray.pos = s->step;
-	s->perp_wall_dist = 0;
 }
 
 void	ft_init_map(t_struct *s)
@@ -290,7 +289,8 @@ void	ft_draw_wall(t_struct *s)
 		ft_ray_init(s);
 		ft_ray_direction(s);
 		ft_ray_hit(s);
-		ft_wall_size(s);
+		ft_col_size(s);
+		ft_draw_columns(s);
 		s->x++;
 	}
 }
@@ -350,50 +350,49 @@ void	ft_ray_hit(t_struct *s)
 		if (s->map.tab[s->ray.pos.y][s->ray.pos.x] == '1')
 			s->hit = 1;
 	}
-	if (s->side == 0)
-		s->perp_wall_dist = fabs((s->ray.pos.x - s->pos.x + (1 - s->step.x)
-					/ 2) / s->ray.dir.x);
-	else
-		s->perp_wall_dist = fabs((s->ray.pos.y - s->pos.y + (1 - s->step.y)
-					/ 2) / s->ray.dir.y);
 }
 
-void	ft_wall_size(t_struct *s)
+void	ft_col_size(t_struct *s)
 {
-	int	line_y;
-	int	w_start;
-	int	w_end;
-	int	color;
+	double	wall_dist;
 
-		line_y = (int)(s->win_y / s->perp_wall_dist);
-		w_start = -line_y / 2 + s->win_y / 2;
-		w_start = (w_start > 0 ? w_start : 0);
-		w_end = line_y / 2 + s->win_y / 2;
-		w_end = (w_end >= s->win_y ? s->win_y - 1 : w_end);
-		s->y = 0;
-		while (s->y < w_start)
-			s->y++;
-		while (s->y >= w_start && s->y <= w_end)
-		{
-			color = ft_pixel(s);
-			mlx_pixel_put(s->mlx, s->win, s->x, s->y, color);
-			s->y++;
-		}
-		while (s->y < s->win_y)
-			s->y++;
-	
+	if (s->side == 0)
+		wall_dist = fabs((s->ray.pos.x - s->pos.x + (1 - s->step.x)
+					/ 2) / s->ray.dir.x);
+	else
+		wall_dist = fabs((s->ray.pos.y - s->pos.y + (1 - s->step.y)
+					/ 2) / s->ray.dir.y);
+	s->col_size = (int)(s->win_y / wall_dist);
+	s->start = -s->col_size / 2 + s->win_y / 2;
+	s->start = (s->start > 0 ? s->start : 0);
+	s->end = s->col_size / 2 + s->win_y / 2;
+	s->end = (s->end >= s->win_y ? s->win_y - 1 : s->end);
+}
+void	ft_draw_columns(t_struct *s)
+{
+	s->color = s->sky.r * 256 * 256 + s->sky.g * 256 + s->sky.b;
+	s->y = 0;
+	while (s->y++ < s->start)
+		mlx_pixel_put(s->mlx, s->win, s->x, s->y, s->color);
+	while (s->y >= s->start && s->y <= s->end)
+	{
+		s->color = ft_pixel(s);
+		mlx_pixel_put(s->mlx, s->win, s->x, s->y, s->color);
+		s->y++;
+	}
+	s->color = s->floor.r * 256 * 256 + s->floor.g * 256 + s->floor.b;
+	while (s->y++ < s->win_y)
+		mlx_pixel_put(s->mlx, s->win, s->x, s->y, s->color);
 }
 
 int	ft_pixel(t_struct *s)
 {
-	int	color;
 
-	color = 0;
 	if (s->side == 0)
-		color = (s->step.x < 0 ? WHITE : RED);
+		s->color = (s->step.x < 0 ? WHITE : RED);
 	else
-		color = (s->step.y > 0 ? PINK : BLUE);
-	return (color);
+		s->color = (s->step.y > 0 ? PINK : BLUE);
+	return (s->color);
 }
 
 void	ft_load_tex(t_struct *s)

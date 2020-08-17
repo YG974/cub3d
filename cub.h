@@ -117,26 +117,35 @@ typedef struct	s_struct
 	t_color	sky;
 	t_color	floor;
 	t_map	map;
-	t_double_xy	pos;
-	t_double_xy	dir;
+	t_double_xy	pos;	// player position on the map
+	t_double_xy	dir;	// direction of the player (vector)
 	t_double_xy	plane;	/* camera plane, which is always perpendicular to player dir */
-	double		cam;
-	t_ray		ray;
+	double		cam;	// x camera coordinate : -1 is left, 0 is center, 1 is right
+	t_ray		ray;	// rays sent to see if a wall or obstacle is hitten
 	t_int_xy	step; /* variable to iterate every square of the map, step is negative if ray_dir < 0, so also tells us if the wall hit is NSEW combined with the side value */
-	double		perp_wall_dist;
-	int		side;
-	int		hit;
-	void	*mlx;//mlx pointer
-	void	*win;//window pointer
-	int	win_x;//width size
-	int	win_y;//height size
-	void	*ptr;//image ptr of the full screen
-	char	**tmp;//buffer to parse the map file with ft_split
-	char	*buf;//buffer to parse data, line by line with ft_split
-	char	*cub;//map file name
-	int		i;//counter
-	int		x;
-	int		y;
+	int		side;		// variable to know wich side of the map square is hitten
+	int		hit;		// variable to know if 
+
+	int		col_size;
+	int		start;
+	int		end;
+	unsigned int	color;
+
+	void	*mlx;	//mlx pointer
+	void	*win;	//window pointer
+
+	int		win_x;	//width size
+	int		win_y;	//height size
+	
+	void	*ptr;	//image ptr of the full screen
+	
+	char	**tmp;	//buffer to parse the map file with ft_split
+	char	*buf;	//buffer to parse data, line by line with ft_split
+	char	*cub;	//map file name
+	
+	int		i;		//counter
+	int		x;		//x coordinate of the screen 0 is top left
+	int		y;		//y coordinate of the screen 0 is top left
 }				t_struct;
 
 /* keyboard management functions */
@@ -167,7 +176,8 @@ void	ft_draw_wall(t_struct *s);
 void	ft_ray_init(t_struct *s);
 void	ft_ray_direction(t_struct *s);
 void	ft_ray_hit(t_struct *s);
-void	ft_wall_size(t_struct *s);
+void	ft_col_size(t_struct *s);
+void	ft_draw_columns(t_struct *s);
 int		ft_pixel(t_struct *s);
 
 /* checking functions */
