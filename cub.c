@@ -29,12 +29,12 @@ void	ft_parse(t_struct	*s)
 
 	line = &s->buf;
 	if (!(fd = open(s->cub, O_RDONLY)))
-		return ;	
+		return ;
 	ret = 1;
 	s->i = 0;
 	if (!(s->map.tab = calloc(sizeof(char **), 1)))
 		return ;
-	while (ret == get_next_line(fd, line))		
+	while (ret == get_next_line(fd, line))
 	{
 		s->tmp = ft_split(s->buf, ' ');
 		ft_read_line(s);
@@ -96,7 +96,7 @@ void	ft_get_pos(t_struct *s)
 }
 
 void	ft_read_line(t_struct *s)
-{		
+{
 	int i = 0;
 	while (s->tmp[i])
 	{
@@ -123,9 +123,9 @@ void	ft_read_line(t_struct *s)
 void	ft_check_parsing(t_struct *s)
 {
 	if ((s->win_x == 0 || s->win_y == 0 || s->tex.N.path == NULL ||
-				s->tex.S.path == NULL || s->tex.W.path == NULL || 
-				s->tex.E.path == NULL || s->tex.sprite.path == NULL || 
-				s->floor.R == -1 || s->floor.G == -1 || s->floor.B == -1 || 
+				s->tex.S.path == NULL || s->tex.W.path == NULL ||
+				s->tex.E.path == NULL || s->tex.sprite.path == NULL ||
+				s->floor.R == -1 || s->floor.G == -1 || s->floor.B == -1 ||
 				s->sky.R == -1 || s->sky.G == -1 || s->sky.B == -1))
 		ft_error(1);
 }
@@ -147,7 +147,7 @@ t_color	ft_color(t_struct	*s)
 	color.R = ft_atoi((const char *)tab[0]);
 	color.G = ft_atoi((const char *)tab[1]);
 	color.B = ft_atoi((const char *)tab[2]);
-	if (color.R > 255 || color.R < 0 || 
+	if (color.R > 255 || color.R < 0 ||
 			color.G > 255 || color.G < 0 ||
 			color.B > 255 || color.B < 0)
 		ft_error(1);
@@ -191,7 +191,7 @@ int		ft_suffix(char *file_name, char *suffix)
 	int		i;
 
 	i = ft_strlen(file_name);
-	if (file_name[i - 1] == suffix[3] && file_name[i - 2] == suffix[2] && 
+	if (file_name[i - 1] == suffix[3] && file_name[i - 2] == suffix[2] &&
 			file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
 		return (1);
 	else
@@ -318,7 +318,7 @@ void	ft_init_mlx(t_struct *s)
 	//mlx_put_image_to_window(s->mlx, s->win, s->tex.S.ptr, 0, 0);
 	mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
 	mlx_loop(s->mlx);
-	return;	
+	return;
 }
 
 void	ft_draw_wall(t_struct *s)
@@ -382,7 +382,7 @@ int	ft_pixel(t_struct *s)
 	color = 0;
 	if (s->side == 0)
 		color = (s->step.x < 0 ? WHITE : RED);
-	else 
+	else
 		color = (s->step.y > 0 ? PINK : BLUE);
 	/*color = WHITE;*/
 	return (color);
@@ -460,23 +460,23 @@ void	ft_ray_hit(t_struct *s)
 
 void	ft_load_tex(t_struct *s)
 {
-	s->tex.N.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path, 
+	s->tex.N.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.N.path,
 			&s->tex.N.x, &s->tex.N.y);
-	s->tex.S.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.S.path, 
+	s->tex.S.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.S.path,
 			&s->tex.S.x, &s->tex.S.y);
-	s->tex.W.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.W.path, 
+	s->tex.W.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.W.path,
 			&s->tex.W.x, &s->tex.W.y);
-	s->tex.E.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.E.path, 
+	s->tex.E.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.E.path,
 			&s->tex.E.x, &s->tex.E.y);
-	s->tex.sprite.ptr = mlx_xpm_file_to_image(s->mlx, 
+	s->tex.sprite.ptr = mlx_xpm_file_to_image(s->mlx,
 			s->tex.sprite.path, &s->tex.sprite.x, &s->tex.sprite.y);
-	s->tex.N.adr = (unsigned int*)mlx_get_data_addr(s->tex.N.ptr, 
+	s->tex.N.adr = (unsigned int*)mlx_get_data_addr(s->tex.N.ptr,
 			&s->tex.N.bpp, &s->tex.N.sl, &s->tex.N.endian);
-	s->tex.S.adr = (unsigned int*)mlx_get_data_addr(s->tex.S.ptr, 
+	s->tex.S.adr = (unsigned int*)mlx_get_data_addr(s->tex.S.ptr,
 			&s->tex.S.bpp, &s->tex.S.sl, &s->tex.S.endian);
-	s->tex.W.adr = (unsigned int*)mlx_get_data_addr(s->tex.W.ptr, 
+	s->tex.W.adr = (unsigned int*)mlx_get_data_addr(s->tex.W.ptr,
 			&s->tex.W.bpp, &s->tex.W.sl, &s->tex.W.endian);
-	s->tex.E.adr = (unsigned int*)mlx_get_data_addr(s->tex.E.ptr, 
+	s->tex.E.adr = (unsigned int*)mlx_get_data_addr(s->tex.E.ptr,
 			&s->tex.E.bpp, &s->tex.E.sl, &s->tex.E.endian);
 	s->tex.sprite.adr = (unsigned int*)mlx_get_data_addr(s->tex.sprite.ptr,
 			&s->tex.sprite.bpp, &s->tex.sprite.sl, &s->tex.sprite.endian);

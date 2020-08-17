@@ -86,11 +86,11 @@ typedef struct s_tex
 	t_img	sprite;
 }				t_tex;
 
-typedef struct s_pos
+typedef struct s_double_xy
 {
 	double	x;
 	double	y;
-}				t_pos;
+}				t_double_xy;
 
 typedef struct s_xy
 {
@@ -98,20 +98,27 @@ typedef struct s_xy
 	int	y;
 }				t_int_xy;
 
+typedef struct s_ray
+{
+  t_double_xy dir; /*ray direction*/ 
+  t_double_xy len; /* ray lenght from player to wall */
+  t_int_xy    pos; /* ray position from player to wall, in order to check at each iteration if the ray hit a wall or a sprite */
+}       t_ray;
+
 typedef struct s_struct
 {
 	t_tex	tex;
 	t_color	sky;
 	t_color	floor;
 	t_map	map;
-	t_pos	pos;	
-	t_pos	dir;	
-	t_pos	plane;	
-	t_pos	cam;	
-	t_pos	ray;	
-	t_pos	side_dist;	
-	t_pos	delta_dist;	
-	t_int_xy	step;
+	t_double_xy	pos;	
+	t_double_xy	dir;	
+	t_double_xy	plane;	/* camera plane, which is always perpendicular to player dir */
+	t_double_xy	cam;	
+	t_double_xy	ray;	
+	t_double_xy	side_dist;	
+	t_double_xy	delta_dist;	
+	t_int_xy	step; /* variable to iterate every square of the map, step is negative if ray_dir < 0, so also tells us if the wall hit is NSEW combined with the side value */
 	t_int_xy	map_pos;
 	double		perp_wall_dist;
 	int		side;
@@ -122,7 +129,7 @@ typedef struct s_struct
 	int	win_y;//height size
 	void	*ptr;//image ptr of the full screen
 	char	**tmp;//buffer to parse the map file with ft_split
-	char	*buf;//buffer to parse data line by line with ft_split
+	char	*buf;//buffer to parse data, line by line with ft_split
 	char	*cub;//map file name
 	int		i;//counter
 }				t_struct;
