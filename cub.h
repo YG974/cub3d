@@ -106,8 +106,9 @@ typedef struct	s_xy
 typedef struct	s_ray
 {
 	t_double_xy dir; /*ray direction*/ 
-	t_double_xy len; /* ray lenght from player to wall */
-	t_int_xy    pos; /* ray position from player to wall, in order to check at each iteration if the ray hit a wall or a sprite */
+	t_double_xy sd; /* side_dist : dist from player to the next map square */
+	t_double_xy dd; /* delta_dist : dist from the ray_pos to the next map square */
+	t_int_xy    pos; /* ray position */
 }       t_ray;
 
 typedef struct	s_struct
@@ -119,12 +120,9 @@ typedef struct	s_struct
 	t_double_xy	pos;
 	t_double_xy	dir;
 	t_double_xy	plane;	/* camera plane, which is always perpendicular to player dir */
-	t_double_xy	cam;
-	t_double_xy	ray;
-	t_double_xy	side_dist;
-	t_double_xy	delta_dist;
+	double		cam;
+	t_ray		ray;
 	t_int_xy	step; /* variable to iterate every square of the map, step is negative if ray_dir < 0, so also tells us if the wall hit is NSEW combined with the side value */
-	t_int_xy	map_pos;
 	double		perp_wall_dist;
 	int		side;
 	int		hit;
@@ -169,8 +167,8 @@ void	ft_draw_wall(t_struct *s);
 void	ft_ray_init(t_struct *s);
 void	ft_ray_direction(t_struct *s);
 void	ft_ray_hit(t_struct *s);
-void	ft_put_wall(t_struct *s, int x);
-int	ft_pixel(t_struct *s);
+void	ft_wall_size(t_struct *s);
+int		ft_pixel(t_struct *s);
 
 /* checking functions */
 int		is_space(char c);

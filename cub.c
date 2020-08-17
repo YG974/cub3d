@@ -225,17 +225,15 @@ void	ft_init_pos(t_struct *s)
 	s->dir.y = 0;
 	s->plane.x = 0;
 	s->plane.y = 0;
-	s->cam.x = 0;
-	s->cam.y = 0;
-	s->ray.x = 0;
-	s->ray.y = 0;
-	s->side_dist = s->plane;
-	s->delta_dist = s->plane;
+	s->cam = 0;
+	s->ray.dir = s->plane;
+	s->ray.sd = s->plane;
+	s->ray.dd = s->plane;
 	s->step.x = 0;
 	s->step.y = 0;
 	s->side = 0;
 	s->hit = 0;
-	s->map_pos = s->step;
+	s->ray.pos = s->step;
 	s->perp_wall_dist = 0;
 }
 
@@ -286,38 +284,104 @@ void	ft_init_mlx(t_struct *s)
 
 void	ft_draw_wall(t_struct *s)
 {
-	int x;
-	int	y;
+	s->x = 0;
+	while (s->x < s->win_x)
+	{
+		ft_ray_init(s);
+		ft_ray_direction(s);
+		ft_ray_hit(s);
+		ft_wall_size(s);
+		s->x++;
+	}
+}
+
+void	ft_ray_init(t_struct *s)
+{
+	s->cam = 2 * s->x / (double)(s->win_x) - 1;
+	s->ray.dir.x = s->dir.x + s->plane.x * s->cam;
+	s->ray.dir.y = s->dir.y + s->plane.y * s->cam;
+	s->ray.dd.x = sqrt(1 + pow(s->ray.dir.y, 2) / pow(s->ray.dir.x, 2));
+	s->ray.dd.y = sqrt(1 + pow(s->ray.dir.x, 2) / pow(s->ray.dir.y, 2));
+	s->ray.pos.x = (int)s->pos.x;
+	s->ray.pos.y = (int)s->pos.y;
+	s->hit = 0;
+}
+
+void	ft_ray_direction(t_struct *s)
+{
+	if (s->ray.dir.x < 0)
+	{
+		s->step.x = -1;
+		s->ray.sd.x = (s->pos.x - s->ray.pos.x) * s->ray.dd.x;
+	}
+	else
+	{
+		s->step.x = 1;
+		s->ray.sd.x = (s->ray.pos.x + 1.0 - s->pos.x) * s->ray.dd.x;
+	}
+	if (s->ray.dir.y < 0)
+	{
+		s->step.y = -1;
+		s->ray.sd.y = (s->pos.y - s->ray.pos.y) * s->ray.dd.y;
+	}
+	else
+	{
+		s->step.y = 1;
+		s->ray.sd.y = (s->ray.pos.y + 1.0 - s->pos.y) * s->ray.dd.y;
+	}
+}
+
+void	ft_ray_hit(t_struct *s)
+{
+	while (s->hit == 0)
+	{
+		if (s->ray.sd.x < s->ray.sd.y)
+		{
+			s->ray.sd.x += s->ray.dd.x;
+			s->ray.pos.x += s->step.x;
+			s->side = 0;
+		}
+		else
+		{
+			s->ray.sd.y += s->ray.dd.y;
+			s->ray.pos.y += s->step.y;
+			s->side = 1;
+		}
+		if (s->map.tab[s->ray.pos.y][s->ray.pos.x] == '1')
+			s->hit = 1;
+	}
+	if (s->side == 0)
+		s->perp_wall_dist = fabs((s->ray.pos.x - s->pos.x + (1 - s->step.x)
+					/ 2) / s->ray.dir.x);
+	else
+		s->perp_wall_dist = fabs((s->ray.pos.y - s->pos.y + (1 - s->step.y)
+					/ 2) / s->ray.dir.y);
+}
+
+void	ft_wall_size(t_struct *s)
+{
 	int	line_y;
 	int	w_start;
 	int	w_end;
 	int	color;
 
-	x = 0;
-	while (x < s->win_x)
-	{
-		y = 0;
-		s->cam.x = 2 * x / (double)(s->win_x) - 1;
-		ft_ray_init(s);
-		ft_ray_direction(s);
-		ft_ray_hit(s);
 		line_y = (int)(s->win_y / s->perp_wall_dist);
 		w_start = -line_y / 2 + s->win_y / 2;
 		w_start = (w_start > 0 ? w_start : 0);
 		w_end = line_y / 2 + s->win_y / 2;
 		w_end = (w_end >= s->win_y ? s->win_y - 1 : w_end);
-		while (y < w_start)
-			y++;
-		while (y >= w_start && y <= w_end)
+		s->y = 0;
+		while (s->y < w_start)
+			s->y++;
+		while (s->y >= w_start && s->y <= w_end)
 		{
 			color = ft_pixel(s);
-			mlx_pixel_put(s->mlx, s->win, x, y, color);
-			y++;
+			mlx_pixel_put(s->mlx, s->win, s->x, s->y, color);
+			s->y++;
 		}
-		while (y < s->win_y)
-			y++;
-		x++;
-	}
+		while (s->y < s->win_y)
+			s->y++;
+	
 }
 
 int	ft_pixel(t_struct *s)
@@ -330,68 +394,6 @@ int	ft_pixel(t_struct *s)
 	else
 		color = (s->step.y > 0 ? PINK : BLUE);
 	return (color);
-}
-
-void	ft_ray_init(t_struct *s)
-{
-	s->ray.x = s->dir.x + s->plane.x * s->cam.x;
-	s->ray.y = s->dir.y + s->plane.y * s->cam.x;
-	s->delta_dist.x = sqrt(1 + pow(s->ray.y, 2) / pow(s->ray.x, 2));
-	s->delta_dist.y = sqrt(1 + pow(s->ray.x, 2) / pow(s->ray.y, 2));
-	s->map_pos.x = (int)s->pos.x;
-	s->map_pos.y = (int)s->pos.y;
-	s->hit = 0;
-}
-
-void	ft_ray_direction(t_struct *s)
-{
-	if (s->ray.x < 0)
-	{
-		s->step.x = -1;
-		s->side_dist.x = (s->pos.x - s->map_pos.x) * s->delta_dist.x;
-	}
-	else
-	{
-		s->step.x = 1;
-		s->side_dist.x = (s->map_pos.x + 1.0 - s->pos.x) * s->delta_dist.x;
-	}
-	if (s->ray.y < 0)
-	{
-		s->step.y = -1;
-		s->side_dist.y = (s->pos.y - s->map_pos.y) * s->delta_dist.y;
-	}
-	else
-	{
-		s->step.y = 1;
-		s->side_dist.y = (s->map_pos.y + 1.0 - s->pos.y) * s->delta_dist.y;
-	}
-}
-
-void	ft_ray_hit(t_struct *s)
-{
-	while (s->hit == 0)
-	{
-		if (s->side_dist.x < s->side_dist.y)
-		{
-			s->side_dist.x += s->delta_dist.x;
-			s->map_pos.x += s->step.x;
-			s->side = 0;
-		}
-		else
-		{
-			s->side_dist.y += s->delta_dist.y;
-			s->map_pos.y += s->step.y;
-			s->side = 1;
-		}
-		if (s->map.tab[s->map_pos.y][s->map_pos.x] == '1')
-			s->hit = 1;
-	}
-	if (s->side == 0)
-		s->perp_wall_dist = fabs((s->map_pos.x - s->pos.x + (1 - s->step.x)
-					/ 2) / s->ray.x);
-	else
-		s->perp_wall_dist = fabs((s->map_pos.y - s->pos.y + (1 - s->step.y)
-					/ 2) / s->ray.y);
 }
 
 void	ft_load_tex(t_struct *s)
