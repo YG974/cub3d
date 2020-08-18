@@ -89,6 +89,10 @@ typedef struct s_tex
 	t_img	w;
 	t_img	e;
 	t_img	sprite;
+	double	pos; /* where to start drawing texture */
+	double	step; /* ratio to increase or decrease texture bloc size */
+	int	x; /* x coordinate in the texture */
+	int	y; /* y coordinate in the texture */
 }				t_tex;
 
 typedef struct	s_double_xy
@@ -123,13 +127,14 @@ typedef struct	s_struct
 	double		cam;	// x camera coordinate : -1 is left, 0 is center, 1 is right
 	t_ray		ray;	// rays sent to see if a wall or obstacle is hitten
 	t_int_xy	step; /* variable to iterate every square of the map, step is negative if ray_dir < 0, so also tells us if the wall hit is NSEW combined with the side value */
-	int		side;		// variable to know wich side of the map square is hitten
-	int		hit;		// variable to know if 
+	int		side;		// side of the map square is hitten (x: NS or y:EW)
+	int		hit;		// 1 if the ray hits a wall or sprite 0 if empty map square
 
-	int		col_size;
-	int		start;
-	int		end;
-	unsigned int	color;
+	int		col_size; /* size of the column to draw according to the distance */
+	int		start; /* y coordinate to start drawing the column */
+	int		end; /* y coordinate to end drawing the column */
+	unsigned int	color; /* pixel color to draw */
+	double	wall_x;
 
 	void	*mlx;	//mlx pointer
 	void	*win;	//window pointer
@@ -138,6 +143,7 @@ typedef struct	s_struct
 	int		win_y;	//height size
 	
 	void	*ptr;	//image ptr of the full screen
+	unsigned int	*adr;
 	
 	char	**tmp;	//buffer to parse the map file with ft_split
 	char	*buf;	//buffer to parse data, line by line with ft_split
@@ -176,9 +182,10 @@ void	ft_draw_wall(t_struct *s);
 void	ft_ray_init(t_struct *s);
 void	ft_ray_direction(t_struct *s);
 void	ft_ray_hit(t_struct *s);
-void	ft_col_size(t_struct *s);
+void	ft_coloumn_size(t_struct *s);
+void	ft_column_texture(t_struct *s);
 void	ft_draw_columns(t_struct *s);
-int		ft_pixel(t_struct *s);
+void	ft_pixel(t_struct *s);
 
 /* checking functions */
 int		is_space(char c);

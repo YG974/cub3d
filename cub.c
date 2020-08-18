@@ -58,12 +58,12 @@ void	ft_get_pos(t_struct *s)
 				s->dir.y = -1;
 			if (s->map.tab[s->map.y][s->map.x] == 'S')
 				s->dir.y = 1;
-			s->plane.x = 0.80 * -s->dir.y;
+			s->plane.x = 0.60 * -s->dir.y;
 			if (s->map.tab[s->map.y][s->map.x] == 'E')
 				s->dir.x = 1;
 			if (s->map.tab[s->map.y][s->map.x] == 'W')
 				s->dir.x = -1;
-			s->plane.y = 0.80 * -s->dir.x;
+			s->plane.y = 0.60 * -s->dir.x;
 			if ((s->dir.x != 0 || s->dir.y != 0) && (s->pos.x == 0))
 			{
 				s->pos.x = (double)s->map.x + 0.5;
@@ -265,17 +265,24 @@ void	ft_init_tex(t_struct *s)
 	s->tex.e = s->tex.n;
 	s->tex.w = s->tex.n;
 	s->tex.sprite = s->tex.n;
+	s->tex.pos = 0.0;
+	s->tex.step = 0.0;
+	s->tex.x = 0;
+	s->tex.y = 0;
 }
 
 void	ft_init_mlx(t_struct *s)
 {
+	int tab[3];
+
 	s->mlx = mlx_init();
 	s->win = mlx_new_window(s->mlx, s->win_x, s->win_y, "42");
 	ft_load_tex(s);
 	ft_print_arg(s);
 	s->ptr = mlx_new_image(s->mlx, s->win_x, s->win_y);
+	s->adr = (unsigned int*)mlx_get_data_addr(s->ptr, &tab[0], &tab[1],&tab[2]);
 	ft_draw_wall(s);
-	/*mlx_put_image_to_window(s->mlx, s->win, s->tex.s.ptr, 0, 0);*/
+	mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
 	mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
 	mlx_loop(s->mlx);
 	return ;
@@ -289,7 +296,8 @@ void	ft_draw_wall(t_struct *s)
 		ft_ray_init(s);
 		ft_ray_direction(s);
 		ft_ray_hit(s);
-		ft_col_size(s);
+		ft_coloumn_size(s);
+		ft_column_texture(s);
 		ft_draw_columns(s);
 		s->x++;
 	}
@@ -350,9 +358,10 @@ void	ft_ray_hit(t_struct *s)
 		if (s->map.tab[s->ray.pos.y][s->ray.pos.x] == '1')
 			s->hit = 1;
 	}
+
 }
 
-void	ft_col_size(t_struct *s)
+void	ft_coloumn_size(t_struct *s)
 {
 	double	wall_dist;
 
@@ -367,32 +376,62 @@ void	ft_col_size(t_struct *s)
 	s->start = (s->start > 0 ? s->start : 0);
 	s->end = s->col_size / 2 + s->win_y / 2;
 	s->end = (s->end >= s->win_y ? s->win_y - 1 : s->end);
+	if (s->side == 0)
+		s->wall_x = s->pos.y + wall_dist * s->ray.dir.y;
+	else
+		s->wall_x = s->pos.x + wall_dist * s->ray.dir.x;
+	s->wall_x -= floor(s->wall_x);
 }
+/* remplacer les 64 par texture_width) */
+void	ft_column_texture(t_struct *s)
+{
+	s->tex.x = (int)(s->wall_x * 64);
+	if (s->side == 0 && s->ray.dir.x > 0)
+		s->tex.x = 64 - s->tex.x - 1;
+	if (s->side == 1 && s->ray.dir.y < 0)
+		s->tex.x = 64 - s->tex.x - 1;
+	s->tex.step = (double)64 / s->col_size;
+	s->tex.pos = (s->start - s->win_y / 2 + s->col_size / 2) * s->tex.step;
+}
+
 void	ft_draw_columns(t_struct *s)
 {
 	s->color = s->sky.r * 256 * 256 + s->sky.g * 256 + s->sky.b;
 	s->y = 0;
-	while (s->y++ < s->start)
-		mlx_pixel_put(s->mlx, s->win, s->x, s->y, s->color);
+	while (s->y < s->start)
+			s->adr[s->x + s->win_x * s->y++] = s->color;
 	while (s->y >= s->start && s->y <= s->end)
 	{
-		s->color = ft_pixel(s);
-		mlx_pixel_put(s->mlx, s->win, s->x, s->y, s->color);
+	s->tex.y = (int)s->tex.pos /*& (64 - 1)*/;
+	s->tex.pos += s->tex.step;
+		ft_pixel(s);
+		/*mlx_pixel_put(s->mlx, s->win, s->x, s->y, s->color);*/
 		s->y++;
 	}
 	s->color = s->floor.r * 256 * 256 + s->floor.g * 256 + s->floor.b;
-	while (s->y++ < s->win_y)
-		mlx_pixel_put(s->mlx, s->win, s->x, s->y, s->color);
+	while (s->y < s->win_y)
+			s->adr[s->x + s->win_x * s->y++] = s->color;
 }
 
-int	ft_pixel(t_struct *s)
+void	ft_pixel(t_struct *s)
 {
+	int	pix_nb;
 
+	pix_nb = 64 * s->tex.y + s->tex.x; 
 	if (s->side == 0)
-		s->color = (s->step.x < 0 ? WHITE : RED);
+	{
+		if (s->step.x < 0)
+			s->adr[s->x + s->win_x * s->y] = s->tex.w.adr[pix_nb];
+		else
+			s->adr[s->x + s->win_x * s->y] = s->tex.s.adr[pix_nb];
+	}
 	else
-		s->color = (s->step.y > 0 ? PINK : BLUE);
-	return (s->color);
+	{
+		if (s->step.y < 0)
+			s->adr[s->x + s->win_x * s->y] = s->tex.n.adr[pix_nb];
+		else
+			s->adr[s->x + s->win_x * s->y] = s->tex.s.adr[pix_nb];
+	}
 }
 
 void	ft_load_tex(t_struct *s)
