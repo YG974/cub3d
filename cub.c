@@ -66,6 +66,7 @@ void	ft_get_pos(t_struct *s)
 			s->plane.y = 0.60 * -s->dir.x;
 			if ((s->dir.x != 0 || s->dir.y != 0) && (s->pos.x == 0))
 			{
+				s->map.tab[s->map.y][s->map.x] = '0';
 				s->pos.x = (double)s->map.x + 0.5;
 				s->pos.y = (double)s->map.y + 0.5;
 			}
@@ -190,14 +191,60 @@ int		key_press(int key, t_struct *s)
 	if (key == ESC)
 		ft_exit(s);
 	else if (key == KEY_A)
-		write(1, "A", 1);
+		ft_move_side(s, -1);
 	else if (key == KEY_S)
-		write(1, "S", 1);
+		ft_move_forward(s, -1);
 	else if (key == KEY_D)
-		write(1, "D", 1);
+		ft_move_side(s, 1);
 	else if (key == KEY_W)
-		write(1, "W", 1);
+		ft_move_forward(s, 1);	
+	else if (key == KEY_LEFT)
+		ft_rotate(s, -1);
+	else if (key == KEY_RIGHT)
+		ft_rotate(s, 1);
 	return (1);
+}
+
+void	ft_move_forward(t_struct *s, double sign)
+{
+		/*int	x;*/
+		/*int y;*/
+
+		/*x = (int)(s->pos.x + sign * s->dir.x * SPEED);*/
+		/*y = (int)(s->pos.y + sign * s->dir.y * SPEED);*/
+		if (s->map.tab[(int)(s->pos.y)][(int)(s->pos.x + sign * s->dir.x * SPEED)] == '0')
+			s->pos.x += sign * s->dir.x * SPEED;
+		if (s->map.tab[(int)(s->pos.y + sign * s->dir.y * SPEED)][(int)s->pos.x] == '0')
+			s->pos.y += sign * s->dir.y * SPEED;
+		/*printf("x: %d | y: %d | c: %c\n", x, y, s->map.tab[y][x]);*/
+		ft_draw_wall(s);
+		mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
+}
+
+void	ft_move_side(t_struct *s, double sign)
+{
+		if (s->map.tab[(int)(s->pos.y)][(int)(s->pos.x + sign * -s->dir.y * SPEED)] == '0')
+			s->pos.x += sign * -s->dir.y * SPEED;
+		if (s->map.tab[(int)(s->pos.y + sign * s->dir.x * SPEED)][(int)s->pos.x] == '0')
+			s->pos.y += sign * s->dir.x * SPEED;
+		ft_draw_wall(s);
+		mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
+}
+
+void	ft_rotate(t_struct *s, double sign)
+{
+	double	old_dir_x;
+	double	old_plane_x;
+	
+	old_dir_x = s->dir.x;
+	old_plane_x = s->plane.x;
+	s->dir.x = s->dir.x  * cos(ANGLE * sign) - s->dir.y * sin(ANGLE * sign);
+	s->dir.y = old_dir_x * sin(ANGLE * sign) + s->dir.y * cos(ANGLE * sign);
+	s->plane.x = s->plane.x * cos(ANGLE * sign) - s->plane.y  * sin(ANGLE * sign);
+	s->plane.y = old_plane_x * sin(ANGLE * sign) + s->plane.y  * cos(ANGLE * sign);
+	ft_draw_wall(s);
+	mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
+	
 }
 
 void	ft_init_struct(char *av)
@@ -281,6 +328,12 @@ void	ft_init_mlx(t_struct *s)
 	ft_print_arg(s);
 	s->ptr = mlx_new_image(s->mlx, s->win_x, s->win_y);
 	s->adr = (unsigned int*)mlx_get_data_addr(s->ptr, &tab[0], &tab[1],&tab[2]);
+	/*ft_move_forward(s, 1);*/
+	/*ft_move_forward(s, -1);*/
+	/*ft_move_side(s, -1);*/
+	/*ft_move_side(s, 1);*/
+	/*ft_rotate(s, -1);*/
+	/*ft_rotate(s, 1);*/
 	ft_draw_wall(s);
 	mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
 	mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
@@ -423,7 +476,7 @@ void	ft_pixel(t_struct *s)
 		if (s->step.x < 0)
 			s->adr[s->x + s->win_x * s->y] = s->tex.w.adr[pix_nb];
 		else
-			s->adr[s->x + s->win_x * s->y] = s->tex.s.adr[pix_nb];
+			s->adr[s->x + s->win_x * s->y] = s->tex.e.adr[pix_nb];
 	}
 	else
 	{

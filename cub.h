@@ -55,6 +55,10 @@
 #define HEIGHT 680
 #define WIN_NAME "Cub3D"
 
+/* moves settings */
+#define SPEED 0.25
+#define ANGLE 0.2
+
 typedef struct	s_map
 {
 	char	**tab;
@@ -193,6 +197,11 @@ int		ft_suffix(char *file_name, char *suffix);
 void	ft_print_arg(t_struct *s);
 void	ft_check_parsing(t_struct *s);
 void	print_map(t_struct *s);
+
+/* moving functions */
+void	ft_move_forward(t_struct *s, double sign);
+void	ft_move_side(t_struct *s, double sign);
+void	ft_rotate(t_struct *s, double sign);
 
 /* errors functions */
 int		ft_escape(t_struct *s);

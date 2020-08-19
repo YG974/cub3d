@@ -1,10 +1,10 @@
 R    0 0
 
 NO ./images/brick.xpm
-SO ./images/barrel.xpm
-WE ./images/banner.xpm
-EA ./images/blue.xpm
-S ./images/hitler.xpm
+SO ./images/grey.xpm
+WE ./images/floor.xpm
+EA ./images/wood.xpm
+S ./images/chest.xpm
 
 F 117,60,10
 C 5,225,225
