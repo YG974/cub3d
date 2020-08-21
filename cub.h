@@ -64,6 +64,7 @@ typedef struct	s_map
 	char	**tab;
 	int		x;
 	int		y;
+	int		sprite_nb;
 	
 }				t_map;
 
@@ -74,6 +75,7 @@ typedef struct	s_color
 	int		b;
 }				t_color;
 
+/*
 typedef struct	s_img
 {
 	char	*path;
@@ -85,18 +87,19 @@ typedef struct	s_img
 	int		bpp;
 	int		sl;
 }				t_img;
-
+*/
 typedef struct s_tex
 {
-	t_img	n;
-	t_img	s;
-	t_img	w;
-	t_img	e;
-	t_img	sprite;
+	unsigned int	*n;
+	unsigned int	*s;
+	unsigned int	*w;
+	unsigned int	*e;
+	unsigned int	*sprite;
 	double	pos; /* where to start drawing texture */
 	double	step; /* ratio to increase or decrease texture bloc size */
 	int	x; /* x coordinate in the texture */
 	int	y; /* y coordinate in the texture */
+	int	width; /* texture bloc width */
 }				t_tex;
 
 typedef struct	s_double_xy
@@ -114,40 +117,69 @@ typedef struct	s_xy
 typedef struct	s_ray
 {
 	t_double_xy dir; /*ray direction*/ 
-	t_double_xy sd; /* side_dist : dist from player to the next map square */
+	t_double_xy sd; /* side_dist : dist from player to the next map square until hitting a wall */
 	t_double_xy dd; /* delta_dist : dist from the ray_pos to the next map square */
 	t_int_xy    pos; /* ray position */
 }       t_ray;
 
-typedef struct	s_struct
+typedef struct	s_sprite
 {
-	t_tex	tex;
-	t_color	sky;
-	t_color	floor;
-	t_map	map;
+	t_int_xy	pos;
+	double		dist;
+	int			height;
+	int		start; /* y coordinate to start drawing the column */
+	int		end; /* y coordinate to end drawing the column */
+}				t_sprite;
+
+typedef	struct	s_wall
+{
+	t_int_xy	step; /* variable to iterate every square of the map, step is negative if ray_dir < 0, so also tells us if the wall hit is NSEW combined with the side value */
+	int		side;
+	int		hit;
+	int		height;
+	double	perp_dist;
+	int		start;
+	int		end;
+	double	x;
+}				t_wall;
+
+typedef struct	s_player
+{
 	t_double_xy	pos;	// player position on the map
 	t_double_xy	dir;	// direction of the player (vector)
 	t_double_xy	plane;	/* camera plane, which is always perpendicular to player dir */
+
+}				t_player;
+
+typedef struct	s_win
+{
+	void	*ptr;	
+	int	x;
+	int	y;
+}				t_win;
+
+typedef struct	s_img
+{
+	void	*ptr;	
+	unsigned int	*adr;
+}				t_img;
+
+typedef struct	s_struct
+{
+	t_tex		tex;
+	t_color		sky;
+	t_color		floor;
+	t_map		map;
+	t_wall		wall;
+	t_player	p;
+	t_sprite	*sprite;
+	t_win		win;
+	t_img		img;
 	double		cam;	// x camera coordinate : -1 is left, 0 is center, 1 is right
 	t_ray		ray;	// rays sent to see if a wall or obstacle is hitten
-	t_int_xy	step; /* variable to iterate every square of the map, step is negative if ray_dir < 0, so also tells us if the wall hit is NSEW combined with the side value */
-	int		side;		// side of the map square is hitten (x: NS or y:EW)
-	int		hit;		// 1 if the ray hits a wall or sprite 0 if empty map square
-
-	int		col_size; /* size of the column to draw according to the distance */
-	int		start; /* y coordinate to start drawing the column */
-	int		end; /* y coordinate to end drawing the column */
 	unsigned int	color; /* pixel color to draw */
-	double	wall_x;
 
 	void	*mlx;	//mlx pointer
-	void	*win;	//window pointer
-
-	int		win_x;	//width size
-	int		win_y;	//height size
-	
-	void	*ptr;	//image ptr of the full screen
-	unsigned int	*adr;
 	
 	char	**tmp;	//buffer to parse the map file with ft_split
 	char	*buf;	//buffer to parse data, line by line with ft_split
@@ -178,7 +210,7 @@ void	ft_resolution(t_struct *s);
 t_color		ft_color(t_struct *s);
 void	ft_map(t_struct *s);
 char	**new_tab(char **tab, char *str);
-void	ft_load_tex(t_struct *s);
+unsigned int	*ft_load_tex(t_struct *s, char *path);
 void	ft_get_pos(t_struct *s);
 
 /* displaying functions */
@@ -202,6 +234,13 @@ void	print_map(t_struct *s);
 void	ft_move_forward(t_struct *s, double sign);
 void	ft_move_side(t_struct *s, double sign);
 void	ft_rotate(t_struct *s, double sign);
+
+/* sprite functions */
+void	ft_sprite(t_struct *s);
+void	ft_count_sprite(t_struct *s);
+void	ft_sprite_pos(t_struct *s);
+void	ft_sprite_distance(t_struct *s);
+void	ft_sort_sprite(t_struct *s);
 
 /* errors functions */
 int		ft_escape(t_struct *s);

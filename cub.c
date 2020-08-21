@@ -52,27 +52,27 @@ void	ft_get_pos(t_struct *s)
 {
 	while (s->map.tab[s->map.y])
 	{
+		s->map.x = 0;
 		while (s->map.tab[s->map.y][s->map.x])
 		{
 			if (s->map.tab[s->map.y][s->map.x] == 'N')
-				s->dir.y = -1;
+				s->p.dir.y = -1;
 			if (s->map.tab[s->map.y][s->map.x] == 'S')
-				s->dir.y = 1;
-			s->plane.x = 0.60 * -s->dir.y;
+				s->p.dir.y = 1;
+			s->p.plane.x = 0.60 * -s->p.dir.y;
 			if (s->map.tab[s->map.y][s->map.x] == 'E')
-				s->dir.x = 1;
+				s->p.dir.x = 1;
 			if (s->map.tab[s->map.y][s->map.x] == 'W')
-				s->dir.x = -1;
-			s->plane.y = 0.60 * -s->dir.x;
-			if ((s->dir.x != 0 || s->dir.y != 0) && (s->pos.x == 0))
+				s->p.dir.x = -1;
+			s->p.plane.y = 0.60 * -s->p.dir.x;
+			if ((s->p.dir.x != 0 || s->p.dir.y != 0) && (s->p.pos.x == 0))
 			{
 				s->map.tab[s->map.y][s->map.x] = '0';
-				s->pos.x = (double)s->map.x + 0.5;
-				s->pos.y = (double)s->map.y + 0.5;
+				s->p.pos.x = (double)s->map.x + 0.5;
+				s->p.pos.y = (double)s->map.y + 0.5;
 			}
 			s->map.x++;
 		}
-		s->map.x = 0;
 		s->map.y++;
 	}
 }
@@ -87,15 +87,15 @@ void	ft_read_line(t_struct *s)
 		if (ft_strncmp(s->tmp[0], "R", 1) == 0 && s->tmp[0] != '\0')
 			ft_resolution(s);
 		if (ft_strncmp(s->tmp[0], "NO", 2) == 0 && s->tmp[0] != '\0')
-			s->tex.n.path = ft_strdup(s->tmp[1]);
+			s->tex.n = ft_load_tex(s, s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "SO", 2) == 0 && s->tmp[0] != '\0')
-			s->tex.s.path = ft_strdup(s->tmp[1]);
+			s->tex.s = ft_load_tex(s, s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "WE", 2) == 0 && s->tmp[0] != '\0')
-			s->tex.w.path = ft_strdup(s->tmp[1]);
+			s->tex.w = ft_load_tex(s, s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "EA", 2) == 0 && s->tmp[0] != '\0')
-			s->tex.e.path = ft_strdup(s->tmp[1]);
+			s->tex.e = ft_load_tex(s, s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "S", 1) == 0 && s->tmp[0] != '\0')
-			s->tex.sprite.path = ft_strdup(s->tmp[1]);
+			s->tex.sprite = ft_load_tex(s, s->tmp[1]);
 		if (ft_strncmp(s->tmp[0], "F", 1) == 0 && s->tmp[0] != '\0')
 			s->floor = ft_color(s);
 		if (ft_strncmp(s->tmp[0], "C", 1) == 0 && s->tmp[0] != '\0')
@@ -106,9 +106,9 @@ void	ft_read_line(t_struct *s)
 
 void	ft_check_parsing(t_struct *s)
 {
-	if ((s->win_x == 0 || s->win_y == 0 || s->tex.n.path == NULL ||
-				s->tex.s.path == NULL || s->tex.w.path == NULL ||
-				s->tex.e.path == NULL || s->tex.sprite.path == NULL ||
+	if ((s->win.x == 0 || s->win.y == 0 || s->tex.n == NULL ||
+				s->tex.s == NULL || s->tex.w == NULL ||
+				s->tex.e == NULL || s->tex.sprite == NULL ||
 				s->floor.r == -1 || s->floor.g == -1 || s->floor.b == -1 ||
 				s->sky.r == -1 || s->sky.g == -1 || s->sky.b == -1))
 		ft_error(1);
@@ -138,12 +138,13 @@ t_color	ft_color(t_struct *s)
 
 void	ft_resolution(t_struct *s)
 {
-	s->win_x = ft_atoi((const char *)s->tmp[1]);
-	s->win_y = ft_atoi((const char *)s->tmp[2]);
-	s->win_x = (s->win_x <= 0 ? WIDTH : s->win_x);
-	s->win_x = (s->win_x > WIDTH ? WIDTH : s->win_x);
-	s->win_y = (s->win_y <= 0 ? HEIGHT : s->win_y);
-	s->win_y = (s->win_y > HEIGHT ? HEIGHT : s->win_y);
+	s->win.x = ft_atoi((const char *)s->tmp[1]);
+	s->win.y = ft_atoi((const char *)s->tmp[2]);
+	s->win.x = (s->win.x <= 0 ? WIDTH : s->win.x);
+	s->win.x = (s->win.x > WIDTH ? WIDTH : s->win.x);
+	s->win.y = (s->win.y <= 0 ? HEIGHT : s->win.y);
+	s->win.y = (s->win.y > HEIGHT ? HEIGHT : s->win.y);
+	ft_init_mlx(s);
 }
 
 void	ft_error(int i)
@@ -210,40 +211,42 @@ void	ft_move_forward(t_struct *s, double sign)
 		/*int	x;*/
 		/*int y;*/
 
-		/*x = (int)(s->pos.x + sign * s->dir.x * SPEED);*/
-		/*y = (int)(s->pos.y + sign * s->dir.y * SPEED);*/
-		if (s->map.tab[(int)(s->pos.y)][(int)(s->pos.x + sign * s->dir.x * SPEED)] == '0')
-			s->pos.x += sign * s->dir.x * SPEED;
-		if (s->map.tab[(int)(s->pos.y + sign * s->dir.y * SPEED)][(int)s->pos.x] == '0')
-			s->pos.y += sign * s->dir.y * SPEED;
+		/*x = (int)(s->p.pos.x + sign * s->p.dir.x * SPEED);*/
+		/*y = (int)(s->p.pos.y + sign * s->p.dir.y * SPEED);*/
+		if (s->map.tab[(int)(s->p.pos.y)][(int)(s->p.pos.x + sign * s->p.dir.x * SPEED)] == '0')
+			s->p.pos.x += sign * s->p.dir.x * SPEED;
+		if (s->map.tab[(int)(s->p.pos.y + sign * s->p.dir.y * SPEED)][(int)s->p.pos.x] == '0')
+			s->p.pos.y += sign * s->p.dir.y * SPEED;
 		/*printf("x: %d | y: %d | c: %c\n", x, y, s->map.tab[y][x]);*/
 		ft_draw_wall(s);
-		mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
+		mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 }
 
 void	ft_move_side(t_struct *s, double sign)
 {
-		if (s->map.tab[(int)(s->pos.y)][(int)(s->pos.x + sign * -s->dir.y * SPEED)] == '0')
-			s->pos.x += sign * -s->dir.y * SPEED;
-		if (s->map.tab[(int)(s->pos.y + sign * s->dir.x * SPEED)][(int)s->pos.x] == '0')
-			s->pos.y += sign * s->dir.x * SPEED;
+		if (s->map.tab[(int)(s->p.pos.y)][(int)(s->p.pos.x + sign * -s->p.dir.y * SPEED)] == '0')
+			s->p.pos.x += sign * -s->p.dir.y * SPEED;
+		if (s->map.tab[(int)(s->p.pos.y + sign * s->p.dir.x * SPEED)][(int)s->p.pos.x] == '0')
+			s->p.pos.y += sign * s->p.dir.x * SPEED;
 		ft_draw_wall(s);
-		mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
+		mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 }
 
 void	ft_rotate(t_struct *s, double sign)
 {
 	double	old_dir_x;
 	double	old_plane_x;
+	double	rot;
 	
-	old_dir_x = s->dir.x;
-	old_plane_x = s->plane.x;
-	s->dir.x = s->dir.x  * cos(ANGLE * sign) - s->dir.y * sin(ANGLE * sign);
-	s->dir.y = old_dir_x * sin(ANGLE * sign) + s->dir.y * cos(ANGLE * sign);
-	s->plane.x = s->plane.x * cos(ANGLE * sign) - s->plane.y  * sin(ANGLE * sign);
-	s->plane.y = old_plane_x * sin(ANGLE * sign) + s->plane.y  * cos(ANGLE * sign);
+	rot = ANGLE * sign;
+	old_dir_x = s->p.dir.x;
+	old_plane_x = s->p.plane.x;
+	s->p.dir.x = s->p.dir.x  * cos(rot) - s->p.dir.y * sin(rot);
+	s->p.dir.y = old_dir_x * sin(rot) + s->p.dir.y * cos(rot);
+	s->p.plane.x = s->p.plane.x * cos(rot) - s->p.plane.y  * sin(rot);
+	s->p.plane.y = old_plane_x * sin(rot) + s->p.plane.y  * cos(rot);
 	ft_draw_wall(s);
-	mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
+	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 	
 }
 
@@ -257,30 +260,36 @@ void	ft_init_struct(char *av)
 	ft_init_map(&s);
 	ft_init_pos(&s);
 	s.mlx = NULL;
-	s.win = NULL;
-	s.win_x = 0;
-	s.win_y = 0;
+	s.win.ptr = NULL;
+	s.img.adr = 0;
+	s.img.ptr = NULL;
+	s.win.x = 0;
+	s.win.y = 0;
 	ft_parse(&s);
-	ft_init_mlx(&s);
+	/*ft_print_arg(&s);*/
+	ft_draw_wall(&s);
+	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
+	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
+	mlx_loop(s.mlx);
 }
 
 void	ft_init_pos(t_struct *s)
 {
-	s->pos.x = 0;
-	s->pos.y = 0;
-	s->dir.x = 0;
-	s->dir.y = 0;
-	s->plane.x = 0;
-	s->plane.y = 0;
-	s->cam = 0;
-	s->ray.dir = s->plane;
-	s->ray.sd = s->plane;
-	s->ray.dd = s->plane;
-	s->step.x = 0;
-	s->step.y = 0;
-	s->side = 0;
-	s->hit = 0;
-	s->ray.pos = s->step;
+	s->p.pos.x = 0.0;
+	s->p.pos.y = 0.0;
+	s->p.dir.x = 0.0;
+	s->p.dir.y = 0.0;
+	s->p.plane.x = 0.0;
+	s->p.plane.y = 0.0;
+	s->cam = 0.0;
+	s->ray.dir = s->p.plane;
+	s->ray.sd = s->p.plane;
+	s->ray.dd = s->p.plane;
+	s->wall.step.x = 0;
+	s->wall.step.y = 0;
+	s->wall.side = 0;
+	s->wall.hit = 0;
+	s->ray.pos = s->wall.step;
 }
 
 void	ft_init_map(t_struct *s)
@@ -288,6 +297,7 @@ void	ft_init_map(t_struct *s)
 	s->map.tab = NULL;
 	s->map.x = 0;
 	s->map.y = 0;
+	s->map.sprite_nb = 0;
 }
 
 void	ft_init_color(t_struct *s)
@@ -301,21 +311,16 @@ void	ft_init_color(t_struct *s)
 
 void	ft_init_tex(t_struct *s)
 {
-	s->tex.n.path = NULL;
-	s->tex.n.adr = NULL;
-	s->tex.n.x = 0;
-	s->tex.n.y = 0;
-	s->tex.n.endian = 0;
-	s->tex.n.bpp = 0;
-	s->tex.n.sl = 0;
-	s->tex.s = s->tex.n;
-	s->tex.e = s->tex.n;
-	s->tex.w = s->tex.n;
-	s->tex.sprite = s->tex.n;
+	s->tex.n = 0;
+	s->tex.s = 0;
+	s->tex.e = 0;
+	s->tex.w = 0;
+	s->tex.sprite = 0;
 	s->tex.pos = 0.0;
 	s->tex.step = 0.0;
 	s->tex.x = 0;
 	s->tex.y = 0;
+	s->tex.width = 0;
 }
 
 void	ft_init_mlx(t_struct *s)
@@ -323,28 +328,24 @@ void	ft_init_mlx(t_struct *s)
 	int tab[3];
 
 	s->mlx = mlx_init();
-	s->win = mlx_new_window(s->mlx, s->win_x, s->win_y, "42");
-	ft_load_tex(s);
-	ft_print_arg(s);
-	s->ptr = mlx_new_image(s->mlx, s->win_x, s->win_y);
-	s->adr = (unsigned int*)mlx_get_data_addr(s->ptr, &tab[0], &tab[1],&tab[2]);
+	s->win.ptr = mlx_new_window(s->mlx, s->win.x, s->win.y, "42");
+	s->img.ptr = mlx_new_image(s->mlx, s->win.x, s->win.y);
+	s->img.adr = (unsigned int*)mlx_get_data_addr(s->img.ptr, &tab[0], &tab[1],&tab[2]);
 	/*ft_move_forward(s, 1);*/
 	/*ft_move_forward(s, -1);*/
 	/*ft_move_side(s, -1);*/
 	/*ft_move_side(s, 1);*/
 	/*ft_rotate(s, -1);*/
 	/*ft_rotate(s, 1);*/
-	ft_draw_wall(s);
-	mlx_put_image_to_window(s->mlx, s->win, s->ptr, 0, 0);
-	mlx_hook(s->win, KEY_PRESS, KEY_PRESS_MASK, key_press, s);
-	mlx_loop(s->mlx);
 	return ;
 }
+
+
 
 void	ft_draw_wall(t_struct *s)
 {
 	s->x = 0;
-	while (s->x < s->win_x)
+	while (s->x < s->win.x)
 	{
 		ft_ray_init(s);
 		ft_ray_direction(s);
@@ -354,116 +355,203 @@ void	ft_draw_wall(t_struct *s)
 		ft_draw_columns(s);
 		s->x++;
 	}
+	ft_sprite(s);
+}
+
+void	ft_sprite(t_struct *s)
+{
+	ft_count_sprite(s);
+	if (!(s->sprite = malloc(sizeof(t_sprite) * s->map.sprite_nb)))
+		return (ft_error(-1));
+	ft_sprite_pos(s);
+	ft_sprite_distance(s);
+	ft_sort_sprite(s);
+}
+
+void	ft_sprite_distance(t_struct *s)
+{
+	int i;
+
+	i = 0;
+	while (i < s->map.sprite_nb)
+	{
+		s->sprite[i].dist = hypot(s->p.pos.x - s->sprite[i].pos.x,
+									s->p.pos.y - s->sprite[i].pos.y);
+		i++;
+	}
+}
+
+void	ft_sort_sprite(t_struct *s)
+{
+	int i;
+	int	j;
+	t_sprite	tmp;
+
+	i = 0;
+	while (i < s->map.sprite_nb - 1)
+	{
+		j = i + 1;
+		while (j < s->map.sprite_nb)
+		{
+			if (s->sprite[i].dist <s->sprite[j].dist )
+			{
+				tmp = s->sprite[i];
+				s->sprite[i] = s->sprite[j] ;
+				s->sprite[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+void	ft_sprite_pos(t_struct *s)
+{
+	int	i;
+
+	i = 0;
+	while (i < s->map.sprite_nb)
+	{
+		s->y = 0;
+		while (s->map.tab[s->y]) 
+		{
+			s->x = 0;
+			while(s->map.tab[s->y][s->x])
+			{
+				if (s->map.tab[s->y][s->x] == 2)
+				{
+					s->sprite[i].pos.x = s->x;
+					s->sprite[i].pos.y = s->y;
+				}
+				s->x++;
+			}
+			s->y++;
+		}
+	}
+}
+
+void	ft_count_sprite(t_struct *s)
+{
+	s->y = 0;
+	while (s->map.tab[s->y]) 
+	{
+		s->x = 0;
+		while(s->map.tab[s->y][s->x])
+		{
+			if (s->map.tab[s->y][s->x] == 2)
+				s->map.sprite_nb++;
+			s->x++;
+		}
+		s->y++;
+	}
 }
 
 void	ft_ray_init(t_struct *s)
 {
-	s->cam = 2 * s->x / (double)(s->win_x) - 1;
-	s->ray.dir.x = s->dir.x + s->plane.x * s->cam;
-	s->ray.dir.y = s->dir.y + s->plane.y * s->cam;
+	s->cam = 2 * s->x / (double)(s->win.x) - 1;
+	s->ray.dir.x = s->p.dir.x + s->p.plane.x * s->cam;
+	s->ray.dir.y = s->p.dir.y + s->p.plane.y * s->cam;
 	s->ray.dd.x = sqrt(1 + pow(s->ray.dir.y, 2) / pow(s->ray.dir.x, 2));
 	s->ray.dd.y = sqrt(1 + pow(s->ray.dir.x, 2) / pow(s->ray.dir.y, 2));
-	s->ray.pos.x = (int)s->pos.x;
-	s->ray.pos.y = (int)s->pos.y;
-	s->hit = 0;
+	s->ray.pos.x = (int)s->p.pos.x;
+	s->ray.pos.y = (int)s->p.pos.y;
+	s->wall.hit = 0;
 }
 
 void	ft_ray_direction(t_struct *s)
 {
 	if (s->ray.dir.x < 0)
 	{
-		s->step.x = -1;
-		s->ray.sd.x = (s->pos.x - s->ray.pos.x) * s->ray.dd.x;
+		s->wall.step.x = -1;
+		s->ray.sd.x = (s->p.pos.x - s->ray.pos.x) * s->ray.dd.x;
 	}
 	else
 	{
-		s->step.x = 1;
-		s->ray.sd.x = (s->ray.pos.x + 1.0 - s->pos.x) * s->ray.dd.x;
+		s->wall.step.x = 1;
+		s->ray.sd.x = (s->ray.pos.x + 1.0 - s->p.pos.x) * s->ray.dd.x;
 	}
 	if (s->ray.dir.y < 0)
 	{
-		s->step.y = -1;
-		s->ray.sd.y = (s->pos.y - s->ray.pos.y) * s->ray.dd.y;
+		s->wall.step.y = -1;
+		s->ray.sd.y = (s->p.pos.y - s->ray.pos.y) * s->ray.dd.y;
 	}
 	else
 	{
-		s->step.y = 1;
-		s->ray.sd.y = (s->ray.pos.y + 1.0 - s->pos.y) * s->ray.dd.y;
+		s->wall.step.y = 1;
+		s->ray.sd.y = (s->ray.pos.y + 1.0 - s->p.pos.y) * s->ray.dd.y;
 	}
 }
 
 void	ft_ray_hit(t_struct *s)
 {
-	while (s->hit == 0)
+	while (s->wall.hit == 0)
 	{
 		if (s->ray.sd.x < s->ray.sd.y)
 		{
 			s->ray.sd.x += s->ray.dd.x;
-			s->ray.pos.x += s->step.x;
-			s->side = 0;
+			s->ray.pos.x += s->wall.step.x;
+			s->wall.side = 0;
 		}
 		else
 		{
 			s->ray.sd.y += s->ray.dd.y;
-			s->ray.pos.y += s->step.y;
-			s->side = 1;
+			s->ray.pos.y += s->wall.step.y;
+			s->wall.side = 1;
 		}
 		if (s->map.tab[s->ray.pos.y][s->ray.pos.x] == '1')
-			s->hit = 1;
+			s->wall.hit = 1;
 	}
 
 }
 
 void	ft_coloumn_size(t_struct *s)
 {
-	double	wall_dist;
-
-	if (s->side == 0)
-		wall_dist = fabs((s->ray.pos.x - s->pos.x + (1 - s->step.x)
+	if (s->wall.side == 0)
+		s->wall.perp_dist = fabs((s->ray.pos.x - s->p.pos.x + (1 - s->wall.step.x)
 					/ 2) / s->ray.dir.x);
 	else
-		wall_dist = fabs((s->ray.pos.y - s->pos.y + (1 - s->step.y)
+		s->wall.perp_dist = fabs((s->ray.pos.y - s->p.pos.y + (1 - s->wall.step.y)
 					/ 2) / s->ray.dir.y);
-	s->col_size = (int)(s->win_y / wall_dist);
-	s->start = -s->col_size / 2 + s->win_y / 2;
-	s->start = (s->start > 0 ? s->start : 0);
-	s->end = s->col_size / 2 + s->win_y / 2;
-	s->end = (s->end >= s->win_y ? s->win_y - 1 : s->end);
-	if (s->side == 0)
-		s->wall_x = s->pos.y + wall_dist * s->ray.dir.y;
+	s->wall.height = (int)(s->win.y / s->wall.perp_dist);
+	s->wall.start = -s->wall.height / 2 + s->win.y / 2;
+	s->wall.start = (s->wall.start > 0 ? s->wall.start : 0);
+	s->wall.end = s->wall.height / 2 + s->win.y / 2;
+	s->wall.end = (s->wall.end >= s->win.y ? s->win.y - 1 : s->wall.end);
+	if (s->wall.side == 0)
+		s->wall.x = s->p.pos.y + s->wall.perp_dist * s->ray.dir.y;
 	else
-		s->wall_x = s->pos.x + wall_dist * s->ray.dir.x;
-	s->wall_x -= floor(s->wall_x);
+		s->wall.x = s->p.pos.x + s->wall.perp_dist * s->ray.dir.x;
+	s->wall.x -= floor(s->wall.x);
 }
 /* remplacer les 64 par texture_width) */
 void	ft_column_texture(t_struct *s)
 {
-	s->tex.x = (int)(s->wall_x * 64);
-	if (s->side == 0 && s->ray.dir.x > 0)
+	s->tex.x = (int)(s->wall.x * 64);
+	if (s->wall.side == 0 && s->ray.dir.x > 0)
 		s->tex.x = 64 - s->tex.x - 1;
-	if (s->side == 1 && s->ray.dir.y < 0)
+	if (s->wall.side == 1 && s->ray.dir.y < 0)
 		s->tex.x = 64 - s->tex.x - 1;
-	s->tex.step = (double)64 / s->col_size;
-	s->tex.pos = (s->start - s->win_y / 2 + s->col_size / 2) * s->tex.step;
+	s->tex.step = (double)64 / s->wall.height;
+	s->tex.pos = (s->wall.start - s->win.y / 2 + s->wall.height / 2) * s->tex.step;
 }
 
 void	ft_draw_columns(t_struct *s)
 {
 	s->color = s->sky.r * 256 * 256 + s->sky.g * 256 + s->sky.b;
 	s->y = 0;
-	while (s->y < s->start)
-			s->adr[s->x + s->win_x * s->y++] = s->color;
-	while (s->y >= s->start && s->y <= s->end)
+	while (s->y < s->wall.start)
+			s->img.adr[s->x + s->win.x * s->y++] = s->color;
+	while (s->y >= s->wall.start && s->y <= s->wall.end)
 	{
 	s->tex.y = (int)s->tex.pos /*& (64 - 1)*/;
 	s->tex.pos += s->tex.step;
 		ft_pixel(s);
-		/*mlx_pixel_put(s->mlx, s->win, s->x, s->y, s->color);*/
+		/*mlx_pixel_put(s->mlx, s->win.ptr, s->x, s->y, s->color);*/
 		s->y++;
 	}
 	s->color = s->floor.r * 256 * 256 + s->floor.g * 256 + s->floor.b;
-	while (s->y < s->win_y)
-			s->adr[s->x + s->win_x * s->y++] = s->color;
+	while (s->y < s->win.y)
+			s->img.adr[s->x + s->win.x * s->y++] = s->color;
 }
 
 void	ft_pixel(t_struct *s)
@@ -471,66 +559,52 @@ void	ft_pixel(t_struct *s)
 	int	pix_nb;
 
 	pix_nb = 64 * s->tex.y + s->tex.x; 
-	if (s->side == 0)
+	if (s->wall.side == 0)
 	{
-		if (s->step.x < 0)
-			s->adr[s->x + s->win_x * s->y] = s->tex.w.adr[pix_nb];
+		if (s->wall.step.x < 0)
+			s->img.adr[s->x + s->win.x * s->y] = s->tex.w[pix_nb];
 		else
-			s->adr[s->x + s->win_x * s->y] = s->tex.e.adr[pix_nb];
+			s->img.adr[s->x + s->win.x * s->y] = s->tex.e[pix_nb];
 	}
 	else
 	{
-		if (s->step.y < 0)
-			s->adr[s->x + s->win_x * s->y] = s->tex.n.adr[pix_nb];
+		if (s->wall.step.y < 0)
+			s->img.adr[s->x + s->win.x * s->y] = s->tex.n[pix_nb];
 		else
-			s->adr[s->x + s->win_x * s->y] = s->tex.s.adr[pix_nb];
+			s->img.adr[s->x + s->win.x * s->y] = s->tex.s[pix_nb];
 	}
 }
 
-void	ft_load_tex(t_struct *s)
+unsigned int	*ft_load_tex(t_struct *s, char *path)
 {
-	s->tex.n.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.n.path,
-			&s->tex.n.x, &s->tex.n.y);
-	s->tex.s.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.s.path,
-			&s->tex.s.x, &s->tex.s.y);
-	s->tex.w.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.w.path,
-			&s->tex.w.x, &s->tex.w.y);
-	s->tex.e.ptr = mlx_xpm_file_to_image(s->mlx, s->tex.e.path,
-			&s->tex.e.x, &s->tex.e.y);
-	s->tex.sprite.ptr = mlx_xpm_file_to_image(s->mlx,
-			s->tex.sprite.path, &s->tex.sprite.x, &s->tex.sprite.y);
-	s->tex.n.adr = (unsigned int*)mlx_get_data_addr(s->tex.n.ptr,
-			&s->tex.n.bpp, &s->tex.n.sl, &s->tex.n.endian);
-	s->tex.s.adr = (unsigned int*)mlx_get_data_addr(s->tex.s.ptr,
-			&s->tex.s.bpp, &s->tex.s.sl, &s->tex.s.endian);
-	s->tex.w.adr = (unsigned int*)mlx_get_data_addr(s->tex.w.ptr,
-			&s->tex.w.bpp, &s->tex.w.sl, &s->tex.w.endian);
-	s->tex.e.adr = (unsigned int*)mlx_get_data_addr(s->tex.e.ptr,
-			&s->tex.e.bpp, &s->tex.e.sl, &s->tex.e.endian);
-	s->tex.sprite.adr = (unsigned int*)mlx_get_data_addr(s->tex.sprite.ptr,
-			&s->tex.sprite.bpp, &s->tex.sprite.sl, &s->tex.sprite.endian);
-	return ;
+	void	*ptr;
+	int		tab[5];
+	unsigned int	*adr;
+	int		fd;
+
+	ptr = mlx_xpm_file_to_image(s->mlx, path, &tab[0], &tab[1]);
+	if (tab[0] != tab[1])
+		return (NULL);
+	s->tex.width = tab[0];
+	adr = (unsigned int*)mlx_get_data_addr(ptr, &tab[2], &tab[3], &tab[4]);
+	return (adr);
 }
 
 void	ft_print_arg(t_struct *s)
 {
-	printf("RESOLUTION : %d x %d\n", s->win_x, s->win_y);
-	printf("NO_PATH : \"%s\"\n", s->tex.n.path);
-	printf("SO_PATH : \"%s\"\n", s->tex.s.path);
-	printf("WE_PATH : \"%s\"\n", s->tex.w.path);
-	printf("EA_PATH : \"%s\"\n", s->tex.e.path);
-	printf("SPRITE_PATH : \"%s\"\n", s->tex.sprite.path);
+	printf("RESOLUTION : %d x %d\n", s->win.x, s->win.y);
 	printf("FLOOR : %d,%d,%d\n", s->floor.r, s->floor.g, s->floor.b);
 	printf("SKY : %d,%d,%d\n", s->sky.r, s->sky.g, s->sky.b);
 	print_map(s);
-	printf("TEXTURE N\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.n.x, s->tex.n.y, s->tex.n.adr, s->tex.n.endian, s->tex.n.bpp, s->tex.n.sl);
-	printf("TEXTURE S\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.s.x, s->tex.s.y, s->tex.s.adr, s->tex.s.endian, s->tex.s.bpp, s->tex.s.sl);
-	printf("TEXTURE W\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.w.x, s->tex.w.y, s->tex.w.adr, s->tex.w.endian, s->tex.w.bpp, s->tex.w.sl);
-	printf("TEXTURE E\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.e.x, s->tex.e.y, s->tex.e.adr, s->tex.e.endian, s->tex.e.bpp, s->tex.e.sl);
-	printf("TEXTURE sprite\nx:%d | y:%d | adresse:%p | endian:%d | bpp:%d | sizeline:%d\n", s->tex.sprite.x, s->tex.sprite.y, s->tex.sprite.adr, s->tex.sprite.endian, s->tex.sprite.bpp, s->tex.sprite.sl);
 	printf("MAP : %dx%d\n", s->map.x, s->map.y);
-	printf("POS : [%.f,%.f]\n", s->pos.x, s->pos.y);
-	printf("DIR : %.f, %.f\n", s->dir.x, s->dir.y);
+	printf("POS : [%.f,%.f]\n", s->p.pos.x, s->p.pos.y);
+	printf("DIR : %.f, %.f\n", s->p.dir.x, s->p.dir.y);
+	printf("texture width : %d\n", s->tex.width);
+	printf("texture N : %p\n", s->tex.n);
+	printf("texture s : %p\n", s->tex.s);
+	printf("texture e : %p\n", s->tex.e);
+	printf("texture w : %p\n", s->tex.w);
+	printf("texture S : %p\n", s->tex.sprite);
 }
 
 void	print_map(t_struct *s)
