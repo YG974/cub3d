@@ -44,11 +44,12 @@
 
 /* colors */
 #define WHITE 0x00FFFFFF
-#define BLACK 0x00000000
+#define BLACK 0xFF000000
 #define RED 0x00FF0000
 #define BLUE 0x000000FF
 #define YELLOW 0x00FFFF00
-#define PINK 0x00FFC0CB
+//#define PINK 0x00FFC0CB
+#define PINK 9961608
 
 /* windows */
 #define WIDTH 1280
@@ -124,11 +125,15 @@ typedef struct	s_ray
 
 typedef struct	s_sprite
 {
-	t_int_xy	pos;
+	t_double_xy	pos;
 	double		dist;
 	int			height;
-	int		start; /* y coordinate to start drawing the column */
-	int		end; /* y coordinate to end drawing the column */
+	int			width;
+	int		screen;
+	t_int_xy	start; /* y coordinate to start drawing the column */
+	t_int_xy	end; /* y coordinate to end drawing the column */
+	t_double_xy	delta; /* relative x and y coordinate from the player */
+	t_double_xy	depth; 
 }				t_sprite;
 
 typedef	struct	s_wall
@@ -141,6 +146,7 @@ typedef	struct	s_wall
 	int		start;
 	int		end;
 	double	x;
+	double	*buf;
 }				t_wall;
 
 typedef struct	s_player
@@ -241,6 +247,10 @@ void	ft_count_sprite(t_struct *s);
 void	ft_sprite_pos(t_struct *s);
 void	ft_sprite_distance(t_struct *s);
 void	ft_sort_sprite(t_struct *s);
+void	ft_sprite_transform(t_struct *s);
+void	ft_sprite_size(t_struct *s);
+void	ft_draw_sprite(t_struct *s);
+void	ft_pixel(t_struct *s);
 
 /* errors functions */
 int		ft_escape(t_struct *s);

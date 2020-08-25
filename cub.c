@@ -208,28 +208,32 @@ int		key_press(int key, t_struct *s)
 
 void	ft_move_forward(t_struct *s, double sign)
 {
-		/*int	x;*/
-		/*int y;*/
+	/*int	x;*/
+	/*int y;*/
 
-		/*x = (int)(s->p.pos.x + sign * s->p.dir.x * SPEED);*/
-		/*y = (int)(s->p.pos.y + sign * s->p.dir.y * SPEED);*/
-		if (s->map.tab[(int)(s->p.pos.y)][(int)(s->p.pos.x + sign * s->p.dir.x * SPEED)] == '0')
-			s->p.pos.x += sign * s->p.dir.x * SPEED;
-		if (s->map.tab[(int)(s->p.pos.y + sign * s->p.dir.y * SPEED)][(int)s->p.pos.x] == '0')
-			s->p.pos.y += sign * s->p.dir.y * SPEED;
-		/*printf("x: %d | y: %d | c: %c\n", x, y, s->map.tab[y][x]);*/
-		ft_draw_wall(s);
-		mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
+	/*x = (int)(s->p.pos.x + sign * s->p.dir.x * SPEED);*/
+	/*y = (int)(s->p.pos.y + sign * s->p.dir.y * SPEED);*/
+	if (s->map.tab[(int)(s->p.pos.y)]
+			[(int)(s->p.pos.x + sign * s->p.dir.x * SPEED)] == '0')
+		s->p.pos.x += sign * s->p.dir.x * SPEED;
+	if (s->map.tab[(int)(s->p.pos.y + sign * s->p.dir.y * SPEED)]
+			[(int)s->p.pos.x] == '0')
+		s->p.pos.y += sign * s->p.dir.y * SPEED;
+	/*printf("x: %d | y: %d | c: %c\n", x, y, s->map.tab[y][x]);*/
+	ft_draw_wall(s);
+	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 }
 
 void	ft_move_side(t_struct *s, double sign)
 {
-		if (s->map.tab[(int)(s->p.pos.y)][(int)(s->p.pos.x + sign * -s->p.dir.y * SPEED)] == '0')
-			s->p.pos.x += sign * -s->p.dir.y * SPEED;
-		if (s->map.tab[(int)(s->p.pos.y + sign * s->p.dir.x * SPEED)][(int)s->p.pos.x] == '0')
-			s->p.pos.y += sign * s->p.dir.x * SPEED;
-		ft_draw_wall(s);
-		mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
+	if (s->map.tab[(int)(s->p.pos.y)]
+			[(int)(s->p.pos.x + sign * -s->p.dir.y * SPEED)] == '0')
+		s->p.pos.x += sign * -s->p.dir.y * SPEED;
+	if (s->map.tab[(int)(s->p.pos.y + sign * s->p.dir.x * SPEED)]
+			[(int)s->p.pos.x] == '0')
+		s->p.pos.y += sign * s->p.dir.x * SPEED;
+	ft_draw_wall(s);
+	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 }
 
 void	ft_rotate(t_struct *s, double sign)
@@ -237,7 +241,7 @@ void	ft_rotate(t_struct *s, double sign)
 	double	old_dir_x;
 	double	old_plane_x;
 	double	rot;
-	
+
 	rot = ANGLE * sign;
 	old_dir_x = s->p.dir.x;
 	old_plane_x = s->p.plane.x;
@@ -247,7 +251,6 @@ void	ft_rotate(t_struct *s, double sign)
 	s->p.plane.y = old_plane_x * sin(rot) + s->p.plane.y  * cos(rot);
 	ft_draw_wall(s);
 	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
-	
 }
 
 void	ft_init_struct(char *av)
@@ -266,8 +269,10 @@ void	ft_init_struct(char *av)
 	s.win.x = 0;
 	s.win.y = 0;
 	ft_parse(&s);
-	/*ft_print_arg(&s);*/
+	if (!(s.wall.buf = calloc(sizeof(double), s.win.x + 1)))
+		return (ft_error(-1));
 	ft_draw_wall(&s);
+	ft_print_arg(&s);
 	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
 	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
 	mlx_loop(s.mlx);
@@ -330,7 +335,8 @@ void	ft_init_mlx(t_struct *s)
 	s->mlx = mlx_init();
 	s->win.ptr = mlx_new_window(s->mlx, s->win.x, s->win.y, "42");
 	s->img.ptr = mlx_new_image(s->mlx, s->win.x, s->win.y);
-	s->img.adr = (unsigned int*)mlx_get_data_addr(s->img.ptr, &tab[0], &tab[1],&tab[2]);
+	s->img.adr = (unsigned int*)mlx_get_data_addr(s->img.ptr, 
+			&tab[0], &tab[1],&tab[2]);
 	/*ft_move_forward(s, 1);*/
 	/*ft_move_forward(s, -1);*/
 	/*ft_move_side(s, -1);*/
@@ -358,16 +364,118 @@ void	ft_draw_wall(t_struct *s)
 	ft_sprite(s);
 }
 
+void	print_sprite(t_struct *s)
+{
+		printf("sprite N:%d | ", s->i);
+		printf("WallDst = %6.2f | ", s->wall.buf[(s->win.x / 2)]);
+		printf("spr Dst = %6.2f | ", s->sprite[s->i].dist);
+		printf("d x  = %6.2f | ", s->sprite[s->i].delta.x);
+		printf("d y  = %6.2f | ", s->sprite[s->i].delta.y);
+		printf("height = %d | ", s->sprite[s->i].height);
+		printf("depth x  = %6.2f | ", s->sprite[s->i].depth.x);
+		printf("depth y  = %6.2f | ", s->sprite[s->i].depth.y);
+		printf("start x = %d | ", s->sprite[s->i].start.x);
+		printf("start y = %d | ", s->sprite[s->i].start.y);
+		printf("end x = %d | ", s->sprite[s->i].end.x);
+		printf("end y = %d\n", s->sprite[s->i].end.y);
+
+}
+
 void	ft_sprite(t_struct *s)
 {
-	ft_count_sprite(s);
+	if ( s->map.sprite_nb == 0)
+	{
+		ft_count_sprite(s);
 	if (!(s->sprite = malloc(sizeof(t_sprite) * s->map.sprite_nb)))
 		return (ft_error(-1));
+	}
 	ft_sprite_pos(s);
 	ft_sprite_distance(s);
 	ft_sort_sprite(s);
+	s->i = 0;
+	printf("\n");
+	while (s->i < s->map.sprite_nb)
+	{
+		ft_sprite_transform(s);
+		ft_sprite_size(s);
+		ft_draw_sprite(s);
+		/*print_sprite(s);*/
+		s->i++;
+	}
 }
 
+/* inv = coef to inverse Matrice */
+void	ft_sprite_transform(t_struct *s)
+{
+	double	inv;
+
+	inv = 0.0;
+	s->sprite[s->i].delta.x = s->sprite[s->i].pos.x - s->p.pos.x;
+	s->sprite[s->i].delta.y = s->sprite[s->i].pos.y - s->p.pos.y;
+	inv = 1.0 / (s->p.plane.x * s->p.dir.y - s->p.plane.y * s->p.dir.x);
+	s->sprite[s->i].depth.x = inv * (s->p.dir.y  * s->sprite[s->i].delta.x 
+			- s->p.dir.x * s->sprite[s->i].delta.y);
+	s->sprite[s->i].depth.y = inv * (s->p.plane.x  * s->sprite[s->i].delta.y -
+			s->p.plane.y  * s->sprite[s->i].delta.x);
+	s->sprite[s->i].screen = (int)((s->win.x / 2) * 
+		(1 + s->sprite[s->i].depth.x / s->sprite[s->i].depth.y));
+}
+
+void	ft_sprite_size(t_struct *s)
+{
+	s->sprite[s->i].height = abs((int)(s->win.y / s->sprite[s->i].depth.y));
+	s->sprite[s->i].start.y = (s->win.y / 2) - (s->sprite[s->i].height / 2);
+	if (s->sprite[s->i].start.y < 0)
+		s->sprite[s->i].start.y = 0;
+	s->sprite[s->i].end.y = (s->win.y / 2) + (s->sprite[s->i].height / 2);
+	if (s->sprite[s->i].end.y >= s->win.y)
+		s->sprite[s->i].end.y = s->win.y - 1;
+	s->sprite[s->i].width = abs((int)(s->win.y / s->sprite[s->i].depth.y));
+	s->sprite[s->i].start.x = s->sprite[s->i].screen - (s->sprite[s->i].width / 2);
+	if (s->sprite[s->i].start.x < 0)
+		s->sprite[s->i].start.x = 0;
+	s->sprite[s->i].end.x = s->sprite[s->i].screen + s->sprite[s->i].width / 2;
+	if (s->sprite[s->i].end.x >= s->win.x)
+		s->sprite[s->i].end.x = s->win.x - 1;
+}
+
+void	ft_draw_sprite(t_struct *s)
+{
+	int	x;
+	int	y;
+	int	d;
+	int	pix_nb;
+
+
+	x = s->sprite[s->i].start.x;
+	while (x < s->sprite[s->i].end.x)
+	{
+		s->tex.x = (int)(256 * (x - (-s->sprite[s->i].width / 2 + s->sprite[s->i].screen)) *
+			64 / s->sprite[s->i].width) / 256;
+		y = s->sprite[s->i].start.y;
+		while (y < s->sprite[s->i].end.y)
+		{
+			/*s->tex.y = (int)(((y + s->sprite[s->i].width / 2 - s->sprite[s->i].screen)) **/
+				/*s->tex.width / s->sprite[s->i].width);*/
+			d = y * 256 - s->win.y * 128 + s->sprite[s->i].height * 128;
+			s->tex.y = (int)((d * 64) / s->sprite[s->i].height) / 256;
+			if (x > 0 && x < s->win.x && s->sprite[s->i].depth.y > 0 &&
+					s->sprite[s->i].depth.y < s->wall.buf[x])
+			{
+				pix_nb = 64 * s->tex.y + s->tex.x; 
+				s->color = s->tex.sprite[pix_nb];
+				if ((s->color & BLACK) == 0)
+					s->img.adr[x + s->win.x * y] = s->color;
+			}
+			y++;
+		}
+		x++;
+	}
+}
+
+void	ft_pixel_sprite(t_struct *s)
+{
+}
 void	ft_sprite_distance(t_struct *s)
 {
 	int i;
@@ -376,7 +484,7 @@ void	ft_sprite_distance(t_struct *s)
 	while (i < s->map.sprite_nb)
 	{
 		s->sprite[i].dist = hypot(s->p.pos.x - s->sprite[i].pos.x,
-									s->p.pos.y - s->sprite[i].pos.y);
+				s->p.pos.y - s->sprite[i].pos.y);
 		i++;
 	}
 }
@@ -393,7 +501,7 @@ void	ft_sort_sprite(t_struct *s)
 		j = i + 1;
 		while (j < s->map.sprite_nb)
 		{
-			if (s->sprite[i].dist <s->sprite[j].dist )
+			if (s->sprite[i].dist < s->sprite[j].dist )
 			{
 				tmp = s->sprite[i];
 				s->sprite[i] = s->sprite[j] ;
@@ -418,10 +526,11 @@ void	ft_sprite_pos(t_struct *s)
 			s->x = 0;
 			while(s->map.tab[s->y][s->x])
 			{
-				if (s->map.tab[s->y][s->x] == 2)
+				if (s->map.tab[s->y][s->x] == '2')
 				{
-					s->sprite[i].pos.x = s->x;
-					s->sprite[i].pos.y = s->y;
+					s->sprite[i].pos.x = s->x + 0.5;
+					s->sprite[i].pos.y = s->y + 0.5;
+					i++;
 				}
 				s->x++;
 			}
@@ -438,7 +547,7 @@ void	ft_count_sprite(t_struct *s)
 		s->x = 0;
 		while(s->map.tab[s->y][s->x])
 		{
-			if (s->map.tab[s->y][s->x] == 2)
+			if (s->map.tab[s->y][s->x] == '2')
 				s->map.sprite_nb++;
 			s->x++;
 		}
@@ -507,11 +616,12 @@ void	ft_ray_hit(t_struct *s)
 void	ft_coloumn_size(t_struct *s)
 {
 	if (s->wall.side == 0)
-		s->wall.perp_dist = fabs((s->ray.pos.x - s->p.pos.x + (1 - s->wall.step.x)
-					/ 2) / s->ray.dir.x);
+		s->wall.perp_dist = fabs((s->ray.pos.x - s->p.pos.x + 
+					(1 - s->wall.step.x) / 2) / s->ray.dir.x);
 	else
-		s->wall.perp_dist = fabs((s->ray.pos.y - s->p.pos.y + (1 - s->wall.step.y)
-					/ 2) / s->ray.dir.y);
+		s->wall.perp_dist = fabs((s->ray.pos.y - s->p.pos.y + 
+					(1 - s->wall.step.y) / 2) / s->ray.dir.y);
+	s->wall.buf[s->x] = s->wall.perp_dist;
 	s->wall.height = (int)(s->win.y / s->wall.perp_dist);
 	s->wall.start = -s->wall.height / 2 + s->win.y / 2;
 	s->wall.start = (s->wall.start > 0 ? s->wall.start : 0);
@@ -532,7 +642,8 @@ void	ft_column_texture(t_struct *s)
 	if (s->wall.side == 1 && s->ray.dir.y < 0)
 		s->tex.x = 64 - s->tex.x - 1;
 	s->tex.step = (double)64 / s->wall.height;
-	s->tex.pos = (s->wall.start - s->win.y / 2 + s->wall.height / 2) * s->tex.step;
+	s->tex.pos = (s->wall.start - s->win.y / 2 + s->wall.height / 2)
+		* s->tex.step;
 }
 
 void	ft_draw_columns(t_struct *s)
@@ -605,6 +716,7 @@ void	ft_print_arg(t_struct *s)
 	printf("texture e : %p\n", s->tex.e);
 	printf("texture w : %p\n", s->tex.w);
 	printf("texture S : %p\n", s->tex.sprite);
+	printf("nb sprite: %d\n", s->map.sprite_nb);
 }
 
 void	print_map(t_struct *s)
