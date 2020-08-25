@@ -4,9 +4,9 @@ NO ./images/brick.xpm
 SO ./images/grey.xpm
 WE ./images/floor.xpm
 EA ./images/wood.xpm
-S ./images/chest.xpm
+S ./images/barrel.xpm
 
-F 117,60,10
+F 191,191,191
 C 5,225,225
 
         1111111111111111111111111

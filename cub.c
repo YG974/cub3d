@@ -444,8 +444,6 @@ void	ft_draw_sprite(t_struct *s)
 	int	x;
 	int	y;
 	int	d;
-	int	pix_nb;
-
 
 	x = s->sprite[s->i].start.x;
 	while (x < s->sprite[s->i].end.x)
@@ -462,9 +460,8 @@ void	ft_draw_sprite(t_struct *s)
 			if (x > 0 && x < s->win.x && s->sprite[s->i].depth.y > 0 &&
 					s->sprite[s->i].depth.y < s->wall.buf[x])
 			{
-				pix_nb = 64 * s->tex.y + s->tex.x; 
-				s->color = s->tex.sprite[pix_nb];
-				if ((s->color & BLACK) == 0)
+				s->color = s->tex.sprite[64 * s->tex.y + s->tex.x];
+				if (s->color != BLACK) 
 					s->img.adr[x + s->win.x * y] = s->color;
 			}
 			y++;
