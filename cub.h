@@ -219,6 +219,7 @@ void	ft_map(t_struct *s);
 char	**new_tab(char **tab, char *str);
 unsigned int	*ft_load_tex(t_struct *s, char *tmp);
 void	ft_get_pos(t_struct *s);
+void	ft_load_map(t_struct *s, char *line);
 
 /* displaying functions */
 void	ft_draw_wall(t_struct *s);
@@ -234,7 +235,7 @@ void	ft_pixel(t_struct *s);
 int		is_space(char c);
 int		ft_suffix(char *file_name, char *suffix);
 void	ft_print_arg(t_struct *s);
-void	ft_check_parsing(t_struct *s);
+int		ft_check_parsing(t_struct *s);
 void	print_map(t_struct *s);
 
 /* moving functions */

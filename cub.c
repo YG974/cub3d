@@ -23,7 +23,8 @@ int		main(int ac, char **av)
 
 int		ft_is_space(char c)
 {
-	if (c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f' || c == ' ')
+	if (c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f' 
+			|| c == ' ')
 		return (1);
 	return (0);
 }
@@ -50,15 +51,28 @@ void	ft_parse(t_struct *s)
 	while (ret == get_next_line(fd, &line))
 	{
 		s->i = 0;
-		/*tmp = ft_split(line, ' ');*/
-		ft_read_line(s, line);
+		if (ft_check_parsing(s) == 1)
+			ft_load_map(s, line);
+		else 
+			ft_read_line(s, line);
 		free(line);
-			/*ft_check_parsing(s);*/
-			/*s->map.tab = new_tab(s->map.tab, line);*/
 	}
-	/*ft_get_pos(s);*/
-	while(1);
+	ft_get_pos(s);
+	/*while(1);*/
 	close(fd);
+}
+
+/* if c == 0, skip because GNL return NULL if the line is empty */
+void	ft_load_map(t_struct *s, char *line)
+{
+	char	*tmp;
+	char	c;
+	
+	c = line[0];
+	if (c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f' || c == 0)
+		return ;
+	tmp = ft_strdup(line);
+	s->map.tab = new_tab(s->map.tab, tmp);
 }
 
 void	ft_read_line(t_struct *s, char *line)
@@ -83,14 +97,15 @@ void	ft_read_line(t_struct *s, char *line)
 	return;
 }
 
-void	ft_check_parsing(t_struct *s)
+int		ft_check_parsing(t_struct *s)
 {
-	if ((s->win.x == 0 || s->win.y == 0 || s->tex.n == NULL ||
-				s->tex.s == NULL || s->tex.w == NULL ||
-				s->tex.e == NULL || s->tex.sprite == NULL ||
+	if ((s->win.x == 0 || s->win.y == 0 || s->tex.n == 0 || s->tex.s == 0 || 
+				s->tex.w == 0 || s->tex.e == 0 || s->tex.sprite == 0 ||
 				s->floor.r == -1 || s->floor.g == -1 || s->floor.b == -1 ||
 				s->sky.r == -1 || s->sky.g == -1 || s->sky.b == -1))
-		ft_error(1);
+		return (-1);
+	else
+		return(1);
 }
 
 t_color	ft_color(t_struct *s, char *line)
@@ -199,7 +214,7 @@ char	**new_tab(char **tab, char *str)
 	n = 0;
 	while (tab[n])
 		n++;
-	if (!(new_tab = ft_calloc(sizeof(char **), n + 2)))
+	if (!(new_tab = malloc(sizeof(char **) * (n + 2))))
 		return (NULL);
 	n = 0;
 	while (tab[n])
@@ -296,10 +311,10 @@ void	ft_init_struct(char *av)
 	s.win.x = 0;
 	s.win.y = 0;
 	ft_parse(&s);
-	if (!(s.wall.buf = calloc(sizeof(double), s.win.x + 1)))
-		return (ft_error(-1));
-	/*ft_draw_wall(&s);*/
 	ft_print_arg(&s);
+	/*if (!(s.wall.buf = calloc(sizeof(double), s.win.x + 1)))*/
+		/*return (ft_error(-1));*/
+	/*ft_draw_wall(&s);*/
 	/*mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);*/
 	/*mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);*/
 	/*mlx_loop(s.mlx);*/
@@ -743,7 +758,6 @@ void	ft_print_arg(t_struct *s)
 	printf("RESOLUTION : %d x %d\n", s->win.x, s->win.y);
 	printf("FLOOR : %d,%d,%d\n", s->floor.r, s->floor.g, s->floor.b);
 	printf("SKY : %d,%d,%d\n", s->sky.r, s->sky.g, s->sky.b);
-	print_map(s);
 	printf("MAP : %dx%d\n", s->map.x, s->map.y);
 	printf("POS : [%.f,%.f]\n", s->p.pos.x, s->p.pos.y);
 	printf("DIR : %.f, %.f\n", s->p.dir.x, s->p.dir.y);
@@ -753,6 +767,7 @@ void	ft_print_arg(t_struct *s)
 	printf("texture e : %p\n", s->tex.e);
 	printf("texture w : %p\n", s->tex.w);
 	printf("texture S : %p\n", s->tex.sprite);
+	print_map(s);
 	printf("nb sprite: %d\n", s->map.sprite_nb);
 }
 
