@@ -74,6 +74,7 @@ typedef struct	s_color
 	int		r;
 	int		g;
 	int		b;
+	unsigned int	*color;
 }				t_color;
 
 /*
@@ -209,14 +210,14 @@ void	ft_init_pos(t_struct *s);
 
 /* parsing and reading functions*/
 void	ft_parse(t_struct	*s);
-void	ft_read_line(t_struct *s);
+void	ft_read_line(t_struct *s, char	*tmp);
 int		read_number(t_struct *s);
-void	skip_space(t_struct *s);
-void	ft_resolution(t_struct *s);
-t_color		ft_color(t_struct *s);
+void	skip_space(t_struct *s, char *line);
+void	ft_resolution(t_struct *s, char	*tmp);
+t_color		ft_color(t_struct *s, char	*tmp);
 void	ft_map(t_struct *s);
 char	**new_tab(char **tab, char *str);
-unsigned int	*ft_load_tex(t_struct *s, char *path);
+unsigned int	*ft_load_tex(t_struct *s, char *tmp);
 void	ft_get_pos(t_struct *s);
 
 /* displaying functions */

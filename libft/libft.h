@@ -17,7 +17,7 @@
 
 # define ENDL '\n'
 # define END '\0'
-# define NB_FD 256
+# define NB_FD 1
 # define BUFFER_SIZE 256
 # include <unistd.h>
 # include <stdlib.h>

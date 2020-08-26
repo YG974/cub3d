@@ -21,31 +21,145 @@ int		main(int ac, char **av)
 	return (1);
 }
 
+int		ft_is_space(char c)
+{
+	if (c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f' || c == ' ')
+		return (1);
+	return (0);
+}
+
+void	ft_skip_space(t_struct *s, char *line)
+{
+	/*printf("%s\n", line);*/
+	while (ft_is_space(line[s->i]) == 1)
+		s->i++;
+	return;
+}
+
 void	ft_parse(t_struct *s)
 {
-	char	**line;
+	char	*line;
 	int		fd;
 	int		ret;
 
-	line = &s->buf;
 	if (!(fd = open(s->cub, O_RDONLY)))
 		return ;
 	ret = 1;
-	s->i = 0;
-	if (!(s->map.tab = calloc(sizeof(char **), 1)))
+	if (!(s->map.tab = ft_calloc(sizeof(char **), 1)))
 		return ;
-	while (ret == get_next_line(fd, line))
+	while (ret == get_next_line(fd, &line))
 	{
-		s->tmp = ft_split(s->buf, ' ');
-		ft_read_line(s);
-		if (s->tmp[0] && s->tmp[0][0] && s->tmp[0][0] == '1')
-		{
-			ft_check_parsing(s);
-			s->map.tab = new_tab(s->map.tab, s->buf);
-		}
+		s->i = 0;
+		/*tmp = ft_split(line, ' ');*/
+		ft_read_line(s, line);
+		free(line);
+			/*ft_check_parsing(s);*/
+			/*s->map.tab = new_tab(s->map.tab, line);*/
 	}
-	ft_get_pos(s);
+	/*ft_get_pos(s);*/
+	while(1);
 	close(fd);
+}
+
+void	ft_read_line(t_struct *s, char *line)
+{
+	ft_skip_space(s, line);	
+	if (line[s->i] == 'R' && line[s->i + 1] == ' ')
+		ft_resolution(s, &line[s->i]);
+	if (line[s->i] == 'N' && line[s->i + 1] == 'O' && line[s->i + 2] == ' ')
+		s->tex.n = ft_load_tex(s, &line[s->i]);
+	if (line[s->i] == 'S' && line[s->i + 1] == 'O' && line[s->i + 2] == ' ')
+		s->tex.s = ft_load_tex(s, &line[s->i]);
+	if (line[s->i] == 'W' && line[s->i + 1] == 'E' && line[s->i + 2] == ' ')
+		s->tex.w = ft_load_tex(s, &line[s->i]);
+	if (line[s->i] == 'E' && line[s->i + 1] == 'A' && line[s->i + 2] == ' ')
+		s->tex.e = ft_load_tex(s, &line[s->i]);
+	if (line[s->i] == 'S' && line[s->i + 1] == ' ')
+		s->tex.sprite = ft_load_tex(s, &line[s->i]);
+	if (line[s->i] == 'F' && line[s->i + 1] == ' ')
+		s->floor = ft_color(s, &line[s->i]);
+	if (line[s->i] == 'C' && line[s->i + 1] == ' ')
+		s->sky = ft_color(s, &line[s->i]);
+	return;
+}
+
+void	ft_check_parsing(t_struct *s)
+{
+	if ((s->win.x == 0 || s->win.y == 0 || s->tex.n == NULL ||
+				s->tex.s == NULL || s->tex.w == NULL ||
+				s->tex.e == NULL || s->tex.sprite == NULL ||
+				s->floor.r == -1 || s->floor.g == -1 || s->floor.b == -1 ||
+				s->sky.r == -1 || s->sky.g == -1 || s->sky.b == -1))
+		ft_error(1);
+}
+
+t_color	ft_color(t_struct *s, char *line)
+{
+	t_color color;
+	char	**tab;
+	int		i;
+
+	i = 0;
+	s->i = 1;
+	tab = ft_split(&line[s->i], ',');
+	while (tab[i])
+		i++;
+	if (i != 3)
+		ft_error(1);
+	color.r = ft_atoi((const char *)tab[0]);
+	color.g = ft_atoi((const char *)tab[1]);
+	color.b = ft_atoi((const char *)tab[2]);
+	if (color.r > 255 || color.r < 0 ||
+			color.g > 255 || color.g < 0 ||
+			color.b > 255 || color.b < 0)
+		ft_error(1);
+	free(tab[0]);
+	free(tab[1]);
+	free(tab[2]);
+	free(tab);
+	return (color);
+}
+
+void	ft_resolution(t_struct *s, char *line)
+{
+	char	**tab;
+	int		i;
+
+	i = 0;
+	s->i++;
+	tab = ft_split(&line[s->i], ' ');
+	while (tab[i])
+		i++;
+	if (i != 2)
+		ft_error(1);
+	s->win.x = ft_atoi((const char *)tab[0]);
+	s->win.y = ft_atoi((const char *)tab[1]);
+	s->win.x = (s->win.x <= 0 ? WIDTH : s->win.x);
+	s->win.x = (s->win.x > WIDTH ? WIDTH : s->win.x);
+	s->win.y = (s->win.y <= 0 ? HEIGHT : s->win.y);
+	s->win.y = (s->win.y > HEIGHT ? HEIGHT : s->win.y);
+	free(tab[0]);
+	free(tab[1]);
+	free(tab);
+	/*ft_init_mlx(s);*/
+}
+
+void	ft_error(int i)
+{
+	write(1, "error\n", 6);
+}
+
+int		ft_suffix(char *file_name, char *suffix)
+{
+	int		i;
+
+	i = ft_strlen(file_name);
+	if (file_name[i - 1] == suffix[3] && file_name[i - 2] == suffix[2] &&
+			file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
+		return (1);
+	else
+		write(1, "wrong argument", 14);
+	return (0);
 }
 
 void	ft_get_pos(t_struct *s)
@@ -77,94 +191,6 @@ void	ft_get_pos(t_struct *s)
 	}
 }
 
-void	ft_read_line(t_struct *s)
-{
-	int i;
-
-	i = 0;
-	while (s->tmp[i])
-	{
-		if (ft_strncmp(s->tmp[0], "R", 1) == 0 && s->tmp[0] != '\0')
-			ft_resolution(s);
-		if (ft_strncmp(s->tmp[0], "NO", 2) == 0 && s->tmp[0] != '\0')
-			s->tex.n = ft_load_tex(s, s->tmp[1]);
-		if (ft_strncmp(s->tmp[0], "SO", 2) == 0 && s->tmp[0] != '\0')
-			s->tex.s = ft_load_tex(s, s->tmp[1]);
-		if (ft_strncmp(s->tmp[0], "WE", 2) == 0 && s->tmp[0] != '\0')
-			s->tex.w = ft_load_tex(s, s->tmp[1]);
-		if (ft_strncmp(s->tmp[0], "EA", 2) == 0 && s->tmp[0] != '\0')
-			s->tex.e = ft_load_tex(s, s->tmp[1]);
-		if (ft_strncmp(s->tmp[0], "S", 1) == 0 && s->tmp[0] != '\0')
-			s->tex.sprite = ft_load_tex(s, s->tmp[1]);
-		if (ft_strncmp(s->tmp[0], "F", 1) == 0 && s->tmp[0] != '\0')
-			s->floor = ft_color(s);
-		if (ft_strncmp(s->tmp[0], "C", 1) == 0 && s->tmp[0] != '\0')
-			s->sky = ft_color(s);
-		i++;
-	}
-}
-
-void	ft_check_parsing(t_struct *s)
-{
-	if ((s->win.x == 0 || s->win.y == 0 || s->tex.n == NULL ||
-				s->tex.s == NULL || s->tex.w == NULL ||
-				s->tex.e == NULL || s->tex.sprite == NULL ||
-				s->floor.r == -1 || s->floor.g == -1 || s->floor.b == -1 ||
-				s->sky.r == -1 || s->sky.g == -1 || s->sky.b == -1))
-		ft_error(1);
-}
-
-t_color	ft_color(t_struct *s)
-{
-	t_color color;
-	char	**tab;
-	int		i;
-
-	i = 0;
-	tab = ft_split(s->tmp[1], ',');
-	while (tab[i])
-		i++;
-	if (i > 3 || i < 3)
-		ft_error(1);
-	color.r = ft_atoi((const char *)tab[0]);
-	color.g = ft_atoi((const char *)tab[1]);
-	color.b = ft_atoi((const char *)tab[2]);
-	if (color.r > 255 || color.r < 0 ||
-			color.g > 255 || color.g < 0 ||
-			color.b > 255 || color.b < 0)
-		ft_error(1);
-	return (color);
-}
-
-void	ft_resolution(t_struct *s)
-{
-	s->win.x = ft_atoi((const char *)s->tmp[1]);
-	s->win.y = ft_atoi((const char *)s->tmp[2]);
-	s->win.x = (s->win.x <= 0 ? WIDTH : s->win.x);
-	s->win.x = (s->win.x > WIDTH ? WIDTH : s->win.x);
-	s->win.y = (s->win.y <= 0 ? HEIGHT : s->win.y);
-	s->win.y = (s->win.y > HEIGHT ? HEIGHT : s->win.y);
-	ft_init_mlx(s);
-}
-
-void	ft_error(int i)
-{
-	write(1, "error\n", 6);
-}
-
-int		ft_suffix(char *file_name, char *suffix)
-{
-	int		i;
-
-	i = ft_strlen(file_name);
-	if (file_name[i - 1] == suffix[3] && file_name[i - 2] == suffix[2] &&
-			file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
-		return (1);
-	else
-		write(1, "wrong argument", 14);
-	return (0);
-}
-
 char	**new_tab(char **tab, char *str)
 {
 	char	**new_tab;
@@ -173,7 +199,7 @@ char	**new_tab(char **tab, char *str)
 	n = 0;
 	while (tab[n])
 		n++;
-	if (!(new_tab = calloc(sizeof(char **), n + 2)))
+	if (!(new_tab = ft_calloc(sizeof(char **), n + 2)))
 		return (NULL);
 	n = 0;
 	while (tab[n])
@@ -263,6 +289,7 @@ void	ft_init_struct(char *av)
 	ft_init_map(&s);
 	ft_init_pos(&s);
 	s.mlx = NULL;
+	s.mlx = mlx_init();
 	s.win.ptr = NULL;
 	s.img.adr = 0;
 	s.img.ptr = NULL;
@@ -271,11 +298,13 @@ void	ft_init_struct(char *av)
 	ft_parse(&s);
 	if (!(s.wall.buf = calloc(sizeof(double), s.win.x + 1)))
 		return (ft_error(-1));
-	ft_draw_wall(&s);
+	/*ft_draw_wall(&s);*/
 	ft_print_arg(&s);
-	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
-	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
-	mlx_loop(s.mlx);
+	/*mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);*/
+	/*mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);*/
+	/*mlx_loop(s.mlx);*/
+	exit(0);
+	return;
 }
 
 void	ft_init_pos(t_struct *s)
@@ -332,7 +361,6 @@ void	ft_init_mlx(t_struct *s)
 {
 	int tab[3];
 
-	s->mlx = mlx_init();
 	s->win.ptr = mlx_new_window(s->mlx, s->win.x, s->win.y, "42");
 	s->img.ptr = mlx_new_image(s->mlx, s->win.x, s->win.y);
 	s->img.adr = (unsigned int*)mlx_get_data_addr(s->img.ptr, 
@@ -386,7 +414,7 @@ void	ft_sprite(t_struct *s)
 	if ( s->map.sprite_nb == 0)
 	{
 		ft_count_sprite(s);
-	if (!(s->sprite = malloc(sizeof(t_sprite) * s->map.sprite_nb)))
+	if (!(s->sprite = ft_calloc(sizeof(t_sprite), s->map.sprite_nb)))
 		return (ft_error(-1));
 	}
 	ft_sprite_pos(s);
@@ -683,18 +711,30 @@ void	ft_pixel(t_struct *s)
 	}
 }
 
-unsigned int	*ft_load_tex(t_struct *s, char *path)
+unsigned int	*ft_load_tex(t_struct *s, char *line)
 {
 	void	*ptr;
-	int		tab[5];
+	int		tmp[5];
 	unsigned int	*adr;
 	int		fd;
+	char	**tab;
+	int		i;
 
-	ptr = mlx_xpm_file_to_image(s->mlx, path, &tab[0], &tab[1]);
-	if (tab[0] != tab[1])
+	i = 0;
+	s->i += 2;
+	tab = ft_split(&line[s->i], ' ');
+	while (tab[i])
+		i++;
+	if (i != 1)
+		ft_error(1);
+	ptr = mlx_xpm_file_to_image(s->mlx, tab[0], &tmp[0], &tmp[1]);
+	if (tmp[0] != tmp[1])
 		return (NULL);
-	s->tex.width = tab[0];
-	adr = (unsigned int*)mlx_get_data_addr(ptr, &tab[2], &tab[3], &tab[4]);
+	s->tex.width = tmp[0];
+	adr = (unsigned int*)mlx_get_data_addr(ptr, &tmp[2], &tmp[3], &tmp[4]);
+	free(ptr);
+	free(tab[0]);
+	free(tab);
 	return (adr);
 }
 

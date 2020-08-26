@@ -1,13 +1,15 @@
-R    0 0
+	 R   1200    1000   
+F 191  ,  191 ,  191
+C 5,225 ,225  
 
-NO ./images/brick.xpm
-SO ./images/grey.xpm
-WE ./images/floor.xpm
-EA ./images/wood.xpm
+
+
+   NO ./images/brick.xpm
+SO    ./images/grey.xpm
+WE   ./images/floor.xpm
+  EA    ./images/wood.xpm
 S ./images/barrel.xpm
-
-F 191,191,191
-C 5,225,225
+  
 
         1111111111111111111111111
         1000000000110000000000001
