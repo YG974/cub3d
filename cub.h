@@ -72,14 +72,18 @@ typedef struct		s_double_xy
 	double			y;
 }					t_double_xy;
 
-typedef struct	s_map
+typedef struct		s_win
 {
-	char			**tab;
+	void			*ptr;	
 	int				x;
 	int				y;
-	int				sprite_nb;
-	
-}					t_map;
+}					t_win;
+
+typedef struct	s_img
+{
+	void			*ptr;	
+	unsigned int	*adr;
+}					t_img;
 
 typedef struct		s_color
 {
@@ -103,12 +107,21 @@ typedef struct		s_tex
 	int				width; /* texture bloc width */
 }					t_tex;
 
+typedef struct	s_map
+{
+	char			**tab;
+	int				x;
+	int				y;
+	int				sprite_nb;
+	
+}					t_map;
+
 typedef struct		s_ray
 {
 	t_int_xy		pos; /* ray position */
-	t_double_xy		 dir; /*ray direction*/ 
-	t_double_xy		 sd; /* side_dist : dist from player to the next map square until hitting a wall */
-	t_double_xy		 dd; /* delta_dist : dist from the ray_pos to the next map square */
+	t_double_xy		dir; /*ray direction*/ 
+	t_double_xy		sd; /* side_dist : dist from player to the next map square until hitting a wall */
+	t_double_xy		dd; /* delta_dist : dist from the ray_pos to the next map square */
 }					t_ray;
 
 typedef struct	s_sprite
@@ -130,9 +143,9 @@ typedef	struct		s_wall
 	int				side;
 	int				hit;
 	int				height;
-	double			perp_dist;
 	int				start;
 	int				end;
+	double			perp_dist;
 	double			x;
 	double			*buf;
 }					t_wall;
@@ -144,40 +157,22 @@ typedef struct		s_player
 	t_double_xy		plane;	/* camera plane, which is always perpendicular to player dir */
 }					t_player;
 
-typedef struct		s_win
-{
-	void			*ptr;	
-	int				x;
-	int				y;
-}					t_win;
-
-typedef struct	s_img
-{
-	void			*ptr;	
-	unsigned int	*adr;
-}					t_img;
-
 typedef struct		s_struct
 {
-	t_tex			tex;
-	t_color			sky;
-	t_color			floor;
-	t_map			map;
-	t_wall			wall;
-	t_player		p;
-	t_sprite		*sprite;
+	void			*mlx;	//mlx pointer
 	t_win			win;
 	t_img			img;
-	double			cam;	// x camera coordinate : -1 is left, 0 is center, 1 is right
-	t_ray			ray;	// rays sent to see if a wall or obstacle is hitten
-	unsigned int	color; /* pixel color to draw */
-
-	void			*mlx;	//mlx pointer
-	
-	//char			**tmp;	//buffer to parse the map file with ft_split
-	//char			*buf;	//buffer to parse data, line by line with ft_split
+	t_color			sky;
+	t_color			floor;
+	t_tex			tex;
+	t_map			map;
+	t_player		p;
+	t_ray			ray;
+	t_wall			wall;
+	t_sprite		*sprite;
+	double			cam;	/* x cam coordinate : -1 = left | 0 = center | 1 = right */
+	unsigned int	color;	/* pixel color to draw */
 	char			*cub;	//map file name
-	
 	int				i;		//counter
 	int				x;		//x coordinate of the screen 0 is top left
 	int				y;		//y coordinate of the screen 0 is top left
@@ -187,12 +182,10 @@ typedef struct		s_struct
 int		key_press(int key, t_struct *s);
 
 /* initialization functions */
-void	ft_init_struct(char	*av, int arg);
-void	ft_init_tex(t_struct *s);
-void	ft_init_color(t_struct *s);
-void	ft_init_map(t_struct *s);
-void	ft_init_mlx(t_struct *s);
-void	ft_init_pos(t_struct *s);
+void	ft_init(char *av1, int arg);
+void	ft_init_file_data(t_struct *s);
+void	ft_init_player(t_struct *s);
+void	ft_init_raycasting_data(t_struct *s);
 
 /* parsing and reading functions*/
 void	ft_parse(t_struct	*s);
@@ -243,4 +236,4 @@ void	ft_pixel(t_struct *s);
 /* errors functions */
 int		ft_escape(t_struct *s);
 int		ft_exit(t_struct *s);
-void	ft_error(int i);
+int		ft_error(int error);

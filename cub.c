@@ -15,14 +15,102 @@
 int		main(int ac, char **av)
 {
 	if (ac == 2 && ft_suffix(av[1], ".cub") == 1)
-		ft_init_struct(av[1], 0);
+		ft_init(av[1], 0);
 	else if (ac == 3 && ft_suffix(av[1], ".cub") == 1 
 			&& ft_strncmp(av[2], "--save", 7) == 0)
-		ft_init_struct(av[1], 1);
+		ft_init(av[1], 1);
 	else
 		write(2, "wrong arguments", 15);
 	return (1);
 }
+
+void	ft_init(char *av1, int arg)
+{
+	t_struct	s;
+	int tab[3];
+
+	if (!(s.map.tab= malloc(sizeof(char **) * 1)))
+	{
+		write(2, "Error : calloc fail\n", 20);
+		return ;
+	}
+	s.cub = ft_strdup(av1);
+	s.mlx = mlx_init();
+	ft_init_file_data(&s);
+	ft_init_player(&s);
+	ft_parse(&s);
+	ft_init_raycasting_data(&s);
+	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, "42");
+	s.img.ptr = mlx_new_image(s.mlx, s.win.x, s.win.y);
+	s.img.adr = (unsigned int*)mlx_get_data_addr(s.img.ptr, 
+			&tab[0], &tab[1],&tab[2]);
+	/*ft_print_arg(&s);*/
+	ft_draw_wall(&s);
+	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
+	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
+	mlx_loop(s.mlx);
+	exit(0);
+	return;
+}
+void	ft_init_file_data(t_struct *s)
+{
+	s->win.ptr = 0;
+	s->win.x = 0;
+	s->win.y = 0;
+	s->img.ptr = 0;
+	s->img.adr = 0;
+	s->tex.n = 0;
+	s->tex.s = 0;
+	s->tex.e = 0;
+	s->tex.w = 0;
+	s->tex.sprite = 0;
+	s->tex.pos = 0.0;
+	s->tex.step = 0.0;
+	s->tex.x = 0;
+	s->tex.y = 0;
+	s->tex.width = 0;
+	s->sky.r = -1;
+	s->sky.g = -1;
+	s->sky.b = -1;
+	s->sky.color = 0;
+	s->floor = s->sky;
+	s->map.x = 0;
+	s->map.y = 0;
+	s->map.sprite_nb = 0;
+}
+void	ft_init_player(t_struct *s)
+{
+	s->cam = 0.0;
+	s->p.pos.x = 0.0;
+	s->p.pos.y = 0.0;
+	s->p.dir.x = 0.0;
+	s->p.dir.y = 0.0;
+	s->p.plane.x = 0.0;
+	s->p.plane.y = 0.0;
+}
+
+void	ft_init_raycasting_data(t_struct *s)
+{
+	s->ray.pos.x = 0;
+	s->ray.pos.y = 0;
+	s->ray.dir = s->p.plane;
+	s->ray.sd = s->p.plane;
+	s->ray.dd = s->p.plane;
+	s->wall.step = s->ray.pos;
+	s->wall.side = 0;
+	s->wall.hit = 0;
+	s->wall.height = 0;
+	s->wall.start = 0;
+	s->wall.end = 0;
+	s->wall.perp_dist = 0.0;
+	s->wall.x = 0.0;
+	if (!(s->wall.buf = ft_calloc(sizeof(double), s->win.x + 1)))
+	{
+		write(2, "Error : calloc fail\n", 20);
+		return ;
+	}
+}
+
 
 int		ft_is_space(char c)
 {
@@ -48,8 +136,6 @@ void	ft_parse(t_struct *s)
 	if (!(fd = open(s->cub, O_RDONLY)))
 		return ;
 	ret = 1;
-	if (!(s->map.tab = ft_calloc(sizeof(char **), 1)))
-		return ;
 	while (ret == get_next_line(fd, &line))
 	{
 		s->i = 0;
@@ -59,6 +145,8 @@ void	ft_parse(t_struct *s)
 			ft_read_line(s, line);
 		free(line);
 	}
+	if (ft_check_parsing(s) == 0)
+		ft_error(5);
 	ft_get_pos(s);
 	/*while(1);*/
 	close(fd);
@@ -122,14 +210,14 @@ t_color	ft_color(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 3)
-		ft_error(1);
+		ft_error(4);
 	color.r = ft_atoi((const char *)tab[0]);
 	color.g = ft_atoi((const char *)tab[1]);
 	color.b = ft_atoi((const char *)tab[2]);
 	if (color.r > 255 || color.r < 0 ||
 			color.g > 255 || color.g < 0 ||
 			color.b > 255 || color.b < 0)
-		ft_error(1);
+		ft_error(4);
 	free(tab[0]);
 	free(tab[1]);
 	free(tab[2]);
@@ -148,7 +236,7 @@ void	ft_resolution(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 2)
-		ft_error(1);
+		ft_error(3);
 	s->win.x = ft_atoi((const char *)tab[0]);
 	s->win.y = ft_atoi((const char *)tab[1]);
 	s->win.x = (s->win.x <= 0 ? WIDTH : s->win.x);
@@ -158,12 +246,18 @@ void	ft_resolution(t_struct *s, char *line)
 	free(tab[0]);
 	free(tab[1]);
 	free(tab);
-	ft_init_mlx(s);
 }
 
-void	ft_error(int i)
+int		ft_error(int error)
 {
-	write(1, "error\n", 6);
+	(error == 1) ? write(2, "Error : calloc fail\n", 20) : 0;
+	(error == 2) ? write(2, "Error : wrong map file extension\n", 31) : 0;
+	(error == 3) ? write(2, "Error : wrong resolution description\n", 33) : 0;
+	(error == 4) ? 
+		write(2, "Error : wrong sky or ceiling description\n", 34) : 0;
+	(error == 5) ? write(2, "Error : missing element description\n", 34) : 0;
+	(error == 6) ? write(2, "Error : wrong texture description\n", 34) : 0;
+	return (-1);
 }
 
 int		ft_suffix(char *file_name, char *suffix)
@@ -175,7 +269,7 @@ int		ft_suffix(char *file_name, char *suffix)
 			file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
 		return (1);
 	else
-		write(1, "wrong argument", 14);
+		return (ft_error(2));
 	return (0);
 }
 
@@ -216,8 +310,11 @@ char	**new_tab(char **tab, char *str)
 	n = 0;
 	while (tab[n])
 		n++;
-	if (!(new_tab = ft_calloc(sizeof(char **), (n + 2))))
+	if (!(new_tab = malloc(sizeof(char **) * (n + 2))))
+	{
+		write(2, "Error : calloc fail\n", 20);
 		return (NULL);
+	}
 	n = 0;
 	while (tab[n])
 	{
@@ -296,101 +393,6 @@ void	ft_rotate(t_struct *s, double sign)
 	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 }
 
-void	ft_init_struct(char *av1, int arg)
-{
-	t_struct	s;
-
-	s.cub = ft_strdup(av1);
-	s.mlx = mlx_init();
-	ft_init_tex(&s);
-	ft_init_color(&s);
-	ft_init_map(&s);
-	ft_init_pos(&s);
-	/*s.mlx = NULL;*/
-	/*s.win.ptr = NULL;*/
-	/*s.img.adr = 0;*/
-	/*s.img.ptr = NULL;*/
-	/*s.win.x = 0;*/
-	/*s.win.y = 0;*/
-	ft_parse(&s);
-	/*ft_print_arg(&s);*/
-	if (!(s.wall.buf = ft_calloc(sizeof(double), s.win.x + 1)))
-		return (ft_error(-1));
-	ft_draw_wall(&s);
-	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
-	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
-	mlx_loop(s.mlx);
-	exit(0);
-	return;
-}
-
-void	ft_init_pos(t_struct *s)
-{
-	s->p.pos.x = 0.0;
-	s->p.pos.y = 0.0;
-	s->p.dir.x = 0.0;
-	s->p.dir.y = 0.0;
-	s->p.plane.x = 0.0;
-	s->p.plane.y = 0.0;
-	s->cam = 0.0;
-	s->ray.dir = s->p.plane;
-	s->ray.sd = s->p.plane;
-	s->ray.dd = s->p.plane;
-	s->wall.step.x = 0;
-	s->wall.step.y = 0;
-	s->wall.side = 0;
-	s->wall.hit = 0;
-	s->ray.pos = s->wall.step;
-}
-
-void	ft_init_map(t_struct *s)
-{
-	s->map.tab = NULL;
-	s->map.x = 0;
-	s->map.y = 0;
-	s->map.sprite_nb = 0;
-}
-
-void	ft_init_color(t_struct *s)
-{
-	s->sky.r = -1;
-	s->sky.g = -1;
-	s->sky.b = -1;
-	s->sky.color = 0;
-	s->floor = s->sky;
-	return ;
-}
-
-void	ft_init_tex(t_struct *s)
-{
-	s->tex.n = 0;
-	s->tex.s = 0;
-	s->tex.e = 0;
-	s->tex.w = 0;
-	s->tex.sprite = 0;
-	s->tex.pos = 0.0;
-	s->tex.step = 0.0;
-	s->tex.x = 0;
-	s->tex.y = 0;
-	s->tex.width = 0;
-}
-
-void	ft_init_mlx(t_struct *s)
-{
-	int tab[3];
-
-	s->win.ptr = mlx_new_window(s->mlx, s->win.x, s->win.y, "42");
-	s->img.ptr = mlx_new_image(s->mlx, s->win.x, s->win.y);
-	s->img.adr = (unsigned int*)mlx_get_data_addr(s->img.ptr, 
-			&tab[0], &tab[1],&tab[2]);
-	/*ft_move_forward(s, 1);*/
-	/*ft_move_forward(s, -1);*/
-	/*ft_move_side(s, -1);*/
-	/*ft_move_side(s, 1);*/
-	/*ft_rotate(s, -1);*/
-	/*ft_rotate(s, 1);*/
-	return ;
-}
 
 
 
@@ -432,8 +434,11 @@ void	ft_sprite(t_struct *s)
 	if ( s->map.sprite_nb == 0)
 	{
 		ft_count_sprite(s);
-	if (!(s->sprite = ft_calloc(sizeof(t_sprite), s->map.sprite_nb)))
-		return (ft_error(-1));
+		if (!(s->sprite = malloc(sizeof(t_sprite) * s->map.sprite_nb)))
+		{
+			write(2, "Error : calloc fail\n", 20);
+			return ;
+		}
 	}
 	ft_sprite_pos(s);
 	ft_sprite_distance(s);
@@ -744,7 +749,7 @@ unsigned int	*ft_load_tex(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 1)
-		ft_error(1);
+		ft_error(6);
 	ptr = mlx_xpm_file_to_image(s->mlx, tab[0], &tmp[0], &tmp[1]);
 	if (tmp[0] != tmp[1])
 		return (NULL);
