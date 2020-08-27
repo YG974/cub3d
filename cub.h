@@ -130,8 +130,8 @@ typedef struct	s_sprite
 	int				width;
 	int				screen;
 	double			dist;
-	t_int_xy		start; /* y coordinate to start drawing the column */
-	t_int_xy		end; /* y coordinate to end drawing the column */
+	t_int_xy		start; /* y coordinate to start drawing the wall */
+	t_int_xy		end; /* y coordinate to end drawing the wall */
 	t_double_xy		pos;
 	t_double_xy		delta; /* relative x and y coordinate from the player */
 	t_double_xy		depth; 
@@ -178,62 +178,67 @@ typedef struct		s_struct
 	int				y;		//y coordinate of the screen 0 is top left
 }					t_struct;
 
-/* keyboard management functions */
-int		key_press(int key, t_struct *s);
 
-/* initialization functions */
-void	ft_init(char *av1, int arg);
-void	ft_init_file_data(t_struct *s);
-void	ft_init_player(t_struct *s);
-void	ft_init_raycasting_data(t_struct *s);
+/* cub.c */
+void				ft_init(char *av1, int arg);
+void				ft_init_file_data(t_struct *s);
+void				ft_init_player(t_struct *s);
+void				ft_init_raycasting_data(t_struct *s);
 
-/* parsing and reading functions*/
-void	ft_parse(t_struct	*s);
-void	ft_read_line(t_struct *s, char	*tmp);
-int		read_number(t_struct *s);
-void	skip_space(t_struct *s, char *line);
-void	ft_resolution(t_struct *s, char	*tmp);
-t_color		ft_color(t_struct *s, char	*tmp);
-void	ft_map(t_struct *s);
-char	**new_tab(char **tab, char *str);
-unsigned int	*ft_load_tex(t_struct *s, char *tmp);
-void	ft_get_pos(t_struct *s);
-void	ft_load_map(t_struct *s, char *line);
+/* parse.c */
+void				ft_parse(t_struct	*s);
+void				ft_read_line(t_struct *s, char	*tmp);
+void				ft_resolution(t_struct *s, char	*tmp);
+t_color				ft_color(t_struct *s, char	*tmp);
+unsigned int		*ft_load_tex(t_struct *s, char *tmp);
 
-/* displaying functions */
-void	ft_draw_wall(t_struct *s);
-void	ft_ray_init(t_struct *s);
-void	ft_ray_direction(t_struct *s);
-void	ft_ray_hit(t_struct *s);
-void	ft_coloumn_size(t_struct *s);
-void	ft_column_texture(t_struct *s);
-void	ft_draw_columns(t_struct *s);
-void	ft_pixel(t_struct *s);
+/* parse_map.c */
+char				**new_tab(char **tab, char *str);
+void				ft_get_pos(t_struct *s);
+void				ft_load_map(t_struct *s, char *line);
 
-/* checking functions */
-int		is_space(char c);
-int		ft_suffix(char *file_name, char *suffix);
-void	ft_print_arg(t_struct *s);
-int		ft_check_parsing(t_struct *s);
-void	print_map(t_struct *s);
+/* utils.c */
+void				skip_space(t_struct *s, char *line);
+int					is_space(char c);
+int					ft_suffix(char *file_name, char *suffix);
+int					ft_check_parsing(t_struct *s);
 
-/* moving functions */
-void	ft_move_forward(t_struct *s, double sign);
-void	ft_move_side(t_struct *s, double sign);
-void	ft_rotate(t_struct *s, double sign);
+/* print.c */
+void				ft_print_arg(t_struct *s);
+void				print_map(t_struct *s);
+void				print_sprite(t_struct *s);
 
-/* sprite functions */
-void	ft_sprite(t_struct *s);
-void	ft_count_sprite(t_struct *s);
-void	ft_sprite_pos(t_struct *s);
-void	ft_sprite_distance(t_struct *s);
-void	ft_sort_sprite(t_struct *s);
-void	ft_sprite_transform(t_struct *s);
-void	ft_sprite_size(t_struct *s);
-void	ft_draw_sprite(t_struct *s);
-void	ft_pixel(t_struct *s);
+/* wall_1.c */
+void				ft_wall(t_struct *s);
+void				ft_ray_init(t_struct *s);
+void				ft_ray_direction(t_struct *s);
+void				ft_ray_hit(t_struct *s);
+
+/* wall_2.c */
+void				ft_wall_size(t_struct *s);
+void				ft_wall_texture(t_struct *s);
+void				ft_draw_walls(t_struct *s);
+void				ft_pixel(t_struct *s);
+
+/* move.c */
+int					key_press(int key, t_struct *s);
+void				ft_move_forward(t_struct *s, double sign);
+void				ft_move_side(t_struct *s, double sign);
+void				ft_rotate(t_struct *s, double sign);
+
+/* sprite_1.c */
+void				ft_sprite(t_struct *s);
+void				ft_count_sprite(t_struct *s);
+void				ft_sprite_pos(t_struct *s);
+void				ft_sprite_distance(t_struct *s);
+void				ft_sort_sprite(t_struct *s);
+
+/* sprite_2.c */
+void				ft_sprite_transform(t_struct *s);
+void				ft_sprite_size(t_struct *s);
+void				ft_draw_sprite(t_struct *s);
 
 /* errors functions */
-int		ft_escape(t_struct *s);
-int		ft_exit(t_struct *s);
-int		ft_error(int error);
+int					ft_escape(t_struct *s);
+int					ft_exit(t_struct *s);
+int					ft_error(int error);

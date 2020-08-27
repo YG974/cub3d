@@ -15,7 +15,9 @@ NAME		= Cub3D
 SRC_MLX	= ./minilibx
 SRC_LIBFT	= ./libft
 
-SRC 		= cub 
+SRC 		=	cub parse parse_map wall_1 wall_2 sprite_1 sprite_2 \
+				move utils print check_parsing \
+
 
 FILES = $(addsuffix .c, $(SRC))
 
