@@ -15,9 +15,12 @@
 int		main(int ac, char **av)
 {
 	if (ac == 2 && ft_suffix(av[1], ".cub") == 1)
-		ft_init_struct(av[1]);
+		ft_init_struct(av[1], 0);
+	else if (ac == 3 && ft_suffix(av[1], ".cub") == 1 
+			&& ft_strncmp(av[2], "--save", 7) == 0)
+		ft_init_struct(av[1], 1);
 	else
-		return (0);
+		write(2, "wrong arguments", 15);
 	return (1);
 }
 
@@ -31,7 +34,6 @@ int		ft_is_space(char c)
 
 void	ft_skip_space(t_struct *s, char *line)
 {
-	/*printf("%s\n", line);*/
 	while (ft_is_space(line[s->i]) == 1)
 		s->i++;
 	return;
@@ -70,7 +72,7 @@ void	ft_load_map(t_struct *s, char *line)
 	
 	c = line[0];
 	if (c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f' || c == 0)
-		return ;
+		return (free(tmp));
 	tmp = ft_strdup(line);
 	s->map.tab = new_tab(s->map.tab, tmp);
 }
@@ -156,7 +158,7 @@ void	ft_resolution(t_struct *s, char *line)
 	free(tab[0]);
 	free(tab[1]);
 	free(tab);
-	/*ft_init_mlx(s);*/
+	ft_init_mlx(s);
 }
 
 void	ft_error(int i)
@@ -214,7 +216,7 @@ char	**new_tab(char **tab, char *str)
 	n = 0;
 	while (tab[n])
 		n++;
-	if (!(new_tab = malloc(sizeof(char **) * (n + 2))))
+	if (!(new_tab = ft_calloc(sizeof(char **), (n + 2))))
 		return (NULL);
 	n = 0;
 	while (tab[n])
@@ -294,30 +296,30 @@ void	ft_rotate(t_struct *s, double sign)
 	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 }
 
-void	ft_init_struct(char *av)
+void	ft_init_struct(char *av1, int arg)
 {
 	t_struct	s;
 
-	s.cub = (char *)ft_strdup(av);
+	s.cub = ft_strdup(av1);
+	s.mlx = mlx_init();
 	ft_init_tex(&s);
 	ft_init_color(&s);
 	ft_init_map(&s);
 	ft_init_pos(&s);
-	s.mlx = NULL;
-	s.mlx = mlx_init();
-	s.win.ptr = NULL;
-	s.img.adr = 0;
-	s.img.ptr = NULL;
-	s.win.x = 0;
-	s.win.y = 0;
+	/*s.mlx = NULL;*/
+	/*s.win.ptr = NULL;*/
+	/*s.img.adr = 0;*/
+	/*s.img.ptr = NULL;*/
+	/*s.win.x = 0;*/
+	/*s.win.y = 0;*/
 	ft_parse(&s);
-	ft_print_arg(&s);
-	/*if (!(s.wall.buf = calloc(sizeof(double), s.win.x + 1)))*/
-		/*return (ft_error(-1));*/
-	/*ft_draw_wall(&s);*/
-	/*mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);*/
-	/*mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);*/
-	/*mlx_loop(s.mlx);*/
+	/*ft_print_arg(&s);*/
+	if (!(s.wall.buf = ft_calloc(sizeof(double), s.win.x + 1)))
+		return (ft_error(-1));
+	ft_draw_wall(&s);
+	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
+	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
+	mlx_loop(s.mlx);
 	exit(0);
 	return;
 }
@@ -354,6 +356,7 @@ void	ft_init_color(t_struct *s)
 	s->sky.r = -1;
 	s->sky.g = -1;
 	s->sky.b = -1;
+	s->sky.color = 0;
 	s->floor = s->sky;
 	return ;
 }
@@ -436,7 +439,7 @@ void	ft_sprite(t_struct *s)
 	ft_sprite_distance(s);
 	ft_sort_sprite(s);
 	s->i = 0;
-	printf("\n");
+	/*printf("\n");*/
 	while (s->i < s->map.sprite_nb)
 	{
 		ft_sprite_transform(s);
@@ -694,10 +697,10 @@ void	ft_draw_columns(t_struct *s)
 			s->img.adr[s->x + s->win.x * s->y++] = s->color;
 	while (s->y >= s->wall.start && s->y <= s->wall.end)
 	{
-	s->tex.y = (int)s->tex.pos /*& (64 - 1)*/;
-	s->tex.pos += s->tex.step;
+		s->tex.y = (int)s->tex.pos & (64 - 1);
+		s->tex.pos += s->tex.step;
 		ft_pixel(s);
-		/*mlx_pixel_put(s->mlx, s->win.ptr, s->x, s->y, s->color);*/
+		mlx_pixel_put(s->mlx, s->win.ptr, s->x, s->y, s->color);
 		s->y++;
 	}
 	s->color = s->floor.r * 256 * 256 + s->floor.g * 256 + s->floor.b;
