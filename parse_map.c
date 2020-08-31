@@ -19,62 +19,37 @@ void	ft_load_map(t_struct *s, char *line)
 	char	c;
 	
 	c = line[0];
-	if (c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f' || c == 0)
-		return (free(tmp));
 	tmp = ft_strdup(line);
 	s->map.tab = new_tab(s->map.tab, tmp);
 }
 
-void	ft_check_map_NSEW(t_struct *s)
+void	ft_check_map(t_struct *s)
 {
-	int		i;
-
-	i = 0;
-	s->map.y = 0;
-	while (s->map.tab[s->map.y])
-	{
-		s->map.x = 0;
-		while (s->map.tab[s->map.y][s->map.x])
-		{
-			if (s->map.tab[s->map.y][s->map.x] != 'N' &&
-				s->map.tab[s->map.y][s->map.x] != 'S' &&
-				s->map.tab[s->map.y][s->map.x] != 'E' &&
-				s->map.tab[s->map.y][s->map.x] != 'W' &&
-				s->map.tab[s->map.y][s->map.x] != '2' &&
-				s->map.tab[s->map.y][s->map.x] != ' ' &&
-				s->map.tab[s->map.y][s->map.x] != '1' &&
-				s->map.tab[s->map.y][s->map.x] != '0' )
-				return (ft_error(s, 9));
-			s->map.x++;
-		}
-		s->map.y++;
-	}
+	ft_check_map_char(s, 0, 0);
 }
 
-void	ft_check_map_char(t_struct *s)
+void	ft_check_map_char(t_struct *s, int x, int y)
 {
 	int		i;
 
 	i = 0;
-	s->map.y = 0;
-	while (s->map.tab[s->map.y])
+	while (s->map.tab[y])
 	{
-		s->map.x = 0;
-		while (s->map.tab[s->map.y][s->map.x])
+		x = 0;
+		while (s->map.tab[y][x])
 		{
-			if (s->map.tab[s->map.y][s->map.x] != 'N' &&
-				s->map.tab[s->map.y][s->map.x] != 'S' &&
-				s->map.tab[s->map.y][s->map.x] != 'E' &&
-				s->map.tab[s->map.y][s->map.x] != 'W' &&
-				s->map.tab[s->map.y][s->map.x] != '2' &&
-				s->map.tab[s->map.y][s->map.x] != ' ' &&
-				s->map.tab[s->map.y][s->map.x] != '1' &&
-				s->map.tab[s->map.y][s->map.x] != '0' )
-				return (ft_error(s, 9));
-			s->map.x++;
+			if (s->map.tab[y][x] == '\n' || s->map.tab[y][x] == '\0')
+				x = x;
+			if (ft_is_charset((char)s->map.tab[y][x], "NSEW 012") == 0)
+				return (ft_error(s, 1));
+			if (ft_is_charset(s->map.tab[y][x], "NSEW") == 1)
+				i++;
+			x++;
 		}
-		s->map.y++;
+		y++;
 	}
+	if (i > 1)
+		return (ft_error(s, 9));
 }
 
 void	ft_check_map_borders(t_struct *s)
@@ -85,14 +60,6 @@ void	ft_check_map_borders(t_struct *s)
 		s->map.x = 0;
 		while (s->map.tab[s->map.y][s->map.x])
 		{
-			if (s->map.tab[s->map.y][s->map.x] != 'N' &&
-				s->map.tab[s->map.y][s->map.x] != 'S' &&
-				s->map.tab[s->map.y][s->map.x] != 'E' &&
-				s->map.tab[s->map.y][s->map.x] != 'W' &&
-				s->map.tab[s->map.y][s->map.x] != '2' &&
-				s->map.tab[s->map.y][s->map.x] != ' ' &&
-				s->map.tab[s->map.y][s->map.x] != '1' &&
-				s->map.tab[s->map.y][s->map.x] != '0' )
 				return (ft_error(s, 9));
 			s->map.x++;
 		}
@@ -138,7 +105,7 @@ char	**new_tab(char **tab, char *str)
 	n = 0;
 	while (tab[n])
 		n++;
-	if (!(new_tab = malloc(sizeof(char **) * (n + 2))))
+	if (!(new_tab = ft_calloc(sizeof(char **), (n + 2))))
 	{
 		write(2, "Error : calloc fail\n", 20);
 		return (NULL);
@@ -154,4 +121,3 @@ char	**new_tab(char **tab, char *str)
 	new_tab[n + 1] = NULL;
 	return (new_tab);
 }
-

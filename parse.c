@@ -35,8 +35,8 @@ void			ft_parse(t_struct *s)
 	}
 	if (ft_check_parsing(s) == -1)
 		ft_error(s, 5);
+	ft_check_map(s);
 	ft_get_pos(s);
-	/*while(1);*/
 	close(fd);
 }
 

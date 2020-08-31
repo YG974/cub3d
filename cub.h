@@ -198,12 +198,14 @@ unsigned int		*ft_load_tex(t_struct *s, char *tmp);
 char				**new_tab(char **tab, char *str);
 void				ft_get_pos(t_struct *s);
 void				ft_load_map(t_struct *s, char *line);
-void				ft_check_map_char(t_struct *s);
+void				ft_check_map_char(t_struct *s, int x, int y);
 void				ft_check_map_borders(t_struct *s);
+void				ft_check_map(t_struct *s);
 
 /* utils.c */
 void				ft_skip_space(t_struct *s, char *line);
 int					is_space(char c);
+int					ft_is_charset(char c, char *set);
 int					ft_suffix(char *file_name, char *suffix);
 int					ft_check_parsing(t_struct *s);
 

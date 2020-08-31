@@ -20,6 +20,19 @@ int		ft_is_space(char c)
 	return (0);
 }
 
+int		ft_is_charset(char c, char *set)
+{
+	int	i = 0;
+
+	while (set[i] != '\0')
+	{
+		if (c == set[i])
+			return (1);
+		i++;
+	}
+	return (0);
+	/*return (printf("biz"));*/
+}
 void	ft_skip_space(t_struct *s, char *line)
 {
 	while (ft_is_space(line[s->i]) == 1)

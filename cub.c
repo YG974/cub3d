@@ -32,7 +32,7 @@ void	ft_init(char *av1, int arg)
 	t_struct	s;
 	int tab[3];
 
-	if (!(s.map.tab= malloc(sizeof(char **) * 1)))
+	if (!(s.map.tab= ft_calloc(sizeof(char **), 1)))
 	{
 		write(2, "Error : calloc fail\n", 20);
 		return ;
@@ -49,7 +49,8 @@ void	ft_init(char *av1, int arg)
 	if (arg == 1)
 		ft_bitmap(&s);
 	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, WIN_NAME);
-	ft_print_arg(&s);
+	/*ft_print_arg(&s);*/
+	print_map(&s);
 	/*mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);*/
 	ft_wall(&s);
 	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
