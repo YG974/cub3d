@@ -12,26 +12,29 @@
 
 #include "cub.h"
 
-void	ft_parse(t_struct *s)
+void			ft_parse(t_struct *s)
 {
-	char	*line;
-	int		fd;
-	int		ret;
+	char			*line;
+	int			fd;
+	int			ret;
 
 	if (!(fd = open(s->cub, O_RDONLY)))
+	{
+		write(2, "Error : couldn't open map file\n", 31);
 		return ;
+	}
 	ret = 1;
 	while (ret == get_next_line(fd, &line))
 	{
 		s->i = 0;
 		if (ft_check_parsing(s) == 1)
 			ft_load_map(s, line);
-		else 
+		else
 			ft_read_line(s, line);
 		free(line);
 	}
 	if (ft_check_parsing(s) == -1)
-		ft_error(5);
+		ft_error(s, 5);
 	ft_get_pos(s);
 	/*while(1);*/
 	close(fd);
@@ -59,10 +62,10 @@ void	ft_read_line(t_struct *s, char *line)
 	return;
 }
 
-void	ft_resolution(t_struct *s, char *line)
+void			ft_resolution(t_struct *s, char *line)
 {
-	char	**tab;
-	int		i;
+	char			**tab;
+	int				i;
 
 	i = 0;
 	s->i++;
@@ -70,7 +73,7 @@ void	ft_resolution(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 2)
-		ft_error(3);
+		ft_error(s, 3);
 	s->win.x = ft_atoi((const char *)tab[0]);
 	s->win.y = ft_atoi((const char *)tab[1]);
 	s->win.x = (s->win.x <= 0 ? WIDTH : s->win.x);
@@ -82,11 +85,11 @@ void	ft_resolution(t_struct *s, char *line)
 	free(tab);
 }
 
-t_color	ft_color(t_struct *s, char *line)
+t_color			ft_color(t_struct *s, char *line)
 {
-	t_color color;
-	char	**tab;
-	int		i;
+	t_color			color;
+	char			**tab;
+	int				i;
 
 	i = 0;
 	s->i = 1;
@@ -94,14 +97,13 @@ t_color	ft_color(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 3)
-		ft_error(4);
+		ft_error(s, 4);
 	color.r = ft_atoi((const char *)tab[0]);
 	color.g = ft_atoi((const char *)tab[1]);
 	color.b = ft_atoi((const char *)tab[2]);
-	if (color.r > 255 || color.r < 0 ||
-			color.g > 255 || color.g < 0 ||
+	if (color.r > 255 || color.r < 0 || color.g > 255 || color.g < 0 ||
 			color.b > 255 || color.b < 0)
-		ft_error(4);
+		ft_error(s, 4);
 	free(tab[0]);
 	free(tab[1]);
 	free(tab[2]);
@@ -111,12 +113,12 @@ t_color	ft_color(t_struct *s, char *line)
 
 unsigned int	*ft_load_tex(t_struct *s, char *line)
 {
-	void	*ptr;
-	int		tmp[5];
+	void			*ptr;
+	int				tmp[5];
 	unsigned int	*adr;
-	int		fd;
-	char	**tab;
-	int		i;
+	int				fd;
+	char			**tab;
+	int				i;
 
 	i = 0;
 	s->i += 2;
@@ -124,10 +126,13 @@ unsigned int	*ft_load_tex(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 1)
-		ft_error(6);
+		ft_error(s, 6);
 	ptr = mlx_xpm_file_to_image(s->mlx, tab[0], &tmp[0], &tmp[1]);
 	if (tmp[0] != tmp[1])
+	{
+		write(2, "Error : texture image is not a square\n", 38);
 		return (NULL);
+	}
 	s->tex.width = tmp[0];
 	adr = (unsigned int*)mlx_get_data_addr(ptr, &tmp[2], &tmp[3], &tmp[4]);
 	free(ptr);

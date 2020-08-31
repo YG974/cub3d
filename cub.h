@@ -55,10 +55,12 @@
 #define WIDTH 1280
 #define HEIGHT 680
 #define WIN_NAME "Cub3D"
+#define BPP 4
 
 /* moves settings */
-#define SPEED 0.25
-#define ANGLE 0.2
+#define SPEED 0.2
+#define ANGLE 0.1
+#define FOV 0.7
 
 typedef struct		s_xy
 {
@@ -196,9 +198,11 @@ unsigned int		*ft_load_tex(t_struct *s, char *tmp);
 char				**new_tab(char **tab, char *str);
 void				ft_get_pos(t_struct *s);
 void				ft_load_map(t_struct *s, char *line);
+void				ft_check_map_char(t_struct *s);
+void				ft_check_map_borders(t_struct *s);
 
 /* utils.c */
-void				skip_space(t_struct *s, char *line);
+void				ft_skip_space(t_struct *s, char *line);
 int					is_space(char c);
 int					ft_suffix(char *file_name, char *suffix);
 int					ft_check_parsing(t_struct *s);
@@ -225,6 +229,7 @@ int					key_press(int key, t_struct *s);
 void				ft_move_forward(t_struct *s, double sign);
 void				ft_move_side(t_struct *s, double sign);
 void				ft_rotate(t_struct *s, double sign);
+void				ft_event(t_struct *s);
 
 /* sprite_1.c */
 void				ft_sprite(t_struct *s);
@@ -241,4 +246,11 @@ void				ft_draw_sprite(t_struct *s);
 /* errors functions */
 int					ft_escape(t_struct *s);
 int					ft_exit(t_struct *s);
-int					ft_error(int error);
+void				ft_error(t_struct *s, int err);
+
+/* bitmap.c */
+void				ft_bitmap(t_struct *s);
+unsigned char	*ft_bmp_file_header(t_struct *s);
+unsigned char	*ft_bmp_dib_header(t_struct *s);
+unsigned char	*ft_bmp_pixel_array(t_struct *s);
+void			ft_set_int_to_char(unsigned char *start, int value);

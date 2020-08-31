@@ -16,7 +16,7 @@ SRC_MLX	= ./minilibx
 SRC_LIBFT	= ./libft
 
 SRC 		=	cub parse parse_map wall_1 wall_2 sprite_1 sprite_2 \
-				move utils print check_parsing \
+				move utils print check_parsing bitmap\
 
 
 FILES = $(addsuffix .c, $(SRC))
@@ -29,7 +29,7 @@ CC			= clang
 
 LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
 
-FLAGS		= -Wall -Wextra -Werror -ggdb
+FLAGS		= -O3 -Wall -Wextra -Werror -ggdb
 
 all: $(NAME)
 
@@ -47,5 +47,8 @@ fclean: clean
 
 test: $(NAME)
 	./$(NAME) "map.cub"
+
+save: $(NAME)
+	./$(NAME) "map.cub" "--save"
 
 .PHONY:            all clean fclean re

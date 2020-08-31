@@ -15,12 +15,12 @@
 /* remplacer les 64 par texture_width) */
 void	ft_wall_texture(t_struct *s)
 {
-	s->tex.x = (int)(s->wall.x * 64);
+	s->tex.x = (int)(s->wall.x * s->tex.width);
 	if (s->wall.side == 0 && s->ray.dir.x > 0)
-		s->tex.x = 64 - s->tex.x - 1;
+		s->tex.x = s->tex.width - s->tex.x - 1;
 	if (s->wall.side == 1 && s->ray.dir.y < 0)
-		s->tex.x = 64 - s->tex.x - 1;
-	s->tex.step = (double)64 / s->wall.height;
+		s->tex.x = s->tex.width - s->tex.x - 1;
+	s->tex.step = (double)s->tex.width / s->wall.height;
 	s->tex.pos = (s->wall.start - s->win.y / 2 + s->wall.height / 2)
 		* s->tex.step;
 }
@@ -33,10 +33,9 @@ void	ft_draw_walls(t_struct *s)
 			s->img.adr[s->x + s->win.x * s->y++] = s->color;
 	while (s->y >= s->wall.start && s->y <= s->wall.end)
 	{
-		s->tex.y = (int)s->tex.pos & (64 - 1);
+		s->tex.y = (int)s->tex.pos /*& (64 - 1)*/;
 		s->tex.pos += s->tex.step;
 		ft_pixel(s);
-		mlx_pixel_put(s->mlx, s->win.ptr, s->x, s->y, s->color);
 		s->y++;
 	}
 	s->color = s->floor.r * 256 * 256 + s->floor.g * 256 + s->floor.b;
@@ -48,7 +47,7 @@ void	ft_pixel(t_struct *s)
 {
 	int	pix_nb;
 
-	pix_nb = 64 * s->tex.y + s->tex.x; 
+	pix_nb = s->tex.width * s->tex.y + s->tex.x;
 	if (s->wall.side == 0)
 	{
 		if (s->wall.step.x < 0)

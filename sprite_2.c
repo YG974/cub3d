@@ -49,9 +49,9 @@ void	ft_sprite_size(t_struct *s)
 
 void	ft_draw_sprite(t_struct *s)
 {
-	int	x;
-	int	y;
-	int	d;
+	int		x;
+	int		y;
+	int		d;
 
 	x = s->sprite[s->i].start.x;
 	while (x < s->sprite[s->i].end.x)

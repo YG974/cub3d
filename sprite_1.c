@@ -56,7 +56,7 @@ void	ft_count_sprite(t_struct *s)
 
 void	ft_sprite_pos(t_struct *s)
 {
-	int	i;
+	int			i;
 
 	i = 0;
 	while (i < s->map.sprite_nb)
@@ -82,7 +82,7 @@ void	ft_sprite_pos(t_struct *s)
 
 void	ft_sprite_distance(t_struct *s)
 {
-	int i;
+	int			i;
 
 	i = 0;
 	while (i < s->map.sprite_nb)
@@ -95,8 +95,8 @@ void	ft_sprite_distance(t_struct *s)
 
 void	ft_sort_sprite(t_struct *s)
 {
-	int i;
-	int	j;
+	int			i;
+	int			j;
 	t_sprite	tmp;
 
 	i = 0;

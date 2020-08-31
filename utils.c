@@ -27,28 +27,29 @@ void	ft_skip_space(t_struct *s, char *line)
 	return;
 }
 
-int		ft_error(int error)
+void	ft_error(t_struct *s, int err)
 {
-	(error == 1) ? write(2, "Error : calloc fail\n", 20) : 0;
-	(error == 2) ? write(2, "Error : wrong map file extension\n", 31) : 0;
-	(error == 3) ? write(2, "Error : wrong resolution description\n", 33) : 0;
-	(error == 4) ? 
-		write(2, "Error : wrong sky or ceiling description\n", 34) : 0;
-	(error == 5) ? write(2, "Error : missing element description\n", 34) : 0;
-	(error == 6) ? write(2, "Error : wrong texture description\n", 34) : 0;
-	return (-1);
+	(err == 1) ? ft_putstr_fd("Error : calloc fail\n", 2) : 0 ;
+	(err == 2) ? ft_putstr_fd("Error : wrong map file extension\n", 2) : 0;
+	(err == 3) ? ft_putstr_fd("Error : wrong resolution description\n", 2) : 0;
+	(err == 4) ? 
+		ft_putstr_fd("Error : wrong sky or ceiling description\n", 2) : 0;
+	(err == 5) ? ft_putstr_fd("Error : missing element description\n", 2) : 0;
+	(err == 6) ? ft_putstr_fd("Error : wrong texture description\n", 2) : 0;
+	(err == 7) ? ft_putstr_fd("Error : couldn't create bmp file\n", 2) : 0;
+	ft_exit(s);
 }
 
 int		ft_suffix(char *file_name, char *suffix)
 {
-	int		i;
+	int	i;
 
 	i = ft_strlen(file_name);
 	if (file_name[i - 1] == suffix[3] && file_name[i - 2] == suffix[2] &&
 		file_name[i - 3] == suffix[1] && file_name[i - 4] == suffix[0] && i > 4)
 		return (1);
 	else
-		return (ft_error(2));
+		ft_putstr_fd("Error : wrong map file extension\n", 2);
 	return (0);
 }
 

@@ -25,6 +25,82 @@ void	ft_load_map(t_struct *s, char *line)
 	s->map.tab = new_tab(s->map.tab, tmp);
 }
 
+void	ft_check_map_NSEW(t_struct *s)
+{
+	int		i;
+
+	i = 0;
+	s->map.y = 0;
+	while (s->map.tab[s->map.y])
+	{
+		s->map.x = 0;
+		while (s->map.tab[s->map.y][s->map.x])
+		{
+			if (s->map.tab[s->map.y][s->map.x] != 'N' &&
+				s->map.tab[s->map.y][s->map.x] != 'S' &&
+				s->map.tab[s->map.y][s->map.x] != 'E' &&
+				s->map.tab[s->map.y][s->map.x] != 'W' &&
+				s->map.tab[s->map.y][s->map.x] != '2' &&
+				s->map.tab[s->map.y][s->map.x] != ' ' &&
+				s->map.tab[s->map.y][s->map.x] != '1' &&
+				s->map.tab[s->map.y][s->map.x] != '0' )
+				return (ft_error(s, 9));
+			s->map.x++;
+		}
+		s->map.y++;
+	}
+}
+
+void	ft_check_map_char(t_struct *s)
+{
+	int		i;
+
+	i = 0;
+	s->map.y = 0;
+	while (s->map.tab[s->map.y])
+	{
+		s->map.x = 0;
+		while (s->map.tab[s->map.y][s->map.x])
+		{
+			if (s->map.tab[s->map.y][s->map.x] != 'N' &&
+				s->map.tab[s->map.y][s->map.x] != 'S' &&
+				s->map.tab[s->map.y][s->map.x] != 'E' &&
+				s->map.tab[s->map.y][s->map.x] != 'W' &&
+				s->map.tab[s->map.y][s->map.x] != '2' &&
+				s->map.tab[s->map.y][s->map.x] != ' ' &&
+				s->map.tab[s->map.y][s->map.x] != '1' &&
+				s->map.tab[s->map.y][s->map.x] != '0' )
+				return (ft_error(s, 9));
+			s->map.x++;
+		}
+		s->map.y++;
+	}
+}
+
+void	ft_check_map_borders(t_struct *s)
+{
+	s->map.y = 0;
+	while (s->map.tab[s->map.y])
+	{
+		s->map.x = 0;
+		while (s->map.tab[s->map.y][s->map.x])
+		{
+			if (s->map.tab[s->map.y][s->map.x] != 'N' &&
+				s->map.tab[s->map.y][s->map.x] != 'S' &&
+				s->map.tab[s->map.y][s->map.x] != 'E' &&
+				s->map.tab[s->map.y][s->map.x] != 'W' &&
+				s->map.tab[s->map.y][s->map.x] != '2' &&
+				s->map.tab[s->map.y][s->map.x] != ' ' &&
+				s->map.tab[s->map.y][s->map.x] != '1' &&
+				s->map.tab[s->map.y][s->map.x] != '0' )
+				return (ft_error(s, 9));
+			s->map.x++;
+		}
+		s->map.y++;
+	}
+}
+
+
 void	ft_get_pos(t_struct *s)
 {
 	while (s->map.tab[s->map.y])
@@ -36,12 +112,12 @@ void	ft_get_pos(t_struct *s)
 				s->p.dir.y = -1;
 			if (s->map.tab[s->map.y][s->map.x] == 'S')
 				s->p.dir.y = 1;
-			s->p.plane.x = 0.60 * -s->p.dir.y;
+			s->p.plane.x = FOV * -s->p.dir.y;
 			if (s->map.tab[s->map.y][s->map.x] == 'E')
 				s->p.dir.x = 1;
 			if (s->map.tab[s->map.y][s->map.x] == 'W')
 				s->p.dir.x = -1;
-			s->p.plane.y = 0.60 * -s->p.dir.x;
+			s->p.plane.y = FOV * -s->p.dir.x;
 			if ((s->p.dir.x != 0 || s->p.dir.y != 0) && (s->p.pos.x == 0))
 			{
 				s->map.tab[s->map.y][s->map.x] = '0';

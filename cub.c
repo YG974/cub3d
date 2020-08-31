@@ -23,6 +23,9 @@ int		main(int ac, char **av)
 		write(2, "wrong arguments", 15);
 	return (1);
 }
+void	ft_event(t_struct *s)
+{
+}
 
 void	ft_init(char *av1, int arg)
 {
@@ -40,18 +43,24 @@ void	ft_init(char *av1, int arg)
 	ft_init_player(&s);
 	ft_parse(&s);
 	ft_init_raycasting_data(&s);
-	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, "42");
 	s.img.ptr = mlx_new_image(s.mlx, s.win.x, s.win.y);
 	s.img.adr = (unsigned int*)mlx_get_data_addr(s.img.ptr, 
 			&tab[0], &tab[1],&tab[2]);
-	/*ft_print_arg(&s);*/
+	if (arg == 1)
+		ft_bitmap(&s);
+	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, WIN_NAME);
+	ft_print_arg(&s);
+	/*mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);*/
 	ft_wall(&s);
 	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
 	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
+	/*mlx_hook(s.win.ptr, KEY_RELEASE, KEY_RELEASE_MASK, key_press, &s);*/
 	mlx_loop(s.mlx);
-	exit(0);
+	exit(0); 
 	return;
 }
+
+
 void	ft_init_file_data(t_struct *s)
 {
 	s->win.ptr = 0;
