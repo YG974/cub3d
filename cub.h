@@ -76,14 +76,14 @@ typedef struct		s_double_xy
 
 typedef struct		s_win
 {
-	void			*ptr;	
+	void			*ptr;
 	int				x;
 	int				y;
 }					t_win;
 
 typedef struct	s_img
 {
-	void			*ptr;	
+	void			*ptr;
 	unsigned int	*adr;
 }					t_img;
 
@@ -112,6 +112,7 @@ typedef struct		s_tex
 typedef struct	s_map
 {
 	char			**tab;
+	int				h;
 	int				x;
 	int				y;
 	int				sprite_nb;
@@ -136,20 +137,20 @@ typedef struct	s_sprite
 	t_int_xy		end; /* y coordinate to end drawing the wall */
 	t_double_xy		pos;
 	t_double_xy		delta; /* relative x and y coordinate from the player */
-	t_double_xy		depth; 
+	t_double_xy		depth;
 }					t_sprite;
 
 typedef	struct		s_wall
 {
 	t_int_xy		step; /* variable to iterate every square of the map, step is negative if ray_dir < 0, so also tells us if the wall hit is NSEW combined with the side value */
-	int				side;
-	int				hit;
-	int				height;
-	int				start;
-	int				end;
-	double			perp_dist;
-	double			x;
-	double			*buf;
+	int				side; /* wich side of the wall is hitten (x or y coordinate) to know to texture to select */
+	int				hit; /* hit = 1 if the wall is hitten, in order to quite the loop */
+	int				height; /* height of the wall calculated from the distance */
+	int				start; /* y coordinate where to start drawing the wall stripe */
+	int				end; /* y coordinate where to start drawing the wall stripe */
+	double			perp_dist; /* perpendicular distance of wall from the player plane */
+	double			x; /*x coordinate of the hitten wall, in order to know the x coordinate of the texture to pick */
+	double			*buf; /* buffer to keep wall distances in order to sorte sprite and not display sprites behind walls */
 }					t_wall;
 
 typedef struct		s_player
@@ -159,9 +160,17 @@ typedef struct		s_player
 	t_double_xy		plane;	/* camera plane, which is always perpendicular to player dir */
 }					t_player;
 
+typedef struct		s_parsing
+{
+	int				res;
+	int				tex;
+	int				color;
+}					t_parsing;
+
 typedef struct		s_struct
 {
 	void			*mlx;	//mlx pointer
+	//t_parsing		parse;
 	t_win			win;
 	t_img			img;
 	t_color			sky;
@@ -195,19 +204,18 @@ t_color				ft_color(t_struct *s, char	*tmp);
 unsigned int		*ft_load_tex(t_struct *s, char *tmp);
 
 /* parse_map.c */
-char				**new_tab(char **tab, char *str);
 void				ft_get_pos(t_struct *s);
 void				ft_load_map(t_struct *s, char *line);
 void				ft_check_map_char(t_struct *s, int x, int y);
-void				ft_check_map_borders(t_struct *s);
+int					ft_check_map_borders(t_struct *s, int x, int y, char **map);
 void				ft_check_map(t_struct *s);
 
 /* utils.c */
-void				ft_skip_space(t_struct *s, char *line);
 int					is_space(char c);
+void				ft_skip_space(t_struct *s, char *line);
 int					ft_is_charset(char c, char *set);
 int					ft_suffix(char *file_name, char *suffix);
-int					ft_check_parsing(t_struct *s);
+char				**new_tab(t_struct *s, char **tab, char *str);
 
 /* print.c */
 void				ft_print_arg(t_struct *s);
@@ -245,13 +253,13 @@ void				ft_sprite_transform(t_struct *s);
 void				ft_sprite_size(t_struct *s);
 void				ft_draw_sprite(t_struct *s);
 
-/* errors functions */
-int					ft_escape(t_struct *s);
+/* utils_2.c */
 int					ft_exit(t_struct *s);
 void				ft_error(t_struct *s, int err);
+int					ft_check_parsing(t_struct *s);
 
 /* bitmap.c */
-void				ft_bitmap(t_struct *s);
+void			ft_bitmap(t_struct *s);
 unsigned char	*ft_bmp_file_header(t_struct *s);
 unsigned char	*ft_bmp_dib_header(t_struct *s);
 unsigned char	*ft_bmp_pixel_array(t_struct *s);

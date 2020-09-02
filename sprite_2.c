@@ -69,7 +69,7 @@ void	ft_draw_sprite(t_struct *s)
 					s->sprite[s->i].depth.y < s->wall.buf[x])
 			{
 				s->color = s->tex.sprite[64 * s->tex.y + s->tex.x];
-				if (s->color != BLACK) 
+				if (s->color != BLACK)
 					s->img.adr[x + s->win.x * y] = s->color;
 			}
 			y++;

@@ -23,7 +23,7 @@ int		key_press(int key, t_struct *s)
 	else if (key == KEY_D)
 		ft_move_side(s, 1);
 	else if (key == KEY_W)
-		ft_move_forward(s, 1);	
+		ft_move_forward(s, 1);
 	else if (key == KEY_LEFT)
 		ft_rotate(s, -1);
 	else if (key == KEY_RIGHT)
@@ -37,8 +37,8 @@ int		key_press(int key, t_struct *s)
 
 void	ft_move_forward(t_struct *s, double sign)
 {
-	int	x;
-	int y;
+	int		x;
+	int		y;
 
 	x = (int)(s->p.pos.x + sign * s->p.dir.x * SPEED);
 	y = (int)(s->p.pos.y + sign * s->p.dir.y * SPEED);

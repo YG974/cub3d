@@ -20,6 +20,13 @@ int		ft_is_space(char c)
 	return (0);
 }
 
+void	ft_skip_space(t_struct *s, char *line)
+{
+	while (ft_is_space(line[s->i]) == 1)
+		s->i++;
+	return;
+}
+
 int		ft_is_charset(char c, char *set)
 {
 	int	i = 0;
@@ -32,25 +39,6 @@ int		ft_is_charset(char c, char *set)
 	}
 	return (0);
 	/*return (printf("biz"));*/
-}
-void	ft_skip_space(t_struct *s, char *line)
-{
-	while (ft_is_space(line[s->i]) == 1)
-		s->i++;
-	return;
-}
-
-void	ft_error(t_struct *s, int err)
-{
-	(err == 1) ? ft_putstr_fd("Error : calloc fail\n", 2) : 0 ;
-	(err == 2) ? ft_putstr_fd("Error : wrong map file extension\n", 2) : 0;
-	(err == 3) ? ft_putstr_fd("Error : wrong resolution description\n", 2) : 0;
-	(err == 4) ? 
-		ft_putstr_fd("Error : wrong sky or ceiling description\n", 2) : 0;
-	(err == 5) ? ft_putstr_fd("Error : missing element description\n", 2) : 0;
-	(err == 6) ? ft_putstr_fd("Error : wrong texture description\n", 2) : 0;
-	(err == 7) ? ft_putstr_fd("Error : couldn't create bmp file\n", 2) : 0;
-	ft_exit(s);
 }
 
 int		ft_suffix(char *file_name, char *suffix)
@@ -66,3 +54,31 @@ int		ft_suffix(char *file_name, char *suffix)
 	return (0);
 }
 
+/* 16 bytes de leaks dans cette fonction... */
+char	**new_tab(t_struct *s, char **tab, char *str)
+{
+	char	**new_tab;
+	int		n;
+
+	n = 0;
+	if (tab == NULL)
+		if (!(tab = ft_calloc(sizeof(char **), 1)))
+			ft_error(s, 1);
+	while (tab[n])
+		n++;
+	if (!(new_tab = ft_calloc(sizeof(char **), (n + 2))))
+	{
+		write(2, "Error : calloc fail\n", 20);
+		return (NULL);
+	}
+	n = 0;
+	while (tab[n])
+	{
+		new_tab[n] = tab[n];
+		n++;
+	}
+	free(tab);
+	new_tab[n] = str;
+	new_tab[n + 1] = NULL;
+	return (new_tab);
+}

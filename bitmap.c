@@ -13,7 +13,7 @@
 #include "cub.h"
 
 /* https://en.wikipedia.org/wiki/BMP_file_format */
- void			ft_bitmap(t_struct *s)
+void				ft_bitmap(t_struct *s)
 {
 	int				fd;
 	int				pixel_array_size;
@@ -38,32 +38,32 @@
 	exit(0);
 }
 
- unsigned char	*ft_bmp_file_header(t_struct *s)
+unsigned char		*ft_bmp_file_header(t_struct *s)
 {
 	unsigned char	*file_header;
 	int				i;
 	int				file_size;
 
 	if (!(file_header = ft_calloc(sizeof(char), 14)))
-		ft_error(s, 8);
+		ft_error(s, 1);
 	i = 0;
 	while (i < 14)
 		file_header[i++] = (unsigned char)(0);
 	file_size = BPP * s->win.x * s->win.y + 14 + 40;
 	file_header[0] = (unsigned char)('B');
 	file_header[1] = (unsigned char)('M');
-	ft_set_int_to_char(&file_header[2], file_size);	/* file size */
+	ft_set_int_to_char(&file_header[2], file_size);/* file size */
 	ft_set_int_to_char(&file_header[10], (14 + 40));/* adr img array start */
 	return (file_header);
 }
 
- unsigned char	*ft_bmp_dib_header(t_struct *s)
+ unsigned char		*ft_bmp_dib_header(t_struct *s)
 {
-	unsigned char *dib_header;
+	unsigned char	*dib_header;
 	int				i;
 
 	if (!(dib_header = ft_calloc(sizeof(char), 40)))
-		ft_error(s, 8);
+		ft_error(s, 1);
 	i = 0;
 	while (i < 40)
 		dib_header[i++] = (unsigned char)(0);
@@ -74,14 +74,8 @@
 	dib_header[14] = (unsigned char)(32);			/* bit per pixel */
 	return (dib_header);
 }
-void			ft_set_uint_to_char(unsigned char *start, int value)
-{
-	start[0] = (unsigned char)(value);
-	start[1] = (unsigned char)(value >> 8);
-	start[2] = (unsigned char)(value >> 8 * 2);
-	start[3] = 0;
-}
- unsigned char *ft_bmp_pixel_array(t_struct *s)
+
+unsigned char		*ft_bmp_pixel_array(t_struct *s)
 {
 	unsigned char	*pixel_array;
 	int				i;
@@ -89,9 +83,10 @@ void			ft_set_uint_to_char(unsigned char *start, int value)
 	int				y;
 
 	i = 0;
-	if (!(pixel_array = ft_calloc(sizeof(unsigned char), s->win.x * s->win.y * BPP)))
-		ft_error(s, 8);
-	x = (s->win.y - 1) * s->win.x ;
+	if (!(pixel_array = ft_calloc(sizeof(unsigned char),
+					s->win.x * s->win.y * BPP)))
+		ft_error(s, 1);
+	x = (s->win.y - 1) * s->win.x;
 	while (x >= 0)
 	{
 		y = 0;
@@ -99,9 +94,9 @@ void			ft_set_uint_to_char(unsigned char *start, int value)
 		{
 			ft_set_int_to_char(&pixel_array[i], s->img.adr[x + y]);
 			y++;
-			i+= 4;
+			i += 4;
 		}
-		x-= s->win.x;
+		x -= s->win.x;
 	}
 	return (pixel_array);
 }

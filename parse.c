@@ -12,9 +12,10 @@
 
 #include "cub.h"
 
+
 void			ft_parse(t_struct *s)
 {
-	char			*line;
+	char		*line;
 	int			fd;
 	int			ret;
 
@@ -30,11 +31,12 @@ void			ft_parse(t_struct *s)
 		if (ft_check_parsing(s) == 1)
 			ft_load_map(s, line);
 		else
-			ft_read_line(s, line);
+		ft_read_line(s, line);
 		free(line);
 	}
-	if (ft_check_parsing(s) == -1)
-		ft_error(s, 5);
+	/*if (ft_check_parsing(s) == -1)*/
+		/*ft_error(s, 5);*/
+	ft_print_arg(s);
 	ft_check_map(s);
 	ft_get_pos(s);
 	close(fd);
@@ -42,7 +44,7 @@ void			ft_parse(t_struct *s)
 
 void	ft_read_line(t_struct *s, char *line)
 {
-	ft_skip_space(s, line);	
+	ft_skip_space(s, line);
 	if (line[s->i] == 'R' && line[s->i + 1] == ' ')
 		ft_resolution(s, &line[s->i]);
 	if (line[s->i] == 'N' && line[s->i + 1] == 'O' && line[s->i + 2] == ' ')
@@ -92,7 +94,7 @@ t_color			ft_color(t_struct *s, char *line)
 	int				i;
 
 	i = 0;
-	s->i = 1;
+	s->i += 1;
 	tab = ft_split(&line[s->i], ',');
 	while (tab[i])
 		i++;

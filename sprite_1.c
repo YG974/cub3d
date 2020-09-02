@@ -18,10 +18,7 @@ void	ft_sprite(t_struct *s)
 	{
 		ft_count_sprite(s);
 		if (!(s->sprite = malloc(sizeof(t_sprite) * s->map.sprite_nb)))
-		{
-			write(2, "Error : calloc fail\n", 20);
-			return ;
-		}
+		ft_error(s, 1);
 	}
 	ft_sprite_pos(s);
 	ft_sprite_distance(s);

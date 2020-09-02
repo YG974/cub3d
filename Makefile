@@ -16,7 +16,7 @@ SRC_MLX	= ./minilibx
 SRC_LIBFT	= ./libft
 
 SRC 		=	cub parse parse_map wall_1 wall_2 sprite_1 sprite_2 \
-				move utils print check_parsing bitmap\
+				move utils print bitmap utils_2 \
 
 
 FILES = $(addsuffix .c, $(SRC))
@@ -29,14 +29,14 @@ CC			= clang
 
 LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
 
-FLAGS		= -O3 -Wall -Wextra -Werror -ggdb
+FLAGS		= -O3 -Wall -Wextra -Werror -fsanitize=address -g -ggdb 
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
 	make -C $(SRC_LIBFT) && make clean -C $(SRC_LIBFT)
 	#make -C $(SRC_MLX)
-	$(CC) -o $(NAME) -ggdb $(LIBFT) -ggdb -L $(SRC_MLX) -ggdb $(LIB_FLAGS) -ggdb $(OBJ) -ggdb 
+	$(CC) -o $(NAME) -ggdb $(LIBFT) -ggdb -L $(SRC_MLX) -ggdb $(LIB_FLAGS) -ggdb $(OBJ) -ggdb -g
 
 
 clean:
