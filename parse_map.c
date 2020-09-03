@@ -19,13 +19,13 @@ void	ft_load_map(t_struct *s, char *line)
 	if (!s->map.tab)
 		if (!(s->map.tab = ft_calloc(sizeof(char **), 1)))
 			ft_error(s, 1);
-	if (line != '\0')
+	if (line[0] != '\0')
 	{
 		tmp = ft_strdup(line);
 		s->map.tab = new_tab(s, s->map.tab, tmp);
 	}
-	else
-		free(tmp);
+	/*else*/
+		/*free(tmp);*/
 }
 
 void	ft_check_map(t_struct *s)
@@ -34,7 +34,7 @@ void	ft_check_map(t_struct *s)
 	char	*tmp;
 	int		i;
 
-	i = 1;
+	i = 0;
 	if (!(map = ft_calloc(sizeof(char **), 1)))
 		ft_error(s, 1);
 	while (s->map.tab[i])
@@ -42,13 +42,15 @@ void	ft_check_map(t_struct *s)
 		tmp = ft_strdup(s->map.tab[i++]);
 		map = new_tab(s, map, tmp);
 	}
-	s->map.h = i - 1;
+	s->map.h = i;
+	printf("height%d\n", i);
 	ft_check_map_char(s, 0, 0);
-	if (!(ft_check_map_borders(s, s->p.pos.x - 0.5, s->p.pos.y - 0.5, map)))
+	if (ft_check_map_borders(s, s->p.pos.x - 0.5, s->p.pos.y - 0.5, map) < 0)
 		ft_error(s, 11);
 	i = 0;
 	while (map[i])
-		free(map[i++]);
+		printf("%s\n", map[i++]);
+		/*free(map[i++]);*/
 	free(map);
 // free tous les tab
 }
@@ -82,7 +84,7 @@ int		ft_check_map_borders(t_struct *s, int x, int y, char **map)
 	int		len;
 
 	if (map[y])
-		len = ft_strlen(map[y]);
+		len = ft_strlen(map[y]) ;
 	if (x >= len)
 		return (-1);
 	if (x == -1 || y == -1 || y == s->map.h)

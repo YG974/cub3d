@@ -19,13 +19,11 @@ int		ft_exit(t_struct *s)
 	i = 0;
 	while (s->map.tab[i])
 		free(s->map.tab[i++]);
-	if (s->mlx)
-		free(s->mlx);
-	if (s->win.ptr)
-	{
-		mlx_destroy_window(s->mlx, s->win.ptr);
-		free(s->win.ptr);
-	}
+	/*if (s->win.ptr)*/
+	/*{*/
+		/*mlx_destroy_window(s->mlx, s->win.ptr);*/
+		/*free(s->win.ptr);*/
+	/*}*/
 	free(s->cub);
 	free(s->wall.buf);
 	free(s->tex.n);
@@ -33,10 +31,12 @@ int		ft_exit(t_struct *s)
 	free(s->tex.e);
 	free(s->tex.w);
 	free(s->tex.sprite);
-	if (s->img.ptr)
-		free(s->img.ptr);
-	if (s->img.adr)
-		free(s->img.adr);
+	/*if (s->img.ptr)*/
+		/*free(s->img.ptr);*/
+	/*if (s->img.adr)*/
+		/*free(s->img.adr);*/
+	/*if (s->mlx)*/
+		/*free(s->mlx);*/
 	exit(0);
 }
 

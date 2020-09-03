@@ -34,11 +34,11 @@ void			ft_parse(t_struct *s)
 		ft_read_line(s, line);
 		free(line);
 	}
-	/*if (ft_check_parsing(s) == -1)*/
-		/*ft_error(s, 5);*/
-	ft_print_arg(s);
-	ft_check_map(s);
+	if (ft_check_parsing(s) == -1)
+		ft_error(s, 5);
 	ft_get_pos(s);
+	ft_check_map(s);
+	ft_print_arg(s);
 	close(fd);
 }
 
