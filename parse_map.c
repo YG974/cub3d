@@ -49,8 +49,10 @@ void	ft_check_map(t_struct *s)
 		ft_error(s, 11);
 	i = 0;
 	while (map[i])
-		printf("%s\n", map[i++]);
-		/*free(map[i++]);*/
+		free(map[i++]);
+	/*{*/
+		/*printf("%s\n", map[i++]);*/
+	/*}*/
 	free(map);
 // free tous les tab
 }
