@@ -12,7 +12,6 @@
 
 #include "cub.h"
 
-
 void			ft_parse(t_struct *s)
 {
 	char		*line;
@@ -34,6 +33,7 @@ void			ft_parse(t_struct *s)
 		ft_read_line(s, line);
 		free(line);
 	}
+	free(line);
 	if (ft_check_parsing(s) == -1)
 		ft_error(s, 5);
 	ft_get_pos(s);
