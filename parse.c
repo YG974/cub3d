@@ -18,6 +18,9 @@ void			ft_parse(t_struct *s)
 	int			fd;
 	int			ret;
 
+	s->parse.tex = 0;
+	s->parse.color = 0;
+	s->parse.res = 0;
 	if (!(fd = open(s->cub, O_RDONLY)))
 	{
 		write(2, "Error : couldn't open map file\n", 31);
@@ -39,6 +42,8 @@ void			ft_parse(t_struct *s)
 	ft_get_pos(s);
 	ft_check_map(s);
 	ft_print_arg(s);
+	if (s->parse.tex != 5 || s->parse.color != 2 || s->parse.res != 1)
+		ft_error(s, 13);
 	close(fd);
 }
 
@@ -84,6 +89,7 @@ void			ft_resolution(t_struct *s, char *line)
 	s->win.y = (s->win.y > HEIGHT ? HEIGHT : s->win.y);
 	free(tab[0]);
 	free(tab[1]);
+	s->parse.res++;
 	free(tab);
 }
 
@@ -110,6 +116,7 @@ t_color			ft_color(t_struct *s, char *line)
 	free(tab[1]);
 	free(tab[2]);
 	free(tab);
+	s->parse.color++;
 	return (color);
 }
 
@@ -140,5 +147,6 @@ unsigned int	*ft_load_tex(t_struct *s, char *line)
 	free(ptr);
 	free(tab[0]);
 	free(tab);
+	s->parse.tex++;
 	return (adr);
 }

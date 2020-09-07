@@ -170,7 +170,7 @@ typedef struct		s_parsing
 typedef struct		s_struct
 {
 	void			*mlx;	//mlx pointer
-	//t_parsing		parse;
+	t_parsing		parse;
 	t_win			win;
 	t_img			img;
 	t_color			sky;
