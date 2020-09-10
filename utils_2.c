@@ -50,7 +50,7 @@ void	ft_error(t_struct *s, int err)
 	(err == 5) ? ft_putstr_fd("Error : missing element description\n", 2) : 0;
 	(err == 6) ? ft_putstr_fd("Error : wrong texture description\n", 2) : 0;
 	(err == 7) ? ft_putstr_fd("Error : couldn't create bmp file\n", 2) : 0;
-	(err == 8) ? ft_putstr_fd("Error : couldn't create bmp file\n", 2) : 0;
+	(err == 8) ? ft_putstr_fd("Error : couldn't open map file\n", 2) : 0;
 	(err == 9) ?
 		ft_putstr_fd("Error : map contains forbidden characters\n", 2) : 0;
 	(err == 10) ? ft_putstr_fd("Error : multiple starting position\n", 2) : 0;

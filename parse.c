@@ -22,10 +22,7 @@ void			ft_parse(t_struct *s)
 	s->parse.color = 0;
 	s->parse.res = 0;
 	if (!(fd = open(s->cub, O_RDONLY)))
-	{
-		write(2, "Error : couldn't open map file\n", 31);
-		return ;
-	}
+		ft_error(s, 8);
 	ret = 1;
 	while (ret == get_next_line(fd, &line))
 	{
@@ -33,7 +30,7 @@ void			ft_parse(t_struct *s)
 		if (ft_check_parsing(s) == 1)
 			ft_load_map(s, line);
 		else
-		ft_read_line(s, line);
+			ft_read_line(s, line);
 		free(line);
 	}
 	free(line);

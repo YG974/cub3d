@@ -94,7 +94,7 @@ unsigned char		*ft_bmp_pixel_array(t_struct *s)
 		{
 			ft_set_int_to_char(&pixel_array[i], s->img.adr[x + y]);
 			y++;
-			i += 4;
+			i += 4; /*inc by 4 because convert 1 int into 4 chars */
 		}
 		x -= s->win.x;
 	}
