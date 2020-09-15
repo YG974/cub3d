@@ -23,9 +23,6 @@ int		main(int ac, char **av)
 		write(2, "wrong arguments", 15);
 	return (1);
 }
-void	ft_event(t_struct *s)
-{
-}
 
 void	ft_init(char *av1, int arg)
 {
@@ -34,8 +31,8 @@ void	ft_init(char *av1, int arg)
 
 	s.cub = ft_strdup(av1);
 	s.mlx = mlx_init();
-	ft_init_file_data(&s);
-	ft_init_player(&s);
+	ft_init_before_parsing_1(&s);
+	ft_init_before_parsing_2(&s);
 	ft_parse(&s);
 	ft_init_raycasting_data(&s);
 	s.img.ptr = mlx_new_image(s.mlx, s.win.x, s.win.y);
@@ -57,7 +54,7 @@ void	ft_init(char *av1, int arg)
 }
 
 
-void	ft_init_file_data(t_struct *s)
+void	ft_init_before_parsing_1(t_struct *s)
 {
 	s->win.ptr = 0;
 	s->win.x = 0;
@@ -79,13 +76,14 @@ void	ft_init_file_data(t_struct *s)
 	s->sky.b = -1;
 	s->sky.color = 0;
 	s->floor = s->sky;
+}
+
+void	ft_init_before_parsing_2(t_struct *s)
+{
 	s->map.x = 0;
 	s->map.y = 0;
 	s->map.sprite_nb = 0;
-}
-
-void	ft_init_player(t_struct *s)
-{
+	s->map.tab = 0;
 	s->cam = 0.0;
 	s->p.pos.x = 0.0;
 	s->p.pos.y = 0.0;
@@ -93,6 +91,9 @@ void	ft_init_player(t_struct *s)
 	s->p.dir.y = 0.0;
 	s->p.plane.x = 0.0;
 	s->p.plane.y = 0.0;
+	s->parse.tex = 0;
+	s->parse.color = 0;
+	s->parse.res = 0;
 }
 
 void	ft_init_raycasting_data(t_struct *s)

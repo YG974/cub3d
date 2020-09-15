@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_data.c                                       :+:      :+:    :+:   */
+/*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ygeslin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,26 +12,29 @@
 
 #include "cub.h"
 
+/* read map file, parse until the end, check errors */
 void			ft_parse(t_struct *s)
 {
 	char		*line;
 	int			fd;
 	int			ret;
 
-	s->parse.tex = 0;
-	s->parse.color = 0;
-	s->parse.res = 0;
+	line = NULL;
 	if (!(fd = open(s->cub, O_RDONLY)))
 		ft_error(s, 8);
 	ret = 1;
+	s->x = 0;
 	while (ret == get_next_line(fd, &line))
 	{
 		s->i = 0;
 		if (ft_check_parsing(s) == 1)
 			ft_load_map(s, line);
 		else
+		{
 			ft_read_line(s, line);
-		free(line);
+			free(line);
+		}
+		/*printf("%s\n", line);*/
 	}
 	free(line);
 	if (ft_check_parsing(s) == -1)
@@ -44,6 +47,7 @@ void			ft_parse(t_struct *s)
 	close(fd);
 }
 
+/* read line to know which map description it is */
 void	ft_read_line(t_struct *s, char *line)
 {
 	ft_skip_space(s, line);
@@ -66,6 +70,7 @@ void	ft_read_line(t_struct *s, char *line)
 	return;
 }
 
+/* parse input line and store mlx window size resolution */
 void			ft_resolution(t_struct *s, char *line)
 {
 	char			**tab;
@@ -84,12 +89,13 @@ void			ft_resolution(t_struct *s, char *line)
 	s->win.x = (s->win.x > WIDTH ? WIDTH : s->win.x);
 	s->win.y = (s->win.y <= 0 ? HEIGHT : s->win.y);
 	s->win.y = (s->win.y > HEIGHT ? HEIGHT : s->win.y);
-	free(tab[0]);
-	free(tab[1]);
+	while (i >= 0)
+		free(tab[i--]);
 	s->parse.res++;
 	free(tab);
 }
 
+/* parse input line and return struct with RGB color */
 t_color			ft_color(t_struct *s, char *line)
 {
 	t_color			color;
@@ -109,14 +115,14 @@ t_color			ft_color(t_struct *s, char *line)
 	if (color.r > 255 || color.r < 0 || color.g > 255 || color.g < 0 ||
 			color.b > 255 || color.b < 0)
 		ft_error(s, 4);
-	free(tab[0]);
-	free(tab[1]);
-	free(tab[2]);
+	while (i >= 0)
+		free(tab[i--]);
 	free(tab);
 	s->parse.color++;
 	return (color);
 }
 
+/* return ptr to tex img imported in mlx(cast in unsigned int to modify it) */
 unsigned int	*ft_load_tex(t_struct *s, char *line)
 {
 	void			*ptr;
@@ -135,10 +141,7 @@ unsigned int	*ft_load_tex(t_struct *s, char *line)
 		ft_error(s, 6);
 	ptr = mlx_xpm_file_to_image(s->mlx, tab[0], &tmp[0], &tmp[1]);
 	if (tmp[0] != tmp[1])
-	{
-		write(2, "Error : texture image is not a square\n", 38);
-		return (NULL);
-	}
+		ft_error(s, 12);
 	s->tex.width = tmp[0];
 	adr = (unsigned int*)mlx_get_data_addr(ptr, &tmp[2], &tmp[3], &tmp[4]);
 	free(ptr);

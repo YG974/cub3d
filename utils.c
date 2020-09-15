@@ -61,22 +61,23 @@ char	**new_tab(t_struct *s, char **tab, char *str)
 	int		n;
 
 	n = 0;
-	if (tab == NULL)
-		if (!(tab = ft_calloc(sizeof(char **), 1)))
-			ft_error(s, 1);
+	/*if (tab == NULL)*/
+		/*if (!(tab = ft_calloc(sizeof(char **), 1)))*/
+			/*ft_error(s, 1);*/
+	/*printf("kikoo : %s\n", str);*/
+	/*printf("%p\n", tab);*/
 	while (tab[n])
 		n++;
-	if (!(new_tab = ft_calloc(sizeof(char **), (n + 2))))
-	{
-		write(2, "Error : calloc fail\n", 20);
-		return (NULL);
-	}
+	if (!(new_tab = ft_calloc(sizeof(char *), (n + 2))))
+		ft_error(s, 1);
 	n = 0;
 	while (tab[n])
 	{
 		new_tab[n] = tab[n];
 		n++;
 	}
+	/*printf("%p\n", new_tab);*/
+	free(tab[n]);
 	free(tab);
 	new_tab[n] = str;
 	new_tab[n + 1] = NULL;

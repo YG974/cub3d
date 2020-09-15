@@ -192,8 +192,8 @@ typedef struct		s_struct
 
 /* cub.c */
 void				ft_init(char *av1, int arg);
-void				ft_init_file_data(t_struct *s);
-void				ft_init_player(t_struct *s);
+void				ft_init_before_parsing_1(t_struct *s);
+void				ft_init_before_parsing_2(t_struct *s);
 void				ft_init_raycasting_data(t_struct *s);
 
 /* parse.c */

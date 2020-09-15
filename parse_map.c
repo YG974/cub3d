@@ -12,20 +12,71 @@
 
 #include "cub.h"
 
+void	ft_add_line(t_struct *s, char *str)
+{
+	char	**tab;
+	int		n;
+
+	n = 0;
+	if (s->map.tab == NULL)
+	{
+		if (!(s->map.tab = ft_calloc(sizeof(char *), 2)))
+			ft_error(s, 1);
+		s->map.tab[0] = str;
+		free(s->map.tab[1]);
+	}
+	else
+	{
+		while (s->map.tab[n])
+			n++;
+		if (!(tab = ft_calloc(sizeof(char *), n + 2)))
+			ft_error(s, 1);
+		n = 0;
+		while (s->map.tab[n])
+		{
+			tab[n] = s->map.tab[n];
+			n++;
+		}
+		tab[n] = str;
+		n = 0;
+		/*while (s->map.tab[n])*/
+			/*free(s->map.tab[n++]);*/
+		free(s->map.tab);
+		s->map.tab = tab;
+	}
+}
 void	ft_load_map(t_struct *s, char *line)
 {
-	char	*tmp;
+	/*char	*tmp;*/
 
-	if (!s->map.tab)
-		if (!(s->map.tab = ft_calloc(sizeof(char **), 1)))
-			ft_error(s, 1);
-	if (line[0] != '\0')
-	{
-		tmp = ft_strdup(line);
-		s->map.tab = new_tab(s, s->map.tab, tmp);
-	}
+	/*tmp = ft_strdup(line);*/
+	/*if (tmp [0] == '\0')*/
+	/*{*/
+		/*free(tmp);*/
+		/*return ;*/
+	/*}*/
+	/*else*/
+		ft_add_line(s, line);
+	/*while(1);*/
+	/*printf("%p\n", s->map.tab);*/
+	/*if (!s->map.tab)*/
+		/*if (!(s->map.tab = ft_calloc(sizeof(char **), 1)))*/
+			/*ft_error(s, 1);*/
+	/*if (line[0] != '\0' || line[0] == '\n')*/
+	/*{*/
+	/*tmp = ft_strdup(line);*/
+	/*s->map.tab = new_tab(s, s->map.tab, tmp);*/
+	/*printf("%p\n", s->map.tab);*/
+	/*}*/
 	/*else*/
 		/*free(tmp);*/
+	/*printf("%s\n", tmp);*/
+	/*x = ft_strdup("x");*/
+	/*t = 0;*/
+	/*s->x++;*/
+	/*if (s->x == 20)*/
+		/*while(1);*/
+	return ;
 }
 
 void	ft_check_map(t_struct *s)
