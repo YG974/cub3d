@@ -45,10 +45,15 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 
+re: fclean all
+
 test: $(NAME)
 	./$(NAME) "map.cub"
 
 save: $(NAME)
 	./$(NAME) "map.cub" "--save"
+
+leaks: $(NAME)
+	./Cub3D map.cub &>/dev/null & disown && sleep 1 && leaks Cub3D
 
 .PHONY:            all clean fclean re

@@ -17,6 +17,8 @@ static char	*ft_strcpy(char *dest, const char *src)
 	int i;
 
 	i = 0;
+	if (src == NULL)
+		return (dest);
 	while (src[i] != '\0')
 	{
 		dest[i] = src[i];
@@ -30,6 +32,11 @@ char		*ft_strdup(const char *src)
 {
 	char	*dest;
 
+	if (src == NULL)
+	{
+		dest = NULL;
+		return (dest);
+	}
 	dest = (char*)malloc(sizeof(*src) * (ft_strlen(src) + 1));
 	if (dest == NULL)
 		return (dest);
