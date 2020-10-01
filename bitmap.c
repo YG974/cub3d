@@ -101,7 +101,7 @@ unsigned char		*ft_bmp_pixel_array(t_struct *s)
 	return (pixel_array);
 }
 
-void			ft_set_int_to_char(unsigned char *start, int value)
+void				ft_set_int_to_char(unsigned char *start, int value)
 {
 	start[0] = (unsigned char)(value);
 	start[1] = (unsigned char)(value >> 8);

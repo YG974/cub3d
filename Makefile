@@ -29,14 +29,14 @@ CC			= clang
 
 LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
 
-FLAGS		= -O3 -Wall -Wextra -Werror -fsanitize=address -g -ggdb 
+FLAGS		= -O3 -Wall -Wextra -Werror
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
 	make -C $(SRC_LIBFT) && make clean -C $(SRC_LIBFT)
 	#make -C $(SRC_MLX)
-	$(CC) -o $(NAME) -ggdb $(LIBFT) -ggdb -L $(SRC_MLX) -ggdb $(LIB_FLAGS) -ggdb $(OBJ) -ggdb -g
+	$(CC) -o $(NAME) $(LIBFT) -L $(SRC_MLX) $(LIB_FLAGS) $(OBJ) $(FLAGS) -g
 
 
 clean:

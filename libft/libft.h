@@ -18,12 +18,11 @@
 # define ENDL '\n'
 # define END '\0'
 # define NB_FD 1
-# define BUFFER_SIZE 256
+# define BUFFER_SIZE 80
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
 # include <stdio.h>
-# define MALLCHECK(x) if (!x) return (-1);
 
 typedef struct	s_list
 {
