@@ -13,7 +13,7 @@
 #define BUFFER_SIZE 80
 char	*ft_strjoin_to(char *s1, char *s2, char c);
 int		ft_next_line(int i, char *s);
-int			strchrgnl(const char *s, int c);
+int		strchrgnl(const char *s, int c);
 
 /*		LIBC READ FUNCTION */
 
@@ -43,8 +43,11 @@ int	get_next_line(int fd, char **line)
 // 3- return 1
 		if ((strchrgnl(s, '\n')) > -1)
 			return (ft_next_line(ret, &s));
+// if static buffer doesn't contain \n 
+// 1- read 
+// 2- check if \n
+// 3- do it until finding \n
 		
-
 				)
 		if (!(*line = ft_strjoin_to(s, buf, '\n')))
 			return (-1);
