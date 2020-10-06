@@ -22,8 +22,8 @@ void			ft_parse(t_struct *s)
 		ft_error(s, 8);
 	ret = 1;
 	s->x = 0;
-	while ((ret = get_next_line(fd, &line)) == 1)
-	/*while (ret == get_next_line(fd, &line))*/
+	/*while ((ret = get_next_line(fd, &line)) == 1)*/
+	while (ret == get_next_line(fd, &line))
 	{
 		s->i = 0;
 		if (ft_check_parsing(s) == 1)

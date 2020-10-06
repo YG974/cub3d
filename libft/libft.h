@@ -15,10 +15,6 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-# define ENDL '\n'
-# define END '\0'
-# define NB_FD 1
-# define BUFFER_SIZE 80
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
@@ -75,18 +71,7 @@ void			ft_lstiter(t_list *lst, void (*f)(void *));
 t_list			*ft_lstmap(t_list *lst, void *(*f)(void *),
 				void (*del)(void *));
 
-typedef struct	s_gnl
-{
-		int				ret;
-		int				i;
-		int				j;
-}				t_gnl;
-
 int				get_next_line(int fd, char **line);
-char			*ft_strjoin_endl(char *s1, const char *s2);
-char			*ft_strjoin_gnl(char *s1, const char *s2);
-int				ft_next_line(int i, int fd, char gnl[NB_FD][BUFFER_SIZE + 1]);
-int				strchrgnl(const char *s, int c);
 
 
 #endif
