@@ -37,10 +37,10 @@ int		strchrgnl(char *s, int c);
 int	get_next_line(int fd, char **line)
 {
 		/*char		*s;*/
-		static char	buf[BUFFER_SIZE + 1]={'\0'};
+		static char	buf[BUFFER_SIZE + 1];
 		int				ret;
 
-		*line = NULL;
+		/*s = NULL;*/
 		if (fd < 0 || !line || BUFFER_SIZE < 1 || (ret = read(fd, buf, 0)))
 			return (-1);
 //if static buffer contains a \n
@@ -61,7 +61,7 @@ int	get_next_line(int fd, char **line)
 			write(1, "test", 4);
 			return (-1);
 		}
-		while ((ret = read(fd, buf, BUFFER_SIZE) > 0))
+		while ((ret = read(fd, buf, BUFFER_SIZE)) > 0)
 		{
 			buf[ret] = '\0';
 			if (!(*line = ft_strjoin_to(buf, *line, '\n')))
