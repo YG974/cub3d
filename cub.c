@@ -43,7 +43,7 @@ void	ft_init(char *av1, int arg)
 	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, WIN_NAME);
 	ft_wall(&s);
 	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
-	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
+	mlx_hook(s.win.ptr, 2, 0, key_press, &s);
 	mlx_loop(s.mlx);
 	exit(0);
 	return ;

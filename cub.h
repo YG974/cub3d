@@ -33,17 +33,11 @@
 # define KEY_LEFT 123
 # define KEY_RIGHT 124
 
-# define KEY_PRESS 2
-# define KEY_RELEASE 3
-# define KEY_PRESS_MASK (1L<<0)
-# define KEY_RELEASE_MASK (1L<<1)
-
 # define WHITE 0x00FFFFFF
 # define BLACK 0xFF000000
 # define RED 0x00FF0000
 # define BLUE 0x000000FF
 # define YELLOW 0x00FFFF00
-//# define PINK 0x00FFC0CB
 # define PINK 9961608
 
 # define WIDTH 1280

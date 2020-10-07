@@ -16,7 +16,7 @@ SRC_MLX	= ./minilibx
 SRC_LIBFT	= ./libft
 
 SRC 		=	cub parse parse_map wall_1 wall_2 sprite_1 sprite_2 \
-				move utils print bitmap utils_2 \
+				move utils bitmap utils_2 \
 
 
 FILES = $(addsuffix .c, $(SRC))
@@ -25,7 +25,7 @@ LIBFT = $(SRC_LIBFT)/libft.a
 
 OBJ = $(FILES:.c=.o)
 
-CC			= clang 
+CC			= clang
 
 LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
 
@@ -36,7 +36,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	make -C $(SRC_LIBFT) && make clean -C $(SRC_LIBFT)
 	#make -C $(SRC_MLX)
-	$(CC) -o $(NAME) $(LIBFT) -L $(SRC_MLX) $(LIB_FLAGS) $(OBJ) $(FLAGS) -g
+	$(CC) $(FLAGS) -o $(NAME) $(LIBFT) -L $(SRC_MLX) $(LIB_FLAGS) $(FLAGS) $(OBJ)
 
 
 clean:
@@ -56,4 +56,4 @@ save: $(NAME)
 leaks: $(NAME)
 	./Cub3D map.cub &>/dev/null & disown && sleep 1 && leaks Cub3D
 
-.PHONY:            all clean fclean re
+.PHONY:            all clean fclean re test save leaks
