@@ -21,7 +21,7 @@ void	ft_load_map(t_struct *s, char *line)
 	while (s->map.tab[n])
 		n++;
 	if (!(tab = ft_calloc(sizeof(char *), n + 2)))
-		ft_error(s, 1);
+		ft_error(1);
 	n = 0;
 	while (s->map.tab[n])
 	{
@@ -42,7 +42,7 @@ void	ft_check_map(t_struct *s)
 
 	i = 0;
 	if (!(map = ft_calloc(sizeof(char **), 1)))
-		ft_error(s, 1);
+		ft_error(1);
 	while (s->map.tab[i])
 	{
 		tmp = ft_strdup(s->map.tab[i++]);
@@ -51,7 +51,7 @@ void	ft_check_map(t_struct *s)
 	s->map.h = i;
 	ft_check_map_char(s, 0, 0);
 	if (ft_check_map_borders(s, s->p.pos.x - 0.5, s->p.pos.y - 0.5, map) < 0)
-		ft_error(s, 11);
+		ft_error(11);
 	i = 0;
 	while (map[i])
 		free(map[i++]);
@@ -69,7 +69,7 @@ void	ft_check_map_char(t_struct *s, int x, int y)
 		while (s->map.tab[y][x])
 		{
 			if (ft_is_charset((char)s->map.tab[y][x], "NSEW 012") == 0)
-				return (ft_error(s, 9));
+				return (ft_error(9));
 			if (ft_is_charset(s->map.tab[y][x], "NSEW") == 1)
 				i++;
 			x++;
@@ -77,7 +77,7 @@ void	ft_check_map_char(t_struct *s, int x, int y)
 		y++;
 	}
 	if (i > 1)
-		return (ft_error(s, 10));
+		return (ft_error(10));
 }
 
 int		ft_check_map_borders(t_struct *s, int x, int y, char **map)

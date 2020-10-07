@@ -80,7 +80,7 @@ void	ft_init_before_parsing_2(t_struct *s)
 	s->map.sprite_nb = 0;
 	s->map.tab = 0;
 	if (!(s->map.tab = ft_calloc(sizeof(char *), 2)))
-		ft_error(s, 1);
+		ft_error(1);
 	s->cam = 0.0;
 	s->p.pos.x = 0.0;
 	s->p.pos.y = 0.0;
@@ -109,5 +109,5 @@ void	ft_init_raycasting_data(t_struct *s)
 	s->wall.perp_dist = 0.0;
 	s->wall.x = 0.0;
 	if (!(s->wall.buf = ft_calloc(sizeof(double), s->win.x + 1)))
-		ft_error(s, 1);
+		ft_error(1);
 }

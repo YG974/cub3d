@@ -38,7 +38,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	make -C $(SRC_LIBFT) && make clean -C $(SRC_LIBFT)
-	#make -C $(SRC_MLX)
+	@make -C $(SRC_MLX)
 	$(CC) $(FLAGS) -o $(NAME) $(LIBFT) -L $(SRC_MLX) $(LIB_FLAGS) $(FLAGS) $(OBJ)
 
 
