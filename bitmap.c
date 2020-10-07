@@ -12,7 +12,6 @@
 
 #include "cub.h"
 
-/* https://en.wikipedia.org/wiki/BMP_file_format */
 void				ft_bitmap(t_struct *s)
 {
 	int				fd;
@@ -52,12 +51,12 @@ unsigned char		*ft_bmp_file_header(t_struct *s)
 	file_size = BPP * s->win.x * s->win.y + 14 + 40;
 	file_header[0] = (unsigned char)('B');
 	file_header[1] = (unsigned char)('M');
-	ft_set_int_to_char(&file_header[2], file_size);/* file size */
-	ft_set_int_to_char(&file_header[10], (14 + 40));/* adr img array start */
+	ft_set_int_to_char(&file_header[2], file_size);
+	ft_set_int_to_char(&file_header[10], (14 + 40));
 	return (file_header);
 }
 
- unsigned char		*ft_bmp_dib_header(t_struct *s)
+unsigned char		*ft_bmp_dib_header(t_struct *s)
 {
 	unsigned char	*dib_header;
 	int				i;
@@ -67,11 +66,11 @@ unsigned char		*ft_bmp_file_header(t_struct *s)
 	i = 0;
 	while (i < 40)
 		dib_header[i++] = (unsigned char)(0);
-	ft_set_int_to_char(&dib_header[0], (int)(40));	/* DIB header size */
-	ft_set_int_to_char(&dib_header[4], s->win.x);	/* width in pixels */
-	ft_set_int_to_char(&dib_header[8], s->win.y);	/* height in pixels */
-	dib_header[12] = (unsigned char)(1);			/* nb of color planes */
-	dib_header[14] = (unsigned char)(32);			/* bit per pixel */
+	ft_set_int_to_char(&dib_header[0], (int)(40));
+	ft_set_int_to_char(&dib_header[4], s->win.x);
+	ft_set_int_to_char(&dib_header[8], s->win.y);
+	dib_header[12] = (unsigned char)(1);
+	dib_header[14] = (unsigned char)(32);
 	return (dib_header);
 }
 
@@ -94,7 +93,7 @@ unsigned char		*ft_bmp_pixel_array(t_struct *s)
 		{
 			ft_set_int_to_char(&pixel_array[i], s->img.adr[x + y]);
 			y++;
-			i += 4; /*inc by 4 because convert 1 int into 4 chars */
+			i += 4;
 		}
 		x -= s->win.x;
 	}

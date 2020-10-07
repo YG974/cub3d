@@ -14,35 +14,12 @@
 
 int		ft_exit(t_struct *s)
 {
-	int	i;
-
-	i = 0;
-	while (s->map.tab[i])
-		free(s->map.tab[i++]);
-	/*if (s->win.ptr)*/
-	/*{*/
-		/*mlx_destroy_window(s->mlx, s->win.ptr);*/
-		/*free(s->win.ptr);*/
-	/*}*/
-	free(s->cub);
-	free(s->wall.buf);
-	free(s->tex.n);
-	free(s->tex.s);
-	free(s->tex.e);
-	free(s->tex.w);
-	free(s->tex.sprite);
-	/*if (s->img.ptr)*/
-		/*free(s->img.ptr);*/
-	/*if (s->img.adr)*/
-		/*free(s->img.adr);*/
-	/*if (s->mlx)*/
-		/*free(s->mlx);*/
 	exit(0);
 }
 
 void	ft_error(t_struct *s, int err)
 {
-	(err == 1) ? ft_putstr_fd("Error : calloc fail\n", 2) : 0 ;
+	(err == 1) ? ft_putstr_fd("Error : calloc fail\n", 2) : 0;
 	(err == 2) ? ft_putstr_fd("Error : wrong map file extension\n", 2) : 0;
 	(err == 3) ? ft_putstr_fd("Error : wrong resolution description\n", 2) : 0;
 	(err == 4) ?
@@ -60,7 +37,6 @@ void	ft_error(t_struct *s, int err)
 	(err == 13) ?
 		ft_putstr_fd("Error : duplicated element description\n", 2) : 0;
 	exit(0);
-	/*ft_exit(s);*/
 }
 
 int		ft_check_parsing(t_struct *s)

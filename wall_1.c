@@ -84,13 +84,14 @@ void	ft_ray_hit(t_struct *s)
 			s->wall.hit = 1;
 	}
 }
+
 void	ft_wall_size(t_struct *s)
 {
 	if (s->wall.side == 0)
-		s->wall.perp_dist = fabs((s->ray.pos.x - s->p.pos.x + 
+		s->wall.perp_dist = fabs((s->ray.pos.x - s->p.pos.x +
 					(1 - s->wall.step.x) / 2) / s->ray.dir.x);
 	else
-		s->wall.perp_dist = fabs((s->ray.pos.y - s->p.pos.y + 
+		s->wall.perp_dist = fabs((s->ray.pos.y - s->p.pos.y +
 					(1 - s->wall.step.y) / 2) / s->ray.dir.y);
 	s->wall.buf[s->x] = s->wall.perp_dist;
 	s->wall.height = (int)(s->win.y / s->wall.perp_dist);

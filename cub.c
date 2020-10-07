@@ -16,7 +16,7 @@ int		main(int ac, char **av)
 {
 	if (ac == 2 && ft_suffix(av[1], ".cub") == 1)
 		ft_init(av[1], 0);
-	else if (ac == 3 && ft_suffix(av[1], ".cub") == 1 
+	else if (ac == 3 && ft_suffix(av[1], ".cub") == 1
 			&& ft_strncmp(av[2], "--save", 7) == 0)
 		ft_init(av[1], 1);
 	else
@@ -36,23 +36,18 @@ void	ft_init(char *av1, int arg)
 	ft_parse(&s);
 	ft_init_raycasting_data(&s);
 	s.img.ptr = mlx_new_image(s.mlx, s.win.x, s.win.y);
-	s.img.adr = (unsigned int*)mlx_get_data_addr(s.img.ptr, 
-			&tab[0], &tab[1],&tab[2]);
+	s.img.adr = (unsigned int*)mlx_get_data_addr(s.img.ptr,
+			&tab[0], &tab[1], &tab[2]);
 	if (arg == 1)
 		ft_bitmap(&s);
 	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, WIN_NAME);
-	/*ft_print_arg(&s);*/
-	/*print_map(&s);*/
-	/*mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);*/
 	ft_wall(&s);
 	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
 	mlx_hook(s.win.ptr, KEY_PRESS, KEY_PRESS_MASK, key_press, &s);
-	/*mlx_hook(s.win.ptr, KEY_RELEASE, KEY_RELEASE_MASK, key_press, &s);*/
 	mlx_loop(s.mlx);
 	exit(0);
-	return;
+	return ;
 }
-
 
 void	ft_init_before_parsing_1(t_struct *s)
 {
@@ -84,6 +79,8 @@ void	ft_init_before_parsing_2(t_struct *s)
 	s->map.y = 0;
 	s->map.sprite_nb = 0;
 	s->map.tab = 0;
+	if (!(s->map.tab = ft_calloc(sizeof(char *), 2)))
+		ft_error(s, 1);
 	s->cam = 0.0;
 	s->p.pos.x = 0.0;
 	s->p.pos.y = 0.0;

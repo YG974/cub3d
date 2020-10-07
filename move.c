@@ -30,8 +30,6 @@ int		key_press(int key, t_struct *s)
 		ft_rotate(s, 1);
 	ft_wall(s);
 	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
-	/*free(s->win.ptr);*/
-	/*free(s->img.ptr);*/
 	return (1);
 }
 
@@ -46,7 +44,6 @@ void	ft_move_forward(t_struct *s, double sign)
 		s->p.pos.x += sign * s->p.dir.x * SPEED;
 	if (s->map.tab[(int)(y)][(int)s->p.pos.x] == '0')
 		s->p.pos.y += sign * s->p.dir.y * SPEED;
-	/*printf("x: %d | y: %d | c: %c\n", x, y, s->map.tab[y][x]);*/
 }
 
 void	ft_move_side(t_struct *s, double sign)
@@ -68,8 +65,8 @@ void	ft_rotate(t_struct *s, double sign)
 	rot = ANGLE * sign;
 	old_dir_x = s->p.dir.x;
 	old_plane_x = s->p.plane.x;
-	s->p.dir.x = s->p.dir.x  * cos(rot) - s->p.dir.y * sin(rot);
+	s->p.dir.x = s->p.dir.x * cos(rot) - s->p.dir.y * sin(rot);
 	s->p.dir.y = old_dir_x * sin(rot) + s->p.dir.y * cos(rot);
-	s->p.plane.x = s->p.plane.x * cos(rot) - s->p.plane.y  * sin(rot);
-	s->p.plane.y = old_plane_x * sin(rot) + s->p.plane.y  * cos(rot);
+	s->p.plane.x = s->p.plane.x * cos(rot) - s->p.plane.y * sin(rot);
+	s->p.plane.y = old_plane_x * sin(rot) + s->p.plane.y * cos(rot);
 }

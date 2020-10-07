@@ -1,4 +1,6 @@
-/* ************************************************************************** */ /*                                                                            */ /*                                                        :::      ::::::::   */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ygeslin <marvin@42.fr>                     +#+  +:+       +#+        */
@@ -10,7 +12,6 @@
 
 #include "cub.h"
 
-/* read map file, parse until the end, check errors */
 void			ft_parse(t_struct *s)
 {
 	char		*line;
@@ -21,8 +22,6 @@ void			ft_parse(t_struct *s)
 	if (!(fd = open(s->cub, O_RDONLY)))
 		ft_error(s, 8);
 	ret = 1;
-	s->x = 0;
-	/*while ((ret = get_next_line(fd, &line)) == 1)*/
 	while (ret == get_next_line(fd, &line))
 	{
 		s->i = 0;
@@ -33,21 +32,16 @@ void			ft_parse(t_struct *s)
 			ft_read_line(s, line);
 			free(line);
 		}
-		/*printf("%s\n", line);*/
 	}
 	free(line);
-	if (ft_check_parsing(s) == -1)
-		ft_error(s, 5);
 	ft_get_pos(s);
 	ft_check_map(s);
-	ft_print_arg(s);
 	if (s->parse.tex != 5 || s->parse.color != 2 || s->parse.res != 1)
 		ft_error(s, 13);
 	close(fd);
 }
 
-/* read line to know which map description it is */
-void	ft_read_line(t_struct *s, char *line)
+void			ft_read_line(t_struct *s, char *line)
 {
 	ft_skip_space(s, line);
 	if (line[s->i] == 'R' && line[s->i + 1] == ' ')
@@ -66,10 +60,9 @@ void	ft_read_line(t_struct *s, char *line)
 		s->floor = ft_color(s, &line[s->i]);
 	if (line[s->i] == 'C' && line[s->i + 1] == ' ')
 		s->sky = ft_color(s, &line[s->i]);
-	return;
+	return ;
 }
 
-/* parse input line and store mlx window size resolution */
 void			ft_resolution(t_struct *s, char *line)
 {
 	char			**tab;
@@ -94,7 +87,6 @@ void			ft_resolution(t_struct *s, char *line)
 	free(tab);
 }
 
-/* parse input line and return struct with RGB color */
 t_color			ft_color(t_struct *s, char *line)
 {
 	t_color			color;
@@ -121,13 +113,11 @@ t_color			ft_color(t_struct *s, char *line)
 	return (color);
 }
 
-/* return ptr to tex img imported in mlx(cast in unsigned int to modify it) */
 unsigned int	*ft_load_tex(t_struct *s, char *line)
 {
 	void			*ptr;
 	int				tmp[5];
 	unsigned int	*adr;
-	int				fd;
 	char			**tab;
 	int				i;
 

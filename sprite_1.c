@@ -14,7 +14,7 @@
 
 void	ft_sprite(t_struct *s)
 {
-	if ( s->map.sprite_nb == 0)
+	if (s->map.sprite_nb == 0)
 	{
 		ft_count_sprite(s);
 		if (!(s->sprite = malloc(sizeof(t_sprite) * s->map.sprite_nb)))
@@ -24,13 +24,11 @@ void	ft_sprite(t_struct *s)
 	ft_sprite_distance(s);
 	ft_sort_sprite(s);
 	s->i = 0;
-	/*printf("\n");*/
 	while (s->i < s->map.sprite_nb)
 	{
 		ft_sprite_transform(s);
 		ft_sprite_size(s);
 		ft_draw_sprite(s);
-		/*print_sprite(s);*/
 		s->i++;
 	}
 }
@@ -38,10 +36,10 @@ void	ft_sprite(t_struct *s)
 void	ft_count_sprite(t_struct *s)
 {
 	s->y = 0;
-	while (s->map.tab[s->y]) 
+	while (s->map.tab[s->y])
 	{
 		s->x = 0;
-		while(s->map.tab[s->y][s->x])
+		while (s->map.tab[s->y][s->x])
 		{
 			if (s->map.tab[s->y][s->x] == '2')
 				s->map.sprite_nb++;
@@ -59,10 +57,10 @@ void	ft_sprite_pos(t_struct *s)
 	while (i < s->map.sprite_nb)
 	{
 		s->y = 0;
-		while (s->map.tab[s->y]) 
+		while (s->map.tab[s->y])
 		{
 			s->x = 0;
-			while(s->map.tab[s->y][s->x])
+			while (s->map.tab[s->y][s->x])
 			{
 				if (s->map.tab[s->y][s->x] == '2')
 				{
@@ -102,10 +100,10 @@ void	ft_sort_sprite(t_struct *s)
 		j = i + 1;
 		while (j < s->map.sprite_nb)
 		{
-			if (s->sprite[i].dist < s->sprite[j].dist )
+			if (s->sprite[i].dist < s->sprite[j].dist)
 			{
 				tmp = s->sprite[i];
-				s->sprite[i] = s->sprite[j] ;
+				s->sprite[i] = s->sprite[j];
 				s->sprite[j] = tmp;
 			}
 			j++;

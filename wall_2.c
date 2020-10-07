@@ -12,7 +12,6 @@
 
 #include "cub.h"
 
-/* remplacer les 64 par texture_width) */
 void	ft_wall_texture(t_struct *s)
 {
 	s->tex.x = (int)(s->wall.x * s->tex.width);
@@ -30,17 +29,17 @@ void	ft_draw_walls(t_struct *s)
 	s->color = s->sky.r * 256 * 256 + s->sky.g * 256 + s->sky.b;
 	s->y = 0;
 	while (s->y < s->wall.start)
-			s->img.adr[s->x + s->win.x * s->y++] = s->color;
+		s->img.adr[s->x + s->win.x * s->y++] = s->color;
 	while (s->y >= s->wall.start && s->y <= s->wall.end)
 	{
-		s->tex.y = (int)s->tex.pos /*& (64 - 1)*/;
+		s->tex.y = (int)s->tex.pos;
 		s->tex.pos += s->tex.step;
 		ft_pixel(s);
 		s->y++;
 	}
 	s->color = s->floor.r * 256 * 256 + s->floor.g * 256 + s->floor.b;
 	while (s->y < s->win.y)
-			s->img.adr[s->x + s->win.x * s->y++] = s->color;
+		s->img.adr[s->x + s->win.x * s->y++] = s->color;
 }
 
 void	ft_pixel(t_struct *s)
