@@ -15,7 +15,7 @@
 int		key_press(int key, t_struct *s)
 {
 	if (key == ESC)
-		ft_exit(s);
+		exit(0);
 	else if (key == KEY_A)
 		ft_move_side(s, -1);
 	else if (key == KEY_S)

@@ -31,9 +31,6 @@ LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
 
 FLAGS		= -O3 -Wall -Wextra -Werror
 
-.c.o:
-		${CC} ${FLAGS} -c $< -o $@
-
 all: $(NAME)
 
 $(NAME): $(OBJ)

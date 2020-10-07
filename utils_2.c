@@ -12,12 +12,7 @@
 
 #include "cub.h"
 
-int		ft_exit(t_struct *s)
-{
-	exit(0);
-}
-
-void	ft_error(t_struct *s, int err)
+void	ft_error(int err)
 {
 	(err == 1) ? ft_putstr_fd("Error : calloc fail\n", 2) : 0;
 	(err == 2) ? ft_putstr_fd("Error : wrong map file extension\n", 2) : 0;
