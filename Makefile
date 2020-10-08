@@ -9,10 +9,12 @@
 #    Updated: 2020/03/11 18:50:40 by ygeslin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+#command to test leaks on linux
+# EXEC=Cub3D;ARGS=maps/map.cub;valgrind --tool=memcheck --leak-check=full --leak-resolution=high --show-reachable=yes --track-origins=yes --log-file=valgrind_log ./$EXEC $ARGS;grep -A1 "valgrind" valgrind_log|grep $EXEC
 
 NAME		= Cub3D
 
-SRC_MLX	= -I ./minilibx-linux
+SRC_MLX	= ./minilibx-linux
 SRC_LIBFT	= ./libft
 
 SRC 		=	cub parse parse_map wall_1 wall_2 sprite_1 sprite_2 \
@@ -36,7 +38,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	make -C $(SRC_LIBFT) && make clean -C $(SRC_LIBFT)
 	make -C $(SRC_MLX)
-	$(CC) $(FLAGS) -o $(NAME) $(LIBFT) $(SRC_MLX) $(LIB_FLAGS) $(FLAGS) $(OBJ)
+	$(CC) $(FLAGS) -o $(NAME) $(LIBFT) -I $(SRC_MLX) $(LIB_FLAGS) $(FLAGS) $(OBJ)
 
 
 clean:
