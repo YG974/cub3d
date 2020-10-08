@@ -12,7 +12,7 @@
 
 NAME		= Cub3D
 
-SRC_MLX	= ./minilibx
+SRC_MLX	= -I ./minilibx-linux
 SRC_LIBFT	= ./libft
 
 SRC 		=	cub parse parse_map wall_1 wall_2 sprite_1 sprite_2 \
@@ -27,7 +27,7 @@ OBJ = $(FILES:.c=.o)
 
 CC			= clang
 
-LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
+LIB_FLAGS	= -L ./minilibx-linux -lmlx -lXext -lX11 -lm -lbsd 
 
 FLAGS		= -O3 -Wall -Wextra -Werror
 
@@ -39,7 +39,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	make -C $(SRC_LIBFT) && make clean -C $(SRC_LIBFT)
 	@make -C $(SRC_MLX)
-	$(CC) $(FLAGS) -o $(NAME) $(LIBFT) -L $(SRC_MLX) $(LIB_FLAGS) $(FLAGS) $(OBJ)
+	$(CC) $(FLAGS) -o $(NAME) $(LIBFT) $(SRC_MLX) $(LIB_FLAGS) $(FLAGS) $(OBJ)
 
 
 clean:
