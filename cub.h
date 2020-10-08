@@ -13,8 +13,7 @@
 #ifndef CUB_H
 # define CUB_H
 
-# include "./minilibx/mlx.h"
-#include "./minilibx-linux/mlx.h"
+# include "./minilibx-linux/mlx.h"
 # include "./libft/libft.h"
 
 # include <stdlib.h>
