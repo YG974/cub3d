@@ -4,7 +4,7 @@ SRC_MLX	= ./minilibx
 SRC_LIBFT	= ./libft
 
 SRC 		=	cub parse parse_map wall_1 wall_2 sprite_1 sprite_2 \
-				move utils bitmap utils_2 \
+				move key utils bitmap utils_2 \
 
 
 FILES = $(addsuffix .c, $(SRC))
