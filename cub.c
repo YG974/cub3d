@@ -43,7 +43,9 @@ void	ft_init(char *av1, int arg)
 	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, WIN_NAME);
 	ft_wall(&s);
 	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
-	mlx_hook(s.win.ptr, 2, 0, key_press, &s);
+	mlx_hook(s.win.ptr, 2, 1L<<0, ft_key_press, &s);
+	mlx_hook(s.win.ptr, 3, 1L<<1, ft_key_release, &s);
+	/*mlx_loop_hook(s.win.ptr, ft_key_move, &s);*/
 	mlx_loop(s.mlx);
 	exit(0);
 	return ;
@@ -88,6 +90,12 @@ void	ft_init_before_parsing_2(t_struct *s)
 	s->p.dir.y = 0.0;
 	s->p.plane.x = 0.0;
 	s->p.plane.y = 0.0;
+	s->p.key.w = 0;
+	s->p.key.a = 0;
+	s->p.key.s = 0;
+	s->p.key.d = 0;
+	s->p.key.left = 0;
+	s->p.key.right = 0;
 	s->parse.tex = 0;
 	s->parse.color = 0;
 	s->parse.res = 0;

@@ -13,7 +13,8 @@
 #ifndef CUB_H
 # define CUB_H
 
-# include "./minilibx-linux/mlx.h"
+//# include "./minilibx-linux/mlx.h"
+# include "./minilibx/mlx.h"
 # include "./libft/libft.h"
 
 # include <stdlib.h>
@@ -23,18 +24,29 @@
 # include <fcntl.h>
 # include <string.h>
 
-# define ESC 65307
-# define KEY_W 119
-# define KEY_A 97
-# define KEY_S 115
-# define KEY_D 100
-# define KEY_UP 65362
-# define KEY_DOWN 65364
-# define KEY_LEFT 65361
-# define KEY_RIGHT 65363
+//# define ESC 65307
+//# define KEY_W 119
+//# define KEY_A 97
+//# define KEY_S 115
+//# define KEY_D 100
+//# define KEY_UP 65362
+//# define KEY_DOWN 65364
+//# define KEY_LEFT 65361
+//# define KEY_RIGHT 65363
+
+# define ESC 53
+# define KEY_W 13
+# define KEY_A 0
+# define KEY_S 1
+# define KEY_D 2
+# define KEY_UP 126
+# define KEY_DOWN 125
+# define KEY_LEFT 123
+# define KEY_RIGHT 124
 
 # define WHITE 0x00FFFFFF
-# define BLACK 0x00000000
+//# define BLACK 0x00000000
+# define BLACK 0xFF000000
 # define RED 0x00FF0000
 # define BLUE 0x000000FF
 # define YELLOW 0x00FFFF00
@@ -139,11 +151,22 @@ typedef	struct		s_wall
 	double			*buf;
 }					t_wall;
 
+typedef struct		s_key
+{
+	int				a;
+	int				s;
+	int				d;
+	int				w;
+	int				left;
+	int				right;
+}					t_key;
+
 typedef struct		s_player
 {
 	t_double_xy		pos;
 	t_double_xy		dir;
 	t_double_xy		plane;
+	t_key			key;
 }					t_player;
 
 typedef struct		s_parsing
@@ -212,11 +235,15 @@ void				ft_wall_texture(t_struct *s);
 void				ft_draw_walls(t_struct *s);
 void				ft_pixel(t_struct *s);
 
-int					key_press(int key, t_struct *s);
 void				ft_move_forward(t_struct *s, double sign);
 void				ft_move_side(t_struct *s, double sign);
 void				ft_rotate(t_struct *s, double sign);
 void				ft_event(t_struct *s);
+
+int					ft_switch_key_bol(t_struct *s, int key, int value);
+int					ft_key_press(int key, void *s);
+int					ft_key_release(int key, void *s);
+int					ft_key_move(int key, t_struct *s);
 
 void				ft_sprite(t_struct *s);
 void				ft_count_sprite(t_struct *s);

@@ -1,58 +1,40 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: pcoureau <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/02/27 19:31:45 by pcoureau          #+#    #+#              #
-#    Updated: 2020/10/05 16:01:12 by paco             ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+NAME		= Cub3D
 
-NAME	= Cub3D
-SRC 	= cub.c \
-			parse.c \
-			parse_map.c \
-			wall_1.c \
-			wall_2.c \
-			sprite_1.c \
-			sprite_2.c \
-			move.c \
-			utils.c \
-			bitmap.c \
-			utils_2.c \
+SRC_MLX	= ./minilibx
+SRC_LIBFT	= ./libft
 
-OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
-CC		= gcc
-CFLAGS	= -Wall -Wextra -Werror -g
-FT		= ./libft/
-FT_MLX 	= ./minilibx-linux/
-FT_LIB	= $(addprefix $(FT),libft.a)
-FT_INC	= -I ./libft/libft
-FT_LNK	= -L ./libft -l ft -l pthread
-MLX_LNK	= -I ./minilibx-linux -L ./minilibx-linux -lmlx -lXext -lX11 -lm -lbsd 
-SRCDIR	= ./
-INCDIR	= ./includes/
-OBJDIR	= ./obj/
-all: obj $(FT_LIB) $(FT_MLX) $(NAME)
-obj:
-	mkdir -p $(OBJDIR)
-$(OBJDIR)%.o:$(SRCDIR)%.c
-	$(CC) $(CFLAGS) $(FT_INC) -I $(INCDIR) -o $@ -c $<
-$(FT_LIB):
-	make -C $(FT_MLX)
-	make -C $(FT)
+SRC 		=	cub parse parse_map wall_1 wall_2 sprite_1 sprite_2 \
+				move utils bitmap utils_2 \
+
+
+FILES = $(addsuffix .c, $(SRC))
+
+LIBFT = $(SRC_LIBFT)/libft.a
+
+OBJ = $(FILES:.c=.o)
+
+CC			= clang 
+
+LIB_FLAGS	= -lmlx -framework OpenGL -framework AppKit
+
+FLAGS		= -Wall -Wextra -Werror
+
+all: $(NAME)
+
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) $(FT_LNK) $(MLX_LNK) -lm -o $(NAME)
+	make -C $(SRC_LIBFT) && make clean -C $(SRC_LIBFT)
+	make -C $(SRC_MLX)
+	$(CC) -o $(NAME) $(LIBFT) -L $(SRC_MLX) $(LIB_FLAGS) $(OBJ) $(FLAGS) -g
+
+%.o:%.c
+	$(CC) $(CFLAGS) -I $(LIBFT) -o $@ -c $<
+
 clean:
 	rm -f $(OBJ)
-	make -C $(FT) clean
-	make -C $(FT_MLX) clean
+
 fclean: clean
 	rm -f $(NAME)
-	make -C $(FT) fclean
-	make -C $(FT_MLX) clean
+
 re: fclean all
 
 test: $(NAME)
@@ -60,3 +42,8 @@ test: $(NAME)
 
 save: $(NAME)
 	./$(NAME) "map.cub" "--save"
+
+leaks: $(NAME)
+	./Cub3D map.cub &>/dev/null & disown && sleep 1 && leaks Cub3D
+
+.PHONY:            all clean fclean re
