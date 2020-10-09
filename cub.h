@@ -57,8 +57,8 @@
 # define WIN_NAME "Cub3D"
 # define BPP 4
 
-# define SPEED 0.2
-# define ANGLE 0.1
+# define SPEED 0.1
+# define ANGLE 0.05
 # define FOV 0.7
 
 typedef struct		s_xy
