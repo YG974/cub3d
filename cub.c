@@ -42,10 +42,10 @@ void	ft_init(char *av1, int arg)
 		ft_bitmap(&s);
 	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, WIN_NAME);
 	ft_wall(&s);
-	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
-	mlx_hook(s.win.ptr, 2, 1L<<0, ft_key_press, &s);
-	mlx_hook(s.win.ptr, 3, 1L<<1, ft_key_release, &s);
-	/*mlx_loop_hook(s.win.ptr, ft_key_move, &s);*/
+	/*mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);*/
+	mlx_loop_hook(s.mlx, ft_key_move, &s);
+	mlx_hook(s.win.ptr, 2, 0, ft_key_press, &s);
+	mlx_hook(s.win.ptr, 3, 0, ft_key_release, &s);
 	mlx_loop(s.mlx);
 	exit(0);
 	return ;

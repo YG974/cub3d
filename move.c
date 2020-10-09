@@ -15,12 +15,14 @@
 int		ft_key_press(int key, void *s)
 {
 	ft_switch_key_bol(s, key, 1);
+	/*printf("%d\n", s->p.key.a);*/
 	return (1);
 }
 
 int		ft_key_release(int key, void *s)
 {
 	ft_switch_key_bol(s, key, 0);
+	/*printf("%d\n", s->p.key.a);*/
 	return (1);
 }
 
@@ -38,6 +40,7 @@ int		ft_switch_key_bol(t_struct *s, int key, int value)
 		s->p.key.left = value;
 	else if (key == KEY_RIGHT)
 		s->p.key.right = value;
+	/*ft_key_move(key, s);*/
 	return (1);
 }
 
@@ -45,20 +48,21 @@ int		ft_key_move(int key, t_struct *s)
 {
 	if (key == ESC)
 		exit(0);
-	if (s->p.key.w == 1)
-		ft_move_forward(s, 1);
-	if (s->p.key.a == 1)
-		ft_move_side(s, -1);
-	if (s->p.key.s == 1)
-		ft_move_forward(s, -1);
-	if (s->p.key.d == 1)
-		ft_move_side(s, 1);
-	if (s->p.key.left == 1)
-		ft_rotate(s, -1);
-	if (s->p.key.right == 1)
-		ft_rotate(s, 1);
+	if (s->p.key.w)
+		ft_move_forward(s, 1.0);
+	if (s->p.key.a)
+		ft_move_side(s, -1.0);
+	if (s->p.key.s)
+		ft_move_forward(s, -1.0);
+	if (s->p.key.d)
+		ft_move_side(s, 1.0);
+	if (s->p.key.left)
+		ft_rotate(s, -1.0);
+	if (s->p.key.right)
+		ft_rotate(s, 1.0);
 	ft_wall(s);
-	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
+	/*mlx_hook(s->win.ptr, 2, 1L<<0, ft_key_press, &s);*/
+	/*mlx_hook(s->win.ptr, 3, 1L<<1, ft_key_release, &s);*/
 	return (1);
 }
 
