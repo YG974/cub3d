@@ -153,6 +153,7 @@ typedef	struct		s_wall
 
 typedef struct		s_key
 {
+	int				esc;
 	int				a;
 	int				s;
 	int				d;
@@ -243,7 +244,7 @@ void				ft_event(t_struct *s);
 int					ft_switch_key_bol(t_struct *s, int key, int value);
 int					ft_key_press(int key, void *s);
 int					ft_key_release(int key, void *s);
-int					ft_key_move(int key, t_struct *s);
+int					ft_key_move(t_struct *s);
 
 void				ft_sprite(t_struct *s);
 void				ft_count_sprite(t_struct *s);

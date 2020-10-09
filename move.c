@@ -16,37 +16,39 @@ int		ft_key_press(int key, void *s)
 {
 	ft_switch_key_bol(s, key, 1);
 	/*printf("%d\n", s->p.key.a);*/
-	return (1);
+	return (0);
 }
 
 int		ft_key_release(int key, void *s)
 {
 	ft_switch_key_bol(s, key, 0);
 	/*printf("%d\n", s->p.key.a);*/
-	return (1);
+	return (0);
 }
 
 int		ft_switch_key_bol(t_struct *s, int key, int value)
 {
+	if (key == ESC)
+		s->p.key.esc = value;
 	if (key == KEY_W)
 		s->p.key.w = value;
-	else if (key == KEY_A)
+	if (key == KEY_A)
 		s->p.key.a = value;
-	else if (key == KEY_S)
+	if (key == KEY_S)
 		s->p.key.s = value;
-	else if (key == KEY_D)
+	if (key == KEY_D)
 		s->p.key.d = value;
-	else if (key == KEY_LEFT)
+	if (key == KEY_LEFT)
 		s->p.key.left = value;
-	else if (key == KEY_RIGHT)
+	if (key == KEY_RIGHT)
 		s->p.key.right = value;
-	/*ft_key_move(key, s);*/
+	/*ft_key_move(s);*/
 	return (1);
 }
 
-int		ft_key_move(int key, t_struct *s)
+int		ft_key_move(t_struct *s)
 {
-	if (key == ESC)
+	if (s->p.key.esc)
 		exit(0);
 	if (s->p.key.w)
 		ft_move_forward(s, 1.0);
