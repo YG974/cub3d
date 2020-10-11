@@ -44,8 +44,9 @@ fclean: clean
 	make -C $(FT_MLX) clean
 re: fclean all
 
-test: all
-	./Cub3D "map.cub"
+test:
+	./$(NAME) "map.cub"
 
-save: all
-	./Cub3D "map.cub" "--save"
+save:
+	./$(NAME) "map.cub" "--save"
+
