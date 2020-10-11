@@ -26,7 +26,6 @@ void	ft_wall(t_struct *s)
 		s->x++;
 	}
 	ft_sprite(s);
-	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 }
 
 void	ft_ray_init(t_struct *s)
