@@ -13,8 +13,7 @@
 #ifndef CUB_H
 # define CUB_H
 
-//# include "./minilibx-linux/mlx.h"
-# include "./minilibx/mlx.h"
+# include "./minilibx-linux/mlx.h"
 # include "./libft/libft.h"
 
 # include <stdlib.h>
@@ -24,40 +23,27 @@
 # include <fcntl.h>
 # include <string.h>
 
-//# define ESC 65307
-//# define KEY_W 119
-//# define KEY_A 97
-//# define KEY_S 115
-//# define KEY_D 100
-//# define KEY_UP 65362
-//# define KEY_DOWN 65364
-//# define KEY_LEFT 65361
-//# define KEY_RIGHT 65363
-
-# define ESC 53
-# define KEY_W 13
-# define KEY_A 0
-# define KEY_S 1
-# define KEY_D 2
-# define KEY_UP 126
-# define KEY_DOWN 125
-# define KEY_LEFT 123
-# define KEY_RIGHT 124
+# define ESC 65307
+# define KEY_W 119
+# define KEY_A 97
+# define KEY_S 115
+# define KEY_D 100
+# define KEY_UP 65362
+# define KEY_DOWN 65364
+# define KEY_LEFT 65361
+# define KEY_RIGHT 65363
 
 # define WHITE 0x00FFFFFF
-//# define BLACK 0x00000000
-# define BLACK 0xFF000000
+# define BLACK 0x00000000
 # define RED 0x00FF0000
 # define BLUE 0x000000FF
 # define YELLOW 0x00FFFF00
 # define PINK 9961608
 
-# define WIDTH 1280
-# define HEIGHT 680
 # define WIN_NAME "Cub3D"
 # define BPP 4
 
-# define SPEED 0.1
+# define SPEED 0.2
 # define ANGLE 0.05
 # define FOV 0.7
 
@@ -245,6 +231,7 @@ int					ft_switch_key_bol(t_struct *s, int key, int value);
 int					ft_key_press(int key, void *s);
 int					ft_key_release(int key, void *s);
 int					ft_key_move(t_struct *s);
+int					ft_expose(t_struct *s);
 
 void				ft_sprite(t_struct *s);
 void				ft_count_sprite(t_struct *s);

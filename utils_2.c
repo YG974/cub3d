@@ -44,3 +44,10 @@ int		ft_check_parsing(t_struct *s)
 	else
 		return (1);
 }
+
+int		ft_exit(t_struct *s)
+{
+	s->x = 0;
+	exit(0);
+	return (0);
+}

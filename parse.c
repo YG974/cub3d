@@ -67,8 +67,8 @@ void			ft_resolution(t_struct *s, char *line)
 {
 	char			**tab;
 	int				i;
-	/*int				x_max;*/
-	/*int				y_max;*/
+	int				x_max;
+	int				y_max;
 
 	i = 0;
 	s->i++;
@@ -77,17 +77,13 @@ void			ft_resolution(t_struct *s, char *line)
 		i++;
 	if (i != 2)
 		ft_error(3);
-	/*mlx_get_screen_size(s->mlx, &x_max, &y_max);*/
+	mlx_get_screen_size(s->mlx, &x_max, &y_max);
 	s->win.x = ft_atoi((const char *)tab[0]);
 	s->win.y = ft_atoi((const char *)tab[1]);
-	s->win.x = (s->win.x <= 0 ? WIDTH : s->win.x);
-	s->win.x = (s->win.x > WIDTH ? WIDTH : s->win.x);
-	s->win.y = (s->win.y <= 0 ? HEIGHT : s->win.y);
-	s->win.y = (s->win.y > HEIGHT ? HEIGHT : s->win.y);
-	/*s->win.x = (s->win.x <= 0 ? x_max : s->win.x);*/
-	/*s->win.x = (s->win.x > x_max ? x_max : s->win.x);*/
-	/*s->win.y = (s->win.y <= 0 ? y_max : s->win.y);*/
-	/*s->win.y = (s->win.y > y_max ? y_max : s->win.y);*/
+	s->win.x = (s->win.x <= 0 ? x_max : s->win.x);
+	s->win.x = (s->win.x > x_max ? x_max : s->win.x);
+	s->win.y = (s->win.y <= 0 ? y_max : s->win.y);
+	s->win.y = (s->win.y > y_max ? y_max : s->win.y);
 	while (i >= 0)
 		free(tab[i--]);
 	s->parse.res++;

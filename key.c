@@ -62,3 +62,9 @@ int		ft_key_move(t_struct *s)
 	ft_wall(s);
 	return (1);
 }
+
+int		ft_expose(t_struct *s)
+{
+	ft_wall(s);
+	return (1);
+}

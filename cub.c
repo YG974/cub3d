@@ -44,8 +44,9 @@ void	ft_init(char *av1, int arg)
 	ft_wall(&s);
 	mlx_hook(s.win.ptr, 2, 1L, ft_key_press, &s);
 	mlx_hook(s.win.ptr, 3, 2L, ft_key_release, &s);
+	mlx_hook(s.win.ptr, 17, 0, ft_exit, &s);
 	mlx_loop_hook(s.mlx, ft_key_move, &s);
-	/*mlx_expose_hook(s.win.ptr, ft_wall, &s);*/
+	mlx_expose_hook(s.win.ptr, ft_expose, &s);
 	mlx_loop(s.mlx);
 	exit(0);
 	return ;
