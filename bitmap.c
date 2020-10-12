@@ -20,7 +20,7 @@ void				ft_bitmap(t_struct *s)
 	unsigned char	*dib_header;
 	unsigned char	*pixel_array;
 
-	if ((fd = open("bitmap.bmp", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU) < 0))
+	if ((fd = open("bitmap.bmp", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU)) < 0)
 		ft_error(7);
 	ft_wall(s);
 	pixel_array_size = BPP * s->win.x * s->win.y;
