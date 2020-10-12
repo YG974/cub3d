@@ -84,6 +84,8 @@ int		ft_check_map_borders(t_struct *s, int x, int y, char **map)
 {
 	int		len;
 
+	if (map[y] == NULL)
+		return (-1);
 	len = ft_strlen(map[y]);
 	if (x >= len)
 		return (-1);
