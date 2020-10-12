@@ -1,7 +1,7 @@
-R  0    0
+R  2440    4770
 F 191  ,  191 ,  191
 C 5,225 ,225  
-NO ./images/brick.xpm
+NO   ./images/brick.xpm
 SO    ./images/grey.xpm
 WE   ./images/floor.xpm
 EA    ./images/wood.xpm
@@ -25,3 +25,6 @@ S ./images/barrel.xpm
 1100000111010101111101100N00011
 11110111 1110101 1011100000011
 11111111 1111111 111111111111
+
+
+

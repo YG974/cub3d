@@ -30,7 +30,7 @@ void	ft_error(int err)
 	(err == 12) ?
 		ft_putstr_fd("Error : Error : texture image is not a square\n", 2) : 0;
 	(err == 13) ?
-		ft_putstr_fd("Error : duplicated element description\n", 2) : 0;
+		ft_putstr_fd("Error : wrong element description number\n", 2) : 0;
 	exit(0);
 }
 
@@ -43,4 +43,11 @@ int		ft_check_parsing(t_struct *s)
 		return (-1);
 	else
 		return (1);
+}
+
+int		ft_exit(t_struct *s)
+{
+	s->x = 0;
+	exit(0);
+	return (1);
 }

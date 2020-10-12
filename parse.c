@@ -19,10 +19,10 @@ void			ft_parse(t_struct *s)
 	int			ret;
 
 	line = NULL;
-	if (!(fd = open(s->cub, O_RDONLY)))
+	if ((fd = open(s->cub, O_RDONLY)) < 0)
 		ft_error(8);
 	ret = 1;
-	while (ret == get_next_line(fd, &line))
+	while ((ret = get_next_line(fd, &line)) != 0)
 	{
 		s->i = 0;
 		if (ft_check_parsing(s) == 1)
@@ -33,11 +33,11 @@ void			ft_parse(t_struct *s)
 			free(line);
 		}
 	}
+	if (s->parse.tex != 5 || s->parse.color != 2 || s->parse.res != 1)
+		ft_error(13);
 	free(line);
 	ft_get_pos(s);
 	ft_check_map(s);
-	if (s->parse.tex != 5 || s->parse.color != 2 || s->parse.res != 1)
-		ft_error(13);
 	close(fd);
 }
 
@@ -67,8 +67,8 @@ void			ft_resolution(t_struct *s, char *line)
 {
 	char			**tab;
 	int				i;
-	/*int				x_max;*/
-	/*int				y_max;*/
+	int				x_max;
+	int				y_max;
 
 	i = 0;
 	s->i++;
@@ -77,17 +77,13 @@ void			ft_resolution(t_struct *s, char *line)
 		i++;
 	if (i != 2)
 		ft_error(3);
-	/*mlx_get_screen_size(s->mlx, &x_max, &y_max);*/
+	mlx_get_screen_size(s->mlx, &x_max, &y_max);
 	s->win.x = ft_atoi((const char *)tab[0]);
 	s->win.y = ft_atoi((const char *)tab[1]);
-	s->win.x = (s->win.x <= 0 ? WIDTH : s->win.x);
-	s->win.x = (s->win.x > WIDTH ? WIDTH : s->win.x);
-	s->win.y = (s->win.y <= 0 ? HEIGHT : s->win.y);
-	s->win.y = (s->win.y > HEIGHT ? HEIGHT : s->win.y);
-	/*s->win.x = (s->win.x <= 0 ? x_max : s->win.x);*/
-	/*s->win.x = (s->win.x > x_max ? x_max : s->win.x);*/
-	/*s->win.y = (s->win.y <= 0 ? y_max : s->win.y);*/
-	/*s->win.y = (s->win.y > y_max ? y_max : s->win.y);*/
+	s->win.x = (s->win.x <= 0 ? x_max : s->win.x);
+	s->win.x = (s->win.x > x_max ? x_max : s->win.x);
+	s->win.y = (s->win.y <= 0 ? y_max : s->win.y);
+	s->win.y = (s->win.y > y_max ? y_max : s->win.y);
 	while (i >= 0)
 		free(tab[i--]);
 	s->parse.res++;
@@ -135,7 +131,8 @@ unsigned int	*ft_load_tex(t_struct *s, char *line)
 		i++;
 	if (i != 1)
 		ft_error(6);
-	ptr = mlx_xpm_file_to_image(s->mlx, tab[0], &tmp[0], &tmp[1]);
+	if (!(ptr = mlx_xpm_file_to_image(s->mlx, tab[0], &tmp[0], &tmp[1])))
+		ft_error(6);
 	if (tmp[0] != tmp[1])
 		ft_error(12);
 	s->tex.width = tmp[0];

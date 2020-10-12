@@ -60,5 +60,13 @@ int		ft_key_move(t_struct *s)
 	if (s->p.key.right)
 		ft_rotate(s, 1);
 	ft_wall(s);
+	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
+	return (1);
+}
+
+int		ft_expose(t_struct *s)
+{
+	ft_wall(s);
+	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
 	return (1);
 }
