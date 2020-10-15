@@ -137,7 +137,7 @@ unsigned int	*ft_load_tex(t_struct *s, char *line)
 		ft_error(12);
 	s->tex.width = tmp[0];
 	adr = (unsigned int*)mlx_get_data_addr(ptr, &tmp[2], &tmp[3], &tmp[4]);
-	free(ptr);
+	s->ptr[s->parse.tex] = ptr;
 	free(tab[0]);
 	free(tab);
 	s->parse.tex++;

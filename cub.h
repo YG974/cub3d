@@ -183,6 +183,7 @@ typedef struct		s_struct
 	int				i;
 	int				x;
 	int				y;
+	void			*ptr[5];
 }					t_struct;
 
 void				ft_init(char *av1, int arg);

@@ -50,7 +50,6 @@ void	ft_init(char *av1, int arg)
 	mlx_expose_hook(s.win.ptr, &ft_expose, &s);
 	mlx_loop_hook(s.mlx, &ft_key_move, &s);
 	mlx_loop(s.mlx);
-	exit(0);
 	return ;
 }
 
@@ -76,6 +75,11 @@ void	ft_init_before_parsing_1(t_struct *s)
 	s->sky.b = -1;
 	s->sky.color = 0;
 	s->floor = s->sky;
+	s->ptr[0] = 0;
+	s->ptr[1] = 0;
+	s->ptr[2] = 0;
+	s->ptr[3] = 0;
+	s->ptr[4] = 0;
 }
 
 void	ft_init_before_parsing_2(t_struct *s)
