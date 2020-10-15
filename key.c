@@ -28,17 +28,17 @@ int		ft_switch_key_bol(t_struct *s, int key, int value)
 {
 	if (key == ESC)
 		s->p.key.esc = value;
-	else if (key == KEY_W)
+	if (key == KEY_W)
 		s->p.key.w = value;
-	else if (key == KEY_A)
+	if (key == KEY_A)
 		s->p.key.a = value;
-	else if (key == KEY_S)
+	if (key == KEY_S)
 		s->p.key.s = value;
-	else if (key == KEY_D)
+	if (key == KEY_D)
 		s->p.key.d = value;
-	else if (key == KEY_LEFT)
+	if (key == KEY_LEFT)
 		s->p.key.left = value;
-	else if (key == KEY_RIGHT)
+	if (key == KEY_RIGHT)
 		s->p.key.right = value;
 	return (0);
 }
@@ -47,17 +47,17 @@ int		ft_key_move(t_struct *s)
 {
 	if (s->p.key.esc)
 		exit(0);
-	else if (s->p.key.w)
+	if (s->p.key.w)
 		ft_move_forward(s, 1);
-	else if (s->p.key.a)
+	if (s->p.key.a)
 		ft_move_side(s, -1);
-	else if (s->p.key.s)
+	if (s->p.key.s)
 		ft_move_forward(s, -1);
-	else if (s->p.key.d)
+	if (s->p.key.d)
 		ft_move_side(s, 1);
-	else if (s->p.key.left)
+	if (s->p.key.left)
 		ft_rotate(s, -1);
-	else if (s->p.key.right)
+	if (s->p.key.right)
 		ft_rotate(s, 1);
 	ft_expose(s);
 	return (0);

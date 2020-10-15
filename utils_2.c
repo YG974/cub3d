@@ -47,8 +47,9 @@ int		ft_check_parsing(t_struct *s)
 
 int		ft_exit(t_struct *s)
 {
-	if (s->mlx && s->win.ptr)
-		mlx_destroy_window(s->mlx, s->win.ptr);
+	/*if (s->mlx && s->win.ptr)*/
+		/*mlx_destroy_window(s->mlx, s->win.ptr);*/
+	s->x = 0;
 	exit(0);
 	return (0);
 }
