@@ -12,26 +12,26 @@
 
 #include "cub.h"
 
-void	ft_error(int err)
+void	ft_error(t_struct *s, int err)
 {
-	(err == 1) ? ft_putstr_fd("Error : calloc fail\n", 2) : 0;
-	(err == 2) ? ft_putstr_fd("Error : wrong map file extension\n", 2) : 0;
-	(err == 3) ? ft_putstr_fd("Error : wrong resolution description\n", 2) : 0;
+	(err == 1) ? ft_putstr_fd("Error\ncalloc fail\n", 2) : 0;
+	(err == 2) ? ft_putstr_fd("Error\nwrong map file extension\n", 2) : 0;
+	(err == 3) ? ft_putstr_fd("Error\nwrong resolution description\n", 2) : 0;
 	(err == 4) ?
-		ft_putstr_fd("Error : wrong sky or ceiling description\n", 2) : 0;
-	(err == 5) ? ft_putstr_fd("Error : missing element description\n", 2) : 0;
-	(err == 6) ? ft_putstr_fd("Error : wrong texture description\n", 2) : 0;
-	(err == 7) ? ft_putstr_fd("Error : couldn't create bmp file\n", 2) : 0;
-	(err == 8) ? ft_putstr_fd("Error : couldn't open map file\n", 2) : 0;
+		ft_putstr_fd("Error\nwrong sky or ceiling description\n", 2) : 0;
+	(err == 5) ? ft_putstr_fd("Error\nmissing element description\n", 2) : 0;
+	(err == 6) ? ft_putstr_fd("Error\nwrong texture description\n", 2) : 0;
+	(err == 7) ? ft_putstr_fd("Error\ncouldn't create bmp file\n", 2) : 0;
+	(err == 8) ? ft_putstr_fd("Error\ncouldn't open map file\n", 2) : 0;
 	(err == 9) ?
-		ft_putstr_fd("Error : map contains forbidden characters\n", 2) : 0;
-	(err == 10) ? ft_putstr_fd("Error : multiple starting position\n", 2) : 0;
-	(err == 11) ? ft_putstr_fd("Error : map is not closed\n", 2) : 0;
+		ft_putstr_fd("Error\nmap contains forbidden characters\n", 2) : 0;
+	(err == 10) ? ft_putstr_fd("Error\nmultiple starting position\n", 2) : 0;
+	(err == 11) ? ft_putstr_fd("Error\nmap is not closed\n", 2) : 0;
 	(err == 12) ?
-		ft_putstr_fd("Error : Error : texture image is not a square\n", 2) : 0;
+		ft_putstr_fd("Error\ntexture image is not a square\n", 2) : 0;
 	(err == 13) ?
-		ft_putstr_fd("Error : wrong element description number\n", 2) : 0;
-	exit(0);
+		ft_putstr_fd("Error\nwrong element description number\n", 2) : 0;
+	ft_exit(s);
 }
 
 int		ft_check_parsing(t_struct *s)

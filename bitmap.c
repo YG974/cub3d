@@ -21,7 +21,7 @@ void				ft_bitmap(t_struct *s)
 	unsigned char	*pixel_array;
 
 	if ((fd = open("bitmap.bmp", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU)) < 0)
-		ft_error(7);
+		ft_error(s, 7);
 	ft_wall(s);
 	pixel_array_size = BPP * s->win.x * s->win.y;
 	file_header = ft_bmp_file_header(s);
@@ -44,7 +44,7 @@ unsigned char		*ft_bmp_file_header(t_struct *s)
 	int				file_size;
 
 	if (!(file_header = ft_calloc(sizeof(char), 14)))
-		ft_error(1);
+		ft_error(s, 1);
 	i = 0;
 	while (i < 14)
 		file_header[i++] = (unsigned char)(0);
@@ -62,7 +62,7 @@ unsigned char		*ft_bmp_dib_header(t_struct *s)
 	int				i;
 
 	if (!(dib_header = ft_calloc(sizeof(char), 40)))
-		ft_error(1);
+		ft_error(s, 1);
 	i = 0;
 	while (i < 40)
 		dib_header[i++] = (unsigned char)(0);
@@ -84,7 +84,7 @@ unsigned char		*ft_bmp_pixel_array(t_struct *s)
 	i = 0;
 	if (!(pixel_array = ft_calloc(sizeof(unsigned char),
 					s->win.x * s->win.y * BPP)))
-		ft_error(1);
+		ft_error(s, 1);
 	x = (s->win.y - 1) * s->win.x;
 	while (x >= 0)
 	{

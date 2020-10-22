@@ -1,4 +1,4 @@
-NAME	= Cub3D
+NAME	= cub3D
 SRC 	= cub.c \
 			parse.c \
 			parse_map.c \
@@ -14,7 +14,7 @@ SRC 	= cub.c \
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 CC		= gcc
-CFLAGS	= -Wall -Wextra -Werror -g
+CFLAGS	= -O3 -Wall -Wextra -Werror -g
 FT		= ./libft/
 FT_MLX 	= ./minilibx-linux/
 FT_LIB	= $(addprefix $(FT),libft.a)
@@ -43,3 +43,9 @@ fclean: clean
 	make -C $(FT) fclean
 	make -C $(FT_MLX) clean
 re: fclean all
+
+test: all
+	./cub3D map.cub
+
+save: all
+	./cub3D map.cub --save

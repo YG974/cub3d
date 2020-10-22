@@ -20,7 +20,7 @@ void			ft_parse(t_struct *s)
 
 	line = NULL;
 	if ((fd = open(s->cub, O_RDONLY)) < 0)
-		ft_error(8);
+		ft_error(s, 8);
 	ret = 1;
 	while ((ret = get_next_line(fd, &line)) != 0)
 	{
@@ -34,7 +34,7 @@ void			ft_parse(t_struct *s)
 		}
 	}
 	if (s->parse.tex != 5 || s->parse.color != 2 || s->parse.res != 1)
-		ft_error(13);
+		ft_error(s, 13);
 	free(line);
 	ft_get_pos(s);
 	ft_check_map(s);
@@ -76,7 +76,7 @@ void			ft_resolution(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 2)
-		ft_error(3);
+		ft_error(s, 3);
 	mlx_get_screen_size(s->mlx, &x_max, &y_max);
 	s->win.x = ft_atoi((const char *)tab[0]);
 	s->win.y = ft_atoi((const char *)tab[1]);
@@ -102,13 +102,13 @@ t_color			ft_color(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 3)
-		ft_error(4);
+		ft_error(s, 4);
 	color.r = ft_atoi((const char *)tab[0]);
 	color.g = ft_atoi((const char *)tab[1]);
 	color.b = ft_atoi((const char *)tab[2]);
 	if (color.r > 255 || color.r < 0 || color.g > 255 || color.g < 0 ||
 			color.b > 255 || color.b < 0)
-		ft_error(4);
+		ft_error(s, 4);
 	while (i >= 0)
 		free(tab[i--]);
 	free(tab);
@@ -130,11 +130,11 @@ unsigned int	*ft_load_tex(t_struct *s, char *line)
 	while (tab[i])
 		i++;
 	if (i != 1)
-		ft_error(6);
+		ft_error(s, 6);
 	if (!(ptr = mlx_xpm_file_to_image(s->mlx, tab[0], &tmp[0], &tmp[1])))
-		ft_error(6);
+		ft_error(s, 6);
 	if (tmp[0] != tmp[1])
-		ft_error(12);
+		ft_error(s, 12);
 	s->tex.width = tmp[0];
 	adr = (unsigned int*)mlx_get_data_addr(ptr, &tmp[2], &tmp[3], &tmp[4]);
 	s->ptr[s->parse.tex] = ptr;

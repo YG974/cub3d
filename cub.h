@@ -43,9 +43,9 @@
 # define WIN_NAME "Cub3D"
 # define BPP 4
 
-# define SPEED 0.2
-# define ANGLE 0.05
-# define FOV 0.7
+# define SPEED 0.0005
+# define ANGLE 5
+# define FOV 0.6
 
 typedef struct		s_xy
 {
@@ -186,7 +186,7 @@ typedef struct		s_struct
 	void			*ptr[5];
 }					t_struct;
 
-void				ft_init(char *av1, int arg);
+void				ft_init(char *av1, int arg, t_struct *s);
 void				ft_init_before_parsing_1(t_struct *s);
 void				ft_init_before_parsing_2(t_struct *s);
 void				ft_init_raycasting_data(t_struct *s);
@@ -245,7 +245,7 @@ void				ft_sprite_size(t_struct *s);
 void				ft_draw_sprite(t_struct *s);
 
 int					ft_exit(t_struct *s);
-void				ft_error(int err);
+void				ft_error(t_struct *s, int err);
 int					ft_check_parsing(t_struct *s);
 
 void				ft_bitmap(t_struct *s);
