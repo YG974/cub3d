@@ -46,7 +46,7 @@ int		ft_switch_key_bol(t_struct *s, int key, int value)
 int		ft_key_move(t_struct *s)
 {
 	if (s->p.key.esc)
-		exit(0);
+		ft_exit(s);
 	if (s->p.key.w)
 		ft_move_forward(s, 1);
 	if (s->p.key.a)
