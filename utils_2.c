@@ -47,8 +47,19 @@ int		ft_check_parsing(t_struct *s)
 
 int		ft_exit(t_struct *s)
 {
+	s->i = 0;
 	if (s->mlx && s->win.ptr)
 		mlx_destroy_window(s->mlx, s->win.ptr);
+	/*if (s->cub)*/
+		/*free(s->cub);*/
+	while (s->map.tab[s->i])
+		free(s->map.tab[s->i++]);
+	/*mlx_destroy_image(s->mlx, s->ptr[0]);*/
+	/*mlx_destroy_image(s->mlx, s->ptr[1]);*/
+	/*mlx_destroy_image(s->mlx, s->ptr[2]);*/
+	/*mlx_destroy_image(s->mlx, s->ptr[3]);*/
+	/*mlx_destroy_image(s->mlx, s->ptr[4]);*/
+	/*mlx_destroy_image(s->mlx, s->img.ptr);*/
 	exit(0);
 	return (0);
 }

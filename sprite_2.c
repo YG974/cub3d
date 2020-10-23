@@ -26,7 +26,6 @@ void	ft_sprite_transform(t_struct *s)
 		s->p.plane.y * s->sprite[s->i].delta.x);
 	s->sprite[s->i].screen = (int)((s->win.x / 2) *
 		(1 + s->sprite[s->i].depth.x / s->sprite[s->i].depth.y));
-	return ;
 }
 
 void	ft_sprite_size(t_struct *s)
@@ -46,7 +45,6 @@ void	ft_sprite_size(t_struct *s)
 	s->sprite[s->i].end.x = s->sprite[s->i].screen + s->sprite[s->i].width / 2;
 	if (s->sprite[s->i].end.x >= s->win.x)
 		s->sprite[s->i].end.x = s->win.x - 1;
-	return ;
 }
 
 void	ft_draw_sprite(t_struct *s)

@@ -26,8 +26,6 @@ void	ft_wall(t_struct *s)
 		s->x++;
 	}
 	ft_sprite(s);
-	/*free(s->img.ptr);*/
-	/*free(s->img.adr);*/
 }
 
 void	ft_ray_init(t_struct *s)

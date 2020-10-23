@@ -31,8 +31,6 @@ void	ft_sprite(t_struct *s)
 		ft_draw_sprite(s);
 		s->i++;
 	}
-	s->i = -1;
-	return ;
 }
 
 void	ft_count_sprite(t_struct *s)
@@ -49,7 +47,6 @@ void	ft_count_sprite(t_struct *s)
 		}
 		s->y++;
 	}
-	return ;
 }
 
 void	ft_sprite_pos(t_struct *s)
@@ -76,7 +73,6 @@ void	ft_sprite_pos(t_struct *s)
 			s->y++;
 		}
 	}
-	return ;
 }
 
 void	ft_sprite_distance(t_struct *s)
@@ -90,7 +86,6 @@ void	ft_sprite_distance(t_struct *s)
 				s->p.pos.y - s->sprite[i].pos.y);
 		i++;
 	}
-	return ;
 }
 
 void	ft_sort_sprite(t_struct *s)
@@ -115,5 +110,4 @@ void	ft_sort_sprite(t_struct *s)
 		}
 		i++;
 	}
-	return ;
 }

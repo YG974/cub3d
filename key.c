@@ -28,17 +28,17 @@ int		ft_switch_key_bol(t_struct *s, int key, int value)
 {
 	if (key == ESC)
 		s->p.key.esc = value;
-	else if (key == KEY_W)
+	if (key == KEY_W)
 		s->p.key.w = value;
-	else if (key == KEY_A)
+	if (key == KEY_A)
 		s->p.key.a = value;
-	else if (key == KEY_S)
+	if (key == KEY_S)
 		s->p.key.s = value;
-	else if (key == KEY_D)
+	if (key == KEY_D)
 		s->p.key.d = value;
-	else if (key == KEY_LEFT)
+	if (key == KEY_LEFT)
 		s->p.key.left = value;
-	else if (key == KEY_RIGHT)
+	if (key == KEY_RIGHT)
 		s->p.key.right = value;
 	return (0);
 }
@@ -46,61 +46,34 @@ int		ft_switch_key_bol(t_struct *s, int key, int value)
 int		ft_key_move(t_struct *s)
 {
 	if (s->p.key.esc)
-		ft_exit(s);
+		exit(0);
 	if (s->p.key.w)
-	{
 		ft_move_forward(s, 1);
-		/*ft_expose(s);*/
-	}
 	if (s->p.key.a)
-	{
 		ft_move_side(s, -1);
-		/*ft_expose(s);*/
-	}
 	if (s->p.key.s)
-	{
 		ft_move_forward(s, -1);
-		/*ft_expose(s);*/
-	}
 	if (s->p.key.d)
-	{
 		ft_move_side(s, 1);
-		/*ft_expose(s);*/
-	}
 	if (s->p.key.left)
-	{
 		ft_rotate(s, -1);
-		/*ft_expose(s);*/
-	}
 	if (s->p.key.right)
-	{
 		ft_rotate(s, 1);
-		/*ft_expose(s);*/
-	}
-	/*ft_expose(s);*/
-	/*if (s->p.key.w == 1 || s->p.key.a == 1 || s->p.key.s == 1 ||*/
-			/*s->p.key.d == 1 || s->p.key.left == 1 || s->p.key.right == 1)*/
-	/*{*/
-		/*ft_wall(s);*/
-		/*ft_expose(s);*/
-	/*}*/
-	/*if (s->i == s->map.sprite_nb)*/
-	/*{*/
-		/*mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);*/
-		/*ft_expose(s);*/
-	/*}*/
+	if (s->p.key.w == 1 || s->p.key.a == 1 || s->p.key.s == 1 ||
+			s->p.key.d == 1 || s->p.key.left == 1 || s->p.key.right == 1)
+		ft_expose(s);
 	return (0);
 }
 
 int		ft_expose(t_struct *s)
 {
-	int			tab[3];
+	int		tab[3];
 
+	mlx_destroy_image(s->mlx, s->img.ptr);
 	s->img.ptr = mlx_new_image(s->mlx, s->win.x, s->win.y);
 	s->img.adr = (unsigned int*)mlx_get_data_addr(s->img.ptr,
 			&tab[0], &tab[1], &tab[2]);
 	ft_wall(s);
 	mlx_put_image_to_window(s->mlx, s->win.ptr, s->img.ptr, 0, 0);
-	mlx_destroy_image(s->mlx, s->img.ptr);
 	return (0);
 }

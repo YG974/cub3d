@@ -56,7 +56,6 @@ void	ft_check_map(t_struct *s)
 	while (map[i])
 		free(map[i++]);
 	free(map);
-	free(s->cub);
 }
 
 void	ft_check_map_char(t_struct *s, int x, int y)

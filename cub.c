@@ -14,61 +14,42 @@
 
 int		main(int ac, char **av)
 {
-	t_struct	s;
-
 	if (ac == 2 && ft_suffix(av[1], ".cub") == 1)
-		ft_init(av[1], 0, &s);
+		ft_init(av[1], 0);
 	else if (ac == 3 && ft_suffix(av[1], ".cub") == 1
 			&& ft_strncmp(av[2], "--save", 7) == 0)
-		ft_init(av[1], 1, &s);
+		ft_init(av[1], 1);
 	else
-		ft_putstr_fd("wrong arguments", 2);
+		ac = write(2, "wrong arguments", 15);
+	return (1);
+}
+
+void	ft_init(char *av1, int arg)
+{
+	t_struct	s;
+	int			tab[3];
+
+	s.cub = ft_strdup(av1);
+	s.mlx = mlx_init();
+	ft_init_before_parsing_1(&s);
+	ft_init_before_parsing_2(&s);
+	ft_parse(&s);
+	ft_init_raycasting_data(&s);
+	s.img.ptr = mlx_new_image(s.mlx, s.win.x, s.win.y);
+	s.img.adr = (unsigned int*)mlx_get_data_addr(s.img.ptr,
+			&tab[0], &tab[1], &tab[2]);
+	if (arg == 1)
+		ft_bitmap(&s);
+	s.win.ptr = mlx_new_window(s.mlx, s.win.x, s.win.y, WIN_NAME);
+	ft_wall(&s);
+	mlx_put_image_to_window(s.mlx, s.win.ptr, s.img.ptr, 0, 0);
 	mlx_hook(s.win.ptr, 2, 1L, &ft_key_press, &s);
 	mlx_hook(s.win.ptr, 3, 2L, &ft_key_release, &s);
 	mlx_hook(s.win.ptr, 17, 1L << 17, &ft_exit, &s);
 	mlx_hook(s.win.ptr, 33, 1L << 17, &ft_exit, &s);
-	mlx_loop_hook(s.mlx, &ft_key_move, &s);
 	mlx_expose_hook(s.win.ptr, &ft_expose, &s);
+	mlx_loop_hook(s.mlx, &ft_key_move, &s);
 	mlx_loop(s.mlx);
-	return (1);
-}
-
-void	ft_init(char *av1, int arg, t_struct *s)
-{
-	s->cub = ft_strdup(av1);
-	s->mlx = mlx_init();
-	ft_init_before_parsing_1(s);
-	ft_init_before_parsing_2(s);
-	ft_parse(s);
-	ft_init_raycasting_data(s);
-	if (arg == 1)
-		ft_bitmap(s);
-	s->win.ptr = mlx_new_window(s->mlx, s->win.x, s->win.y, WIN_NAME);
-	/*ft_wall(s);*/
-	ft_expose(s);
-	/*ft_move_forward(s, 0);*/
-	/*ft_move_side(s, 0);*/
-	/*ft_rotate(s, 0);*/
-	/*ft_event(s);*/
-	/*mlx_hook(s.win.ptr, 2, 1L, &ft_key_press, &s);*/
-	/*mlx_hook(s.win.ptr, 3, 2L, &ft_key_release, &s);*/
-	/*mlx_hook(s.win.ptr, 17, 1L << 17, &ft_exit, &s);*/
-	/*mlx_hook(s.win.ptr, 33, 1L << 17, &ft_exit, &s);*/
-	/*mlx_expose_hook(s.win.ptr, &ft_expose, &s);*/
-	/*mlx_loop_hook(s.mlx, &ft_key_move, &s);*/
-	/*mlx_loop(s.mlx);*/
-	return ;
-}
-
-void	ft_event(t_struct *s)
-{
-	mlx_hook(s->win.ptr, 2, 1L, &ft_key_press, &s);
-	mlx_hook(s->win.ptr, 3, 2L, &ft_key_release, &s);
-	mlx_hook(s->win.ptr, 17, 1L << 17, &ft_exit, &s);
-	mlx_hook(s->win.ptr, 33, 1L << 17, &ft_exit, &s);
-	mlx_expose_hook(s->win.ptr, &ft_expose, &s);
-	mlx_loop_hook(s->mlx, &ft_key_move, &s);
-	mlx_loop(s->mlx);
 	return ;
 }
 

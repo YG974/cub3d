@@ -63,7 +63,7 @@ char	**new_tab(t_struct *s, char **tab, char *str)
 	while (tab[n])
 		n++;
 	if (!(new_tab = ft_calloc(sizeof(char *), (n + 2))))
-		ft_error(1);
+		ft_error(s, 1);
 	n = 0;
 	while (tab[n])
 	{

@@ -186,7 +186,7 @@ typedef struct		s_struct
 	void			*ptr[5];
 }					t_struct;
 
-void				ft_init(char *av1, int arg, t_struct *s);
+void				ft_init(char *av1, int arg);
 void				ft_init_before_parsing_1(t_struct *s);
 void				ft_init_before_parsing_2(t_struct *s);
 void				ft_init_raycasting_data(t_struct *s);
